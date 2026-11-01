@@ -80,7 +80,7 @@ const APP_TYPES = [
     id: "others",
     serviceId: "srv-fullstack",
     title: "Others (Custom Project)",
-    badge: "Bespoke Request",
+    badge: "Custom Project",
     icon: Sparkles,
     desc: "Custom scripts, integrations, unique architectures, or specialized software engineering.",
   },
@@ -267,13 +267,13 @@ function OrderWizardContent() {
       {/* Wizard Header & Progress */}
       <div className="mb-12 text-center max-w-2xl mx-auto">
         <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-          Project Quest // Commission
+          Order Form // Project Details
         </div>
         <h1 className="text-3xl sm:text-4xl font-light text-white tracking-tight">
-          Build Your Custom Software
+          Start Your New Project
         </h1>
         <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
-          Tell us about what you want to build, choose your visual theme, and submit your project to begin development.
+          Tell me what kind of app or bot you need, choose your colors, and submit your details to get started.
         </p>
       </div>
 
@@ -324,7 +324,7 @@ function OrderWizardContent() {
           >
             <div className="border-b border-white/[0.08] pb-4">
               <span className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
-                Step 01 // Selection
+                Step 01 // Choose Project Type
               </span>
               <h2 className="text-2xl font-light text-white tracking-tight mt-1">
                 Which type of app do you need to build?
@@ -367,7 +367,7 @@ function OrderWizardContent() {
 
                     <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
                       <span className="text-[10px] uppercase tracking-widest text-cream-300 font-mono">
-                        Bespoke Scope
+                        Custom Scope
                       </span>
                       <div
                         className={`h-4 w-4 rounded-full border flex items-center justify-center transition-all ${
@@ -428,10 +428,10 @@ function OrderWizardContent() {
           >
             <div className="border-b border-white/[0.08] pb-4">
               <span className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
-                Step 02 // Aesthetics
+                Step 02 // Color Theme
               </span>
               <h2 className="text-2xl font-light text-white tracking-tight mt-1">
-                Choose Color Theme & Brand Styling
+                Pick Your Project Colors
               </h2>
             </div>
 
@@ -448,14 +448,14 @@ function OrderWizardContent() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2.5">
                     <Sparkles className="h-4 w-4 text-cream-300" />
-                    <h3 className="text-base font-medium text-white">Let Dev Choose for You</h3>
+                    <h3 className="text-base font-medium text-white">Let Developer Choose</h3>
                   </div>
                   <span className="rounded bg-cream-400/20 px-2 py-0.5 text-[9px] font-mono uppercase text-cream-300">
                     Recommended
                   </span>
                 </div>
                 <p className="text-xs text-neutral-400 leading-relaxed">
-                  We will tailor a bespoke, high-contrast, modern luxury color palette optimized for your target audience, readability, and brand prestige.
+                  I will pick clean, modern, and high-contrast colors that look great for your project.
                 </p>
               </div>
 
@@ -470,14 +470,14 @@ function OrderWizardContent() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2.5">
                     <Palette className="h-4 w-4 text-cream-300" />
-                    <h3 className="text-base font-medium text-white">Custom Color Theme</h3>
+                    <h3 className="text-base font-medium text-white">Pick Custom Colors</h3>
                   </div>
                   <span className="rounded bg-white/10 px-2 py-0.5 text-[9px] font-mono uppercase text-neutral-300">
                     Interactive
                   </span>
                 </div>
                 <p className="text-xs text-neutral-400 leading-relaxed">
-                  Use the color wheel to hand-pick your primary, secondary, and accent colors. Add, edit, or remove colors to match your brand guide.
+                  Use the color wheel to select your favorite colors. You can add, edit, or remove colors to match your brand.
                 </p>
               </div>
             </div>
@@ -684,10 +684,10 @@ function OrderWizardContent() {
           >
             <div className="border-b border-white/[0.08] pb-4">
               <span className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
-                Step 03 // Specifications
+                Step 03 // Project Details & Files
               </span>
               <h2 className="text-2xl font-light text-white tracking-tight mt-1">
-                Project Details, References & Uploads
+                Tell Me About Your Project
               </h2>
             </div>
 
@@ -836,10 +836,10 @@ function OrderWizardContent() {
           >
             <div className="border-b border-white/[0.08] pb-4">
               <span className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
-                Step 04 // Confirmation
+                Step 04 // Review & Submit
               </span>
               <h2 className="text-2xl font-light text-white tracking-tight mt-1">
-                Review & Confirm Your Quest
+                Review & Confirm Your Order
               </h2>
             </div>
 
@@ -847,7 +847,7 @@ function OrderWizardContent() {
             <div className="rounded-3xl border border-white/[0.1] bg-surfaceElevated p-6 sm:p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">App Type</div>
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Project Type</div>
                   <div className="text-lg font-medium text-white mt-1">{activeAppType.title}</div>
                   {activeAppType.id === "others" && customAppType && (
                     <div className="text-xs text-cream-300 font-mono mt-0.5">({customAppType})</div>
@@ -855,10 +855,10 @@ function OrderWizardContent() {
                 </div>
 
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Visual Direction</div>
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Colors</div>
                   <div className="flex items-center gap-2 mt-1">
                     {colorMode === "DEV_CHOOSES" ? (
-                      <span className="text-xs text-cream-200 font-mono">Developer Curated Palette</span>
+                      <span className="text-xs text-cream-200 font-mono">Developer Picks For You</span>
                     ) : (
                       <div className="flex items-center gap-1.5">
                         {colors.map((c, i) => (
@@ -875,7 +875,7 @@ function OrderWizardContent() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Specifications</div>
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Project Description</div>
                   <p className="text-xs text-neutral-300 mt-1 leading-relaxed whitespace-pre-wrap">
                     {requirements || "Standard specifications as selected."}
                   </p>
@@ -883,7 +883,7 @@ function OrderWizardContent() {
 
                 {referenceLinks && (
                   <div className="md:col-span-2">
-                    <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">References</div>
+                    <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Reference Links</div>
                     <div className="text-xs text-cream-300 mt-1 font-mono">{referenceLinks}</div>
                   </div>
                 )}
@@ -924,15 +924,15 @@ function OrderWizardContent() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
-                    Account Verification
+                    Account Check
                   </div>
-                  <h3 className="text-base font-medium text-white mt-1">Client Credentials</h3>
+                  <h3 className="text-base font-medium text-white mt-1">Your Account</h3>
                 </div>
 
                 {isUserAuthenticated && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 text-[11px] font-mono text-emerald-300">
                     <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
-                    <span>Verified</span>
+                    <span>Signed In</span>
                   </span>
                 )}
               </div>
@@ -940,7 +940,7 @@ function OrderWizardContent() {
               {!isUserAuthenticated ? (
                 <div className="space-y-4 pt-2">
                   <p className="text-xs text-neutral-400 leading-relaxed">
-                    Please log in with Google to associate this quest with your account so you can track progress and correspond directly with our development team.
+                    Please sign in with Google so your order is saved to your account and you can chat with me directly in your dashboard.
                   </p>
 
                   <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -987,7 +987,7 @@ function OrderWizardContent() {
                     <div className="text-white font-medium">{activeUser?.name}</div>
                     <div className="text-neutral-400 font-mono text-[11px]">{activeUser?.email}</div>
                   </div>
-                  <span className="text-neutral-500 font-mono text-[10px]">Client Suite Ready</span>
+                  <span className="text-neutral-500 font-mono text-[10px]">Ready to Submit</span>
                 </div>
               )}
             </div>
@@ -1016,7 +1016,7 @@ function OrderWizardContent() {
                 disabled={isSubmitting}
                 className="px-10 py-3.5 text-xs uppercase tracking-widest font-semibold"
               >
-                <span>{isSubmitting ? "Submitting Quest..." : "Submit Order Now"}</span>
+                <span>{isSubmitting ? "Submitting Order..." : "Submit Order Now"}</span>
                 <ArrowRight className="h-4 w-4" />
               </MagneticButton>
             </div>
@@ -1040,10 +1040,10 @@ function OrderWizardContent() {
                 Order Registered // {orderSuccessId || "PENDING"}
               </div>
               <h2 className="text-3xl font-light text-white tracking-tight">
-                Your Quest Has Been Placed
+                Your Order Has Been Placed!
               </h2>
               <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-md mx-auto">
-                Our engineering team has received your specifications. You can now access your private orders dashboard to check live progress, review milestones, and chat directly with staff.
+                I have received your order details. You can now visit your dashboard to track progress, check status, and chat with me directly.
               </p>
             </div>
 
@@ -1063,7 +1063,7 @@ function OrderWizardContent() {
                   variant="outline"
                   className="w-full sm:w-auto px-6 py-3.5 text-xs uppercase tracking-widest"
                 >
-                  <span>Explore Catalog</span>
+                  <span>View Services</span>
                 </MagneticButton>
               </Link>
             </div>
@@ -1079,7 +1079,7 @@ export default function OrderWizardPage() {
     <Suspense
       fallback={
         <div className="min-h-[70vh] flex items-center justify-center text-xs font-mono text-neutral-500">
-          Loading quest configurator...
+          Loading order form...
         </div>
       }
     >

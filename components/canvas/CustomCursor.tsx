@@ -342,12 +342,12 @@ export default function CustomCursor() {
         </svg>
       </div>
 
-      {/* Discrete Floating Atelier Toggle for Dragon Kinematics */}
+      {/* Discrete Floating Toggle for Dragon Cursor */}
       <div className="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-2">
         <button
           onClick={toggleDragon}
           type="button"
-          title={dragonEnabled ? "Mute dragon kinematics follower" : "Activate dragon kinematics follower"}
+          title={dragonEnabled ? "Turn off dragon follower" : "Turn on dragon follower"}
           data-clickable="true"
           className="group flex items-center gap-2.5 rounded-full border border-white/[0.12] bg-[#111216]/90 backdrop-blur-md px-3.5 py-1.5 text-[11px] text-neutral-300 hover:border-cream-400/40 hover:text-white transition-all shadow-[0_8px_30px_rgb(0,0,0,0.5)] focus:outline-none"
         >

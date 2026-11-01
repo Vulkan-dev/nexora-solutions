@@ -54,7 +54,7 @@ export default function LoadingScreen() {
             </div>
 
             <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-neutral-500">
-              Initializing Experience
+              Loading Nexora Solutions
             </div>
           </motion.div>
         </motion.div>

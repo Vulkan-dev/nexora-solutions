@@ -17,7 +17,7 @@ export default function Footer() {
               <span className="text-[11px] text-neutral-500 tracking-[0.25em] uppercase ml-2">Solutions</span>
             </Link>
             <p className="text-xs text-neutral-400 leading-relaxed max-w-sm">
-              Engineering high-performance full-stack web applications, scalable SaaS systems, and custom Discord bots with clean architecture, enterprise security, and cinematic UI.
+              Building modern full-stack websites, SaaS apps, and custom Discord bots with clean code, fast performance, and easy management.
             </p>
           </div>
 
@@ -25,18 +25,18 @@ export default function Footer() {
           <div className="md:col-span-3">
             <h4 className="text-[11px] uppercase tracking-widest text-cream-200 mb-4 font-mono">Navigation</h4>
             <ul className="space-y-2.5 text-xs">
-              <li><Link href="/services" className="hover:text-cream-100 transition-colors">Services & Solutions</Link></li>
-              <li><Link href="/order" className="hover:text-cream-100 transition-colors">Order Now (Quest)</Link></li>
+              <li><Link href="/services" className="hover:text-cream-100 transition-colors">Services</Link></li>
+              <li><Link href="/order" className="hover:text-cream-100 transition-colors">Order Now</Link></li>
               <li><Link href="/dashboard" className="hover:text-cream-100 transition-colors">My Orders & Chat</Link></li>
-              <li><Link href="/auth/signin" className="hover:text-cream-100 transition-colors">Client Login</Link></li>
+              <li><Link href="/auth/signin" className="hover:text-cream-100 transition-colors">Sign In</Link></li>
             </ul>
           </div>
 
           {/* Studio Offices */}
           <div className="md:col-span-4">
-            <h4 className="text-[11px] uppercase tracking-widest text-cream-200 mb-4 font-mono">Inquiries & Contact</h4>
+            <h4 className="text-[11px] uppercase tracking-widest text-cream-200 mb-4 font-mono">Contact</h4>
             <p className="text-xs text-neutral-400 leading-relaxed mb-4">
-              Direct developer communication, milestone staging updates, and real-time chat managed through the client suite.
+              Direct chat with the developer, live order progress updates, and fast turnaround.
             </p>
             <div className="text-xs text-neutral-300 font-mono">
               contact@nexorasolutions.com

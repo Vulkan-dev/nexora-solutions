@@ -22,7 +22,7 @@ export default function Navbar() {
   ];
 
   if (session?.user?.role === "ADMIN") {
-    navLinks.push({ href: "/admin", label: "Studio Admin" });
+    navLinks.push({ href: "/admin", label: "Admin Panel" });
   }
 
   return (
@@ -167,14 +167,14 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="rounded-full border border-white/15 px-4 py-2.5 text-center text-xs uppercase tracking-wider text-white"
                   >
-                    Client Ingress
+                    Sign In
                   </Link>
                   <Link
                     href="/order"
                     onClick={() => setMobileMenuOpen(false)}
                     className="rounded-full bg-cream-100 text-neutral-900 px-4 py-2.5 text-center text-xs uppercase tracking-wider font-semibold"
                   >
-                    Commission
+                    Order Now
                   </Link>
                 </div>
               )}

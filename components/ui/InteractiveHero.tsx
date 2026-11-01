@@ -47,10 +47,10 @@ export default function InteractiveHero() {
       <div className="flex items-center justify-between text-[11px] tracking-widest uppercase text-neutral-400 border-b border-white/[0.08] pb-4 mb-12">
         <div className="flex items-center gap-3">
           <span className="h-1.5 w-1.5 rounded-full bg-cream-400" />
-          <span className="font-mono text-neutral-300">Nexora Solutions — Engineering Studio</span>
+          <span className="font-mono text-neutral-300">Nexora Solutions — Web & Bot Development</span>
         </div>
-        <div className="hidden sm:block text-neutral-500 font-mono">Full-Stack Development & Architecture</div>
-        <div className="font-mono text-neutral-500">Vol. XXIV</div>
+        <div className="hidden sm:block text-neutral-500 font-mono">Full-Stack Websites & Custom Systems</div>
+        <div className="font-mono text-cream-300">Available for Work</div>
       </div>
 
       {/* Main Reactive Typography Area */}
@@ -65,16 +65,16 @@ export default function InteractiveHero() {
         className="max-w-4xl py-4 sm:py-8"
       >
         <div className="text-[11px] uppercase tracking-widest text-cream-400 mb-5 font-mono">
-          [ Full-Stack Web Development • SaaS Systems • Discord Bots ]
+          [ Full-Stack Websites • SaaS Platforms • Discord Bots ]
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-white leading-[1.08]">
-          High-Performance <br />
-          <span className="font-serif italic text-cream-200">SaaS, Web Apps</span> & Discord Bots.
+          Fast, Modern <br />
+          <span className="font-serif italic text-cream-200">Websites, SaaS Apps</span> & Discord Bots.
         </h1>
 
         <p className="mt-6 text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed">
-          I build production-grade full-stack web applications, scalable SaaS systems, and custom Discord bots with clean architecture, robust security, and cinematic UI.
+          I build high quality full-stack websites, SaaS apps, and Discord bots. Every project comes with clean code, fast loading speeds, and an easy-to-use dashboard to track your order.
         </p>
 
         {/* Action Magnetic Buttons */}
@@ -88,7 +88,7 @@ export default function InteractiveHero() {
 
           <Link href="/services">
             <MagneticButton variant="outline" className="px-6 py-3.5 text-xs tracking-wider uppercase">
-              <span>Explore Services</span>
+              <span>View Services</span>
             </MagneticButton>
           </Link>
         </div>
@@ -97,19 +97,19 @@ export default function InteractiveHero() {
       {/* Bottom Architectural Credits Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-8 border-t border-white/[0.08] text-xs">
         <div>
-          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Specialty</div>
-          <div className="text-neutral-200 mt-1 font-medium">Full-Stack & SaaS Systems</div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Services</div>
+          <div className="text-neutral-200 mt-1 font-medium">Web Apps & SaaS</div>
         </div>
         <div>
-          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Offerings</div>
-          <div className="text-cream-300 mt-1 font-medium">Web Apps • SaaS • Discord Bots</div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">What I Build</div>
+          <div className="text-cream-300 mt-1 font-medium">Websites • SaaS • Discord Bots</div>
         </div>
         <div>
-          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Core Tech</div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Technology</div>
           <div className="text-neutral-200 mt-1 font-medium">Next.js • Supabase • TypeScript</div>
         </div>
         <div>
-          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Availability</div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Status</div>
           <div className="text-cream-300 mt-1 font-medium">Open for Orders</div>
         </div>
       </div>

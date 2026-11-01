@@ -30,13 +30,13 @@ export default function ServiceDetailPage({
         className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-400 hover:text-white mb-12 transition-colors font-mono"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
-        <span>Return to Disciplines Index</span>
+        <span>Back to All Services</span>
       </Link>
 
       {/* Header */}
       <div className="max-w-4xl mb-20">
         <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-3">
-          Edition Specification // {service.category}
+          Service Details // {service.category}
         </div>
         <h1 className="text-4xl sm:text-6xl font-light text-white tracking-tight leading-tight">
           {service.title}
@@ -50,8 +50,8 @@ export default function ServiceDetailPage({
       <div className="mb-24">
         <div className="mb-10 flex items-center justify-between border-b border-white/[0.08] pb-4">
           <div>
-            <h2 className="text-2xl font-light text-white">Production Tiers</h2>
-            <p className="text-xs text-neutral-400 mt-1">Select the architectural tier corresponding to your project scope.</p>
+            <h2 className="text-2xl font-light text-white">Available Packages</h2>
+            <p className="text-xs text-neutral-400 mt-1">Choose the package that fits what you want to build.</p>
           </div>
         </div>
 
@@ -63,13 +63,13 @@ export default function ServiceDetailPage({
                 key={pkg.id}
                 className={`relative rounded-2xl p-8 flex flex-col justify-between transition-all ${
                   isFeatured
-                    ? "border border-white/30 bg-surfaceElevated shadow-atelier"
+                    ? "border border-white/30 bg-surfaceElevated shadow-glow"
                     : "border border-white/[0.08] bg-surface"
                 }`}
               >
                 {isFeatured && (
                   <div className="absolute -top-3 left-8 rounded-full bg-cream-100 text-neutral-900 px-3 py-0.5 text-[9px] font-bold uppercase tracking-widest">
-                    Signature Choice
+                    Most Popular
                   </div>
                 )}
 
@@ -81,19 +81,19 @@ export default function ServiceDetailPage({
 
                   <div className="mb-6 flex items-baseline gap-2">
                     <span className="text-xl font-light text-cream-200 font-mono">
-                      Custom Scope
+                      Custom Quote
                     </span>
                     <span className="text-[11px] text-neutral-500 uppercase tracking-wider font-mono">// Tailored Delivery</span>
                   </div>
 
                   <div className="mb-8 flex items-center gap-2 rounded-xl bg-white/[0.03] px-3.5 py-2 text-xs text-neutral-300 border border-white/[0.05]">
                     <Clock className="h-3.5 w-3.5 text-cream-400" />
-                    <span>Estimated Completion: {pkg.deliveryDays} business days</span>
+                    <span>Estimated Delivery: {pkg.deliveryDays} business days</span>
                   </div>
 
                   <div className="space-y-3 mb-10">
                     <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
-                      Scope Included:
+                      What&apos;s Included:
                     </div>
                     {pkg.features.map((feature, fIdx) => (
                       <div key={fIdx} className="flex items-start gap-2.5 text-xs text-neutral-300">
@@ -122,9 +122,9 @@ export default function ServiceDetailPage({
       {/* Addons Section */}
       {service.addons && service.addons.length > 0 && (
         <div className="rounded-2xl border border-white/[0.08] bg-surface p-8 sm:p-10">
-          <h3 className="text-xl font-normal text-white mb-2">Bespoke Enhancements</h3>
+          <h3 className="text-xl font-normal text-white mb-2">Available Add-Ons</h3>
           <p className="text-xs text-neutral-400 mb-8 max-w-lg">
-            Optional modular extensions that can be attached during the commissioning wizard.
+            Optional extra features you can choose during your order.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -135,7 +135,7 @@ export default function ServiceDetailPage({
               >
                 <div>
                   <div className="text-sm font-medium text-white">{addon.name}</div>
-                  <div className="text-[11px] text-neutral-500 mt-0.5">Bespoke Enhancement</div>
+                  <div className="text-[11px] text-neutral-500 mt-0.5">Extra Feature</div>
                 </div>
                 <div className="text-xs font-mono text-cream-200">
                   Included on Request

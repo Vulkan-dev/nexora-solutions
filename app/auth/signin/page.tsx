@@ -46,11 +46,11 @@ function SignInContent() {
       <div className="relative w-full max-w-md rounded-2xl border border-white/[0.08] bg-surface p-8 sm:p-10 space-y-8">
         <div className="text-center">
           <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-            Client Ingress // Verification
+            Sign In // Nexora Solutions
           </div>
-          <h1 className="text-2xl font-light text-white tracking-tight">Access Your Suite</h1>
+          <h1 className="text-2xl font-light text-white tracking-tight">Sign In to Your Account</h1>
           <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
-            Sign in with Google to commission works, review active progress, and correspond directly with our studio.
+            Sign in with Google to place orders, check project status, and chat with me directly.
           </p>
         </div>
 
@@ -131,7 +131,7 @@ export default function SignInPage() {
     <Suspense
       fallback={
         <div className="min-h-[80vh] flex items-center justify-center text-xs text-neutral-400 font-mono uppercase tracking-widest">
-          Loading Ingress...
+          Loading Sign In...
         </div>
       }
     >

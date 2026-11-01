@@ -98,11 +98,11 @@ export default function AdminPanelPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/[0.08] gap-4">
         <div>
           <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-            Operations Console // Nexora Solutions Management
+            Admin Panel // Nexora Solutions Management
           </div>
-          <h1 className="text-3xl font-light text-white">Studio Management Hub</h1>
+          <h1 className="text-3xl font-light text-white">Admin Dashboard</h1>
           <p className="text-xs text-neutral-400 mt-1">
-            Review incoming commissions, orchestrate production state transitions, and audit volume.
+            Manage incoming orders, update project statuses, and chat with customers.
           </p>
         </div>
 
@@ -112,7 +112,7 @@ export default function AdminPanelPage() {
             className="flex items-center gap-2 rounded-full border border-white/10 bg-surface px-4 py-2 text-xs text-neutral-300 hover:text-white transition-colors uppercase tracking-wider font-mono text-[11px]"
           >
             <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
-            <span>Sync</span>
+            <span>Refresh</span>
           </button>
         </div>
       </div>
@@ -120,13 +120,13 @@ export default function AdminPanelPage() {
       {/* KPI Row */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="rounded-xl border border-white/[0.08] bg-surface p-6">
-          <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-1">Contract Volume</div>
+          <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-1">Total Revenue</div>
           <div className="text-2xl font-light text-white font-serif">{formatCurrency(totalRevenue)}</div>
-          <div className="text-[11px] text-cream-300 mt-2 font-mono">Total committed value</div>
+          <div className="text-[11px] text-cream-300 mt-2 font-mono">All-time volume</div>
         </div>
 
         <div className="rounded-xl border border-white/[0.08] bg-surface p-6">
-          <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-1">Active Works</div>
+          <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-1">Active Orders</div>
           <div className="text-2xl font-light text-white font-serif">{activeOrders}</div>
           <div className="text-[11px] text-neutral-400 mt-2 font-mono">In production cycle</div>
         </div>
@@ -181,11 +181,11 @@ export default function AdminPanelPage() {
         <table className="w-full text-left text-xs">
           <thead className="border-b border-white/[0.06] bg-surfaceElevated text-neutral-500 uppercase tracking-widest text-[9px] font-mono">
             <tr>
-              <th className="px-6 py-4">Commission ID</th>
-              <th className="px-6 py-4">Discipline & Tier</th>
-              <th className="px-6 py-4">Production State</th>
-              <th className="px-6 py-4">Settlement</th>
-              <th className="px-6 py-4">Investment</th>
+              <th className="px-6 py-4">Order ID</th>
+              <th className="px-6 py-4">Service & Package</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4">Payment</th>
+              <th className="px-6 py-4">Price</th>
               <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
@@ -233,13 +233,13 @@ export default function AdminPanelPage() {
                     {ord.status === "PENDING" && (
                       <>
                         <button
-                          onClick={() => handleUpdateStatus(ord.id, "ACCEPTED", "Commission accepted into studio queue.")}
+                          onClick={() => handleUpdateStatus(ord.id, "ACCEPTED", "Order accepted into development queue.")}
                           className="rounded-full border border-white/20 bg-surfaceElevated px-2.5 py-1 text-[10px] text-cream-200 hover:border-white/40 font-mono"
                         >
                           Accept
                         </button>
                         <button
-                          onClick={() => handleUpdateStatus(ord.id, "CANCELLED", "Commission declined.")}
+                          onClick={() => handleUpdateStatus(ord.id, "CANCELLED", "Order declined.")}
                           className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] text-neutral-400 hover:text-white font-mono"
                         >
                           Decline

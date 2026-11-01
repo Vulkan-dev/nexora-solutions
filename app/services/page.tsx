@@ -33,13 +33,13 @@ export default function ServicesPage() {
       {/* Header */}
       <div className="max-w-3xl mb-16">
         <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-3">
-          Nexora Solutions // Capabilities
+          Nexora Solutions // Services
         </div>
         <h1 className="text-4xl sm:text-5xl font-light text-white tracking-tight leading-tight">
-          Software & System Disciplines
+          What I Build
         </h1>
         <p className="mt-4 text-sm text-neutral-400 leading-relaxed max-w-xl">
-          Every project includes dedicated full-stack architecture, clean codebases, private milestone tracking, and direct developer correspondence.
+          Every project comes with clean code, fast loading speeds, simple order tracking, and direct chat with me while I build your app.
         </p>
       </div>
 
@@ -69,7 +69,7 @@ export default function ServicesPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search disciplines..."
+            placeholder="Search services..."
             className="w-full rounded-full border border-white/[0.08] bg-surface py-2 pl-9 pr-4 text-xs text-white placeholder-neutral-500 focus:border-white/30 focus:outline-none"
           />
         </div>
@@ -85,7 +85,7 @@ export default function ServicesPage() {
                   <span>0{idx + 1} // {service.category}</span>
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3 text-cream-400" />
-                    {service.packages[0]?.deliveryDays}d
+                    {service.packages[0]?.deliveryDays}d delivery
                   </span>
                 </div>
 
@@ -103,7 +103,7 @@ export default function ServicesPage() {
               {/* Package Tiers Preview (Equally spaced and aligned) */}
               <div className="pt-4 border-t border-white/[0.06] space-y-2.5 mt-auto">
                 <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
-                  Production Tiers:
+                  Available Packages:
                 </div>
                 {service.packages.map((pkg) => (
                   <div
@@ -112,10 +112,10 @@ export default function ServicesPage() {
                   >
                     <div>
                       <div className="font-medium text-neutral-200">{pkg.name}</div>
-                      <div className="text-[10px] text-neutral-500">{pkg.features.length} deliverables included</div>
+                      <div className="text-[10px] text-neutral-500">{pkg.features.length} features included</div>
                     </div>
                     <div className="font-mono text-[10px] uppercase tracking-wider text-cream-300">
-                      Tiered Scope
+                      Included
                     </div>
                   </div>
                 ))}
@@ -125,7 +125,7 @@ export default function ServicesPage() {
             {/* Pinned Bottom Action Bar (Symmetrically aligned across all cards) */}
             <div className="mt-8 pt-4 border-t border-white/[0.08] flex items-center justify-between">
               <div>
-                <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Estimate</div>
+                <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Pricing</div>
                 <div className="text-sm font-medium text-cream-200 font-mono">
                   Custom Quote
                 </div>
@@ -134,7 +134,7 @@ export default function ServicesPage() {
               <div className="flex items-center gap-2">
                 <Link href={`/services/${service.slug}`}>
                   <MagneticButton variant="outline" className="px-3.5 py-1.5 text-xs uppercase tracking-wider">
-                    <span>Inspect</span>
+                    <span>Details</span>
                   </MagneticButton>
                 </Link>
                 <Link href={`/order?serviceId=${service.id}`}>

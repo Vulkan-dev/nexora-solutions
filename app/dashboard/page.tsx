@@ -145,11 +145,11 @@ export default function CustomerDashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/[0.08] gap-4">
         <div>
           <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-            Client Portal // Suite 01
+            Customer Dashboard
           </div>
-          <h1 className="text-3xl font-light text-white">Private Production Suite</h1>
+          <h1 className="text-3xl font-light text-white">My Orders & Messages</h1>
           <p className="text-xs text-neutral-400 mt-1">
-            Track active commissions, inspect live staging milestones, and correspond directly with our lead architects.
+            Track your orders, check development progress, and chat directly with me.
           </p>
         </div>
 
@@ -159,12 +159,12 @@ export default function CustomerDashboardPage() {
             className="flex items-center gap-2 rounded-full border border-white/10 bg-surface px-4 py-2 text-xs text-neutral-300 hover:text-white transition-colors uppercase tracking-wider font-mono text-[11px]"
           >
             <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
-            <span>Sync</span>
+            <span>Refresh</span>
           </button>
 
           <Link href="/order">
             <MagneticButton variant="primary" className="px-5 py-2 text-xs uppercase tracking-wider font-semibold">
-              <span>Commission New Work</span>
+              <span>Place New Order</span>
             </MagneticButton>
           </Link>
         </div>
@@ -175,20 +175,20 @@ export default function CustomerDashboardPage() {
         {/* Left Column: Orders List (4 cols) */}
         <div className="lg:col-span-4 space-y-4">
           <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-2">
-            Commissions List ({orders.length})
+            My Orders ({orders.length})
           </div>
 
           {loading && orders.length === 0 ? (
             <div className="rounded-xl border border-white/[0.08] bg-surface p-8 text-center text-xs text-neutral-500 font-mono">
-              Loading client records...
+              Loading your orders...
             </div>
           ) : orders.length === 0 ? (
             <div className="rounded-xl border border-white/[0.08] bg-surface p-8 text-center space-y-4">
               <Layers className="mx-auto h-6 w-6 text-neutral-600" />
-              <div className="text-xs text-neutral-400">No active commissions recorded.</div>
+              <div className="text-xs text-neutral-400">No orders found yet.</div>
               <Link href="/order">
                 <MagneticButton variant="primary" className="px-4 py-2 text-xs uppercase tracking-wider">
-                  <span>Commission First Piece</span>
+                  <span>Place Your First Order</span>
                 </MagneticButton>
               </Link>
             </div>
@@ -334,7 +334,7 @@ export default function CustomerDashboardPage() {
               {selectedOrder.requirements && (
                 <div className="rounded-xl border border-white/[0.04] bg-surfaceElevated p-4">
                   <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-1">
-                    Commission Scope:
+                    Order Details:
                   </div>
                   <p className="text-xs text-neutral-300 leading-relaxed whitespace-pre-wrap">
                     {selectedOrder.requirements}
@@ -360,7 +360,7 @@ export default function CustomerDashboardPage() {
               <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
                 <div className="flex items-center gap-2">
                   <MessageSquare className="h-4 w-4 text-cream-300" />
-                  <h3 className="text-sm font-medium text-white">Direct Chat with Developer & Staff</h3>
+                  <h3 className="text-sm font-medium text-white">Direct Chat with Developer</h3>
                 </div>
                 <button
                   type="button"
@@ -369,7 +369,7 @@ export default function CustomerDashboardPage() {
                   className="rounded-full border border-cream-400/30 bg-cream-400/10 px-3 py-1 text-[11px] font-mono text-cream-300 hover:bg-cream-400/20 transition-all flex items-center gap-1.5"
                 >
                   <Sparkles className="h-3 w-3 text-cream-400" />
-                  <span>Request Staff Chat</span>
+                  <span>Request Chat</span>
                 </button>
               </div>
 
@@ -383,7 +383,7 @@ export default function CustomerDashboardPage() {
                     >
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-medium text-cream-200">
-                          {upd.author?.name || upd.author || "Lead Architect"}
+                          {upd.author?.name || upd.author || "Developer"}
                         </span>
                         <span className="text-[10px] font-mono text-neutral-500">
                           {formatDate(upd.createdAt)}
@@ -394,7 +394,7 @@ export default function CustomerDashboardPage() {
                   ))
                 ) : (
                   <div className="py-8 text-center text-xs text-neutral-500 font-mono">
-                    No correspondence dispatched yet.
+                    No messages yet. Send a message below to start chatting!
                   </div>
                 )}
               </div>
@@ -406,7 +406,7 @@ export default function CustomerDashboardPage() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                  placeholder="Send an instruction to the studio team..."
+                  placeholder="Type your message here..."
                   className="flex-1 rounded-full border border-white/[0.08] bg-surfaceElevated px-4 py-2.5 text-xs text-white placeholder-neutral-500 focus:border-white/30 focus:outline-none"
                 />
                 <button
@@ -421,7 +421,7 @@ export default function CustomerDashboardPage() {
           </div>
         ) : (
           <div className="lg:col-span-8 flex items-center justify-center rounded-2xl border border-white/[0.08] bg-surface p-16 text-center text-xs text-neutral-500 font-mono">
-            Select a commission record to review active progress.
+            Select an order from the list to see details and chat.
           </div>
         )}
       </div>
@@ -432,7 +432,7 @@ export default function CustomerDashboardPage() {
           <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-surfaceElevated p-6 space-y-4">
             <h3 className="text-base font-normal text-white">Request Revisions</h3>
             <p className="text-xs text-neutral-400">
-              Please detail the aesthetic or structural adjustments requested.
+              Please describe the changes or fixes you would like.
             </p>
             <textarea
               rows={4}

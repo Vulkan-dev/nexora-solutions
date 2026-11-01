@@ -11,7 +11,7 @@ import LoadingScreen from "@/components/ui/LoadingScreen";
 export const metadata: Metadata = {
   title: "Nexora Solutions | Full-Stack Web, SaaS & Discord Systems",
   description:
-    "Bespoke engineering for high-performance full-stack web applications, scalable SaaS systems, and custom Discord bots with cinematic visual craft.",
+    "Modern full-stack web applications, scalable SaaS platforms, and custom Discord bots built with clean code and high performance.",
 };
 
 export default function RootLayout({
