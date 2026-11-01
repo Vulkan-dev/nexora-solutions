@@ -6,7 +6,6 @@ import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || "dev-super-secret-key-for-local-testing-min-32-chars-long",
-  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -42,16 +41,18 @@ export const authOptions: NextAuthOptions = {
           role,
         };
 
-        // Non-blocking attempt to persist in DB (will never block login if DB is offline)
-        prisma.user
-          .upsert({
-            where: { email },
-            update: { name, role },
-            create: { id: simulatedUser.id, email, name, role },
-          })
-          .catch(() => {
-            // DB connection offline/pooling error - safely ignored for simulation
-          });
+        // In production, sync simulated user to PostgreSQL; in local dev, return immediately
+        if (process.env.NODE_ENV === "production") {
+          prisma.user
+            .upsert({
+              where: { email },
+              update: { name, role },
+              create: { id: simulatedUser.id, email, name, role },
+            })
+            .catch(() => {
+              // DB connection offline/pooling error - safely ignored
+            });
+        }
 
         return simulatedUser as any;
       },
