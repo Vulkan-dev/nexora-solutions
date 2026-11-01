@@ -12,6 +12,14 @@ export const metadata: Metadata = {
   title: "Nexora Solutions | Full-Stack Web, SaaS & Discord Systems",
   description:
     "Modern full-stack web applications, scalable SaaS platforms, and custom Discord bots built with clean code and high performance.",
+  icons: {
+    icon: [
+      { url: "/tab-icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    shortcut: "/tab-icon.png",
+    apple: "/tab-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -21,6 +29,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="icon" href="/tab-icon.png" type="image/png" sizes="any" />
+        <link rel="shortcut icon" href="/tab-icon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/tab-icon.png" />
+      </head>
       <body className="min-h-screen bg-background text-neutral-100 antialiased flex flex-col selection:bg-cream-400/30 selection:text-white">
         <SessionProviderWrapper>
           <SmoothScroll>

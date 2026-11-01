@@ -10,11 +10,17 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           {/* Nexora Solutions Brand Identity */}
           <div className="md:col-span-5 space-y-4">
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-flex items-center gap-3 group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/64x64.png"
+                alt="Nexora Solutions"
+                className="h-7 w-7 object-contain flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity"
+              />
               <span className="text-base font-semibold tracking-[0.25em] uppercase text-cream-100">
                 NEXORA
               </span>
-              <span className="text-[11px] text-neutral-500 tracking-[0.25em] uppercase ml-2">Solutions</span>
+              <span className="text-[11px] text-neutral-500 tracking-[0.25em] uppercase">Solutions</span>
             </Link>
             <p className="text-xs text-neutral-400 leading-relaxed max-w-sm">
               Building modern full-stack websites, SaaS apps, and custom Discord bots with clean code, fast performance, and easy management.

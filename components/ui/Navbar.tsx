@@ -29,11 +29,19 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b border-white/[0.07] bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-20 w-full max-w-7xl 2xl:max-w-[1536px] items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Brand Logo */}
-        <Link href="/" className="group flex items-baseline gap-2 text-white">
-          <span className="text-sm font-semibold tracking-[0.25em] uppercase text-cream-100">
-            NEXORA
-          </span>
-          <span className="text-[10px] text-neutral-500 tracking-[0.25em] uppercase">Solutions</span>
+        <Link href="/" className="group flex items-center gap-3 text-white transition-opacity hover:opacity-90">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/64x64.png"
+            alt="Nexora Solutions"
+            className="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
+            <span className="text-sm font-semibold tracking-[0.22em] uppercase text-cream-100">
+              NEXORA
+            </span>
+            <span className="text-[10px] text-neutral-500 tracking-[0.22em] uppercase">Solutions</span>
+          </div>
         </Link>
 
         {/* Center Minimal Navigation */}

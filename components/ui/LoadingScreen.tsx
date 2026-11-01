@@ -51,11 +51,27 @@ export default function LoadingScreen() {
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="relative z-10 flex flex-col items-center gap-6"
+            className="relative z-10 flex flex-col items-center gap-5"
           >
+            {/* Nexora Updated 64x64 Logo (Uncropped, crisp graphic) */}
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="relative flex items-center justify-center"
+            >
+              <div className="absolute inset-0 rounded-full bg-cream-400/20 blur-xl" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/64x64.png"
+                alt="Nexora Solutions"
+                className="relative h-14 w-14 sm:h-16 sm:w-16 object-contain drop-shadow-[0_0_24px_rgba(197,168,128,0.4)]"
+              />
+            </motion.div>
+
             {/* Nexora Brand Monogram */}
             <div className="flex items-center gap-2.5 text-center">
-              <span className="text-2xl font-semibold tracking-[0.25em] uppercase text-cream-100">
+              <span className="text-xl sm:text-2xl font-semibold tracking-[0.25em] uppercase text-cream-100">
                 NEXORA
               </span>
               <span className="text-xs text-neutral-500 tracking-[0.3em] uppercase">
