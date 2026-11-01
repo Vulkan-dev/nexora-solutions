@@ -141,7 +141,7 @@ export default function CustomerDashboardPage() {
   const currentStageIndex = STAGES.findIndex((s) => s.key === selectedOrder?.status);
 
   return (
-    <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 sm:py-12 lg:py-16">
+    <div className="w-full max-w-[95vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 sm:py-12 lg:py-16">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-8 border-b border-white/[0.08] gap-4">
         <div>
@@ -181,12 +181,12 @@ export default function CustomerDashboardPage() {
         </div>
       ) : orders.length === 0 ? (
         /* Empty State: Unified, responsive, generous spacing and quick action cards */
-        <div className="mt-10 rounded-3xl border border-white/[0.08] bg-surface p-8 sm:p-14 lg:p-16 text-center space-y-6 max-w-3xl mx-auto shadow-sm">
+        <div className="mt-10 rounded-3xl border border-white/[0.08] bg-surface p-8 sm:p-14 lg:p-16 text-center space-y-6 w-full max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl mx-auto shadow-sm">
           <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl border border-cream-400/30 bg-cream-400/10 text-cream-300 mx-auto shadow-glow">
             <Layers className="h-8 w-8 sm:h-10 sm:w-10 stroke-[1.8]" />
           </div>
 
-          <div className="space-y-2.5 max-w-md mx-auto">
+          <div className="space-y-2.5 max-w-xl mx-auto">
             <h2 className="text-xl sm:text-2xl font-light text-white tracking-tight">
               No Orders Found Yet
             </h2>

@@ -40,7 +40,7 @@ export default function InteractiveHero() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full max-w-7xl 2xl:max-w-[1536px] mx-auto flex flex-col justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 sm:pt-10 pb-12 sm:pb-16"
+      className="relative w-full max-w-[95vw] mx-auto flex flex-col justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 sm:pt-10 pb-12 sm:pb-16"
       style={{ perspective: 1200 }}
     >
       {/* Top Editorial Index Tag */}
@@ -62,7 +62,7 @@ export default function InteractiveHero() {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="max-w-4xl 2xl:max-w-5xl py-4 sm:py-8"
+        className="w-full max-w-5xl 2xl:max-w-6xl 3xl:max-w-7xl py-4 sm:py-8"
       >
         <div className="text-[11px] uppercase tracking-widest text-cream-400 mb-5 font-mono">
           [ Full-Stack Websites • SaaS Platforms • Discord Bots ]
@@ -73,7 +73,7 @@ export default function InteractiveHero() {
           <span className="font-serif italic text-cream-200">Websites, SaaS Apps</span> & Discord Bots.
         </h1>
 
-        <p className="mt-6 text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed">
+        <p className="mt-6 text-sm sm:text-base text-neutral-300 max-w-3xl 2xl:max-w-4xl leading-relaxed">
           I build high quality full-stack websites, SaaS apps, and Discord bots. Every project comes with clean code, fast loading speeds, and an easy-to-use dashboard to track your order.
         </p>
 

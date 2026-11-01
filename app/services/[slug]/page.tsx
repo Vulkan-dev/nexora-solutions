@@ -23,7 +23,7 @@ export default function ServiceDetailPage({
   }
 
   return (
-    <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16 lg:py-20">
+    <div className="w-full max-w-[95vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16 lg:py-20">
       {/* Back button */}
       <Link
         href="/services"
@@ -34,14 +34,14 @@ export default function ServiceDetailPage({
       </Link>
 
       {/* Header */}
-      <div className="max-w-4xl mb-20">
+      <div className="max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl mb-16 sm:mb-20">
         <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-3">
           Service Details // {service.category}
         </div>
         <h1 className="text-4xl sm:text-6xl font-light text-white tracking-tight leading-tight">
           {service.title}
         </h1>
-        <p className="mt-6 text-base sm:text-lg text-neutral-300 leading-relaxed max-w-3xl">
+        <p className="mt-6 text-base sm:text-lg text-neutral-300 leading-relaxed max-w-3xl 2xl:max-w-4xl">
           {service.description}
         </p>
       </div>

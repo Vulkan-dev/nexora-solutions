@@ -19,7 +19,7 @@ export default function HomePage() {
       <InteractiveHero />
 
       {/* 2. Architectural Manifesto (Word-by-word reveal) */}
-      <section className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <section className="w-full max-w-[95vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-cream-400 font-mono mb-6">
           <span className="h-[1px] w-8 bg-cream-400" />
           <span>Core Capabilities</span>
@@ -27,7 +27,7 @@ export default function HomePage() {
 
         <TextReveal
           text="I engineer production-ready full stack web applications, scalable SaaS systems, and custom Discord bots. Fast turnaround, clean maintainable code, resilient databases, and cinematic user interfaces."
-          className="text-2xl sm:text-4xl md:text-5xl font-light tracking-tight text-cream-100 leading-[1.25]"
+          className="text-2xl sm:text-4xl md:text-5xl 3xl:text-6xl font-light tracking-tight text-cream-100 leading-[1.25]"
           wordClassName="hover:text-cream-400 transition-colors"
         />
 
@@ -48,7 +48,7 @@ export default function HomePage() {
       </section>
 
       {/* 3. Featured Services Section */}
-      <section className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <section className="w-full max-w-[95vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4 border-b border-white/[0.08] pb-6">
           <div>
             <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-2">
@@ -186,7 +186,7 @@ export default function HomePage() {
       </section>
 
       {/* 4. Step-by-Step Development Process */}
-      <section className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <section className="w-full max-w-[95vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="border-t border-white/[0.08] pt-16">
           <div className="max-w-xl mb-12">
             <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-2">
@@ -231,7 +231,7 @@ export default function HomePage() {
       </section>
 
       {/* 5. Minimalist Invitation CTA */}
-      <section className="w-full max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <section className="w-full max-w-[92vw] 2xl:max-w-[88vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="rounded-3xl border border-white/[0.12] bg-surfaceElevated p-10 sm:p-16 text-center">
           <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-4">
             Start Your Project

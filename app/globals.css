@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  /* Fluid responsive scaling across all screen sizes and browser scales (20% to 500%) */
+  font-size: clamp(13px, 0.78vw + 3px, 48px);
+  -webkit-text-size-adjust: 100%;
+}
+
 :root {
   --background: #090a0d;
   --foreground: #f5f2eb;

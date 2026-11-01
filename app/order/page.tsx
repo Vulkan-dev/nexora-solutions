@@ -263,7 +263,7 @@ function OrderWizardContent() {
   };
 
   return (
-    <div className="w-full max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16">
+    <div className="w-full max-w-[95vw] 2xl:max-w-[90vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16">
       {/* Wizard Header & Progress */}
       <div className="mb-12 text-center max-w-2xl mx-auto">
         <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
@@ -331,7 +331,7 @@ function OrderWizardContent() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {APP_TYPES.map((type) => {
                 const Icon = type.icon;
                 const isSelected = selectedAppTypeId === type.id;

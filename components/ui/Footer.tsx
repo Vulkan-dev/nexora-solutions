@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="w-full border-t border-white/[0.08] bg-background/95 py-12 sm:py-16 text-neutral-400">
-      <div className="mx-auto w-full max-w-7xl 2xl:max-w-[1536px] px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <div className="mx-auto w-full max-w-[95vw] px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           {/* Nexora Solutions Brand Identity */}
           <div className="md:col-span-5 space-y-4">

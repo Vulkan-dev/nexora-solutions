@@ -27,7 +27,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/[0.07] bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-20 w-full max-w-7xl 2xl:max-w-[1536px] items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <div className="mx-auto flex h-20 w-full max-w-[95vw] items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Brand Logo */}
         <Link href="/" className="group flex items-center gap-3 text-white transition-opacity hover:opacity-90">
           {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -34,7 +34,7 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/tab-icon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/tab-icon.png" />
       </head>
-      <body className="min-h-screen bg-background text-neutral-100 antialiased flex flex-col selection:bg-cream-400/30 selection:text-white">
+      <body className="min-h-screen bg-background text-neutral-100 antialiased flex flex-col selection:bg-cream-400/30 selection:text-white w-full overflow-x-hidden">
         <SessionProviderWrapper>
           <SmoothScroll>
             {/* Custom Cinematic Loading Screen */}

@@ -29,16 +29,16 @@ export default function ServicesPage() {
   });
 
   return (
-    <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16 lg:py-20">
+    <div className="w-full max-w-[95vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16 lg:py-20">
       {/* Header */}
-      <div className="max-w-3xl mb-16">
+      <div className="max-w-4xl 2xl:max-w-5xl mb-16">
         <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-3">
           Nexora Solutions // Services
         </div>
         <h1 className="text-4xl sm:text-5xl font-light text-white tracking-tight leading-tight">
           What I Build
         </h1>
-        <p className="mt-4 text-sm text-neutral-400 leading-relaxed max-w-xl">
+        <p className="mt-4 text-sm text-neutral-400 leading-relaxed max-w-2xl 2xl:max-w-3xl">
           Every project comes with clean code, fast loading speeds, simple order tracking, and direct chat with me while I build your app.
         </p>
       </div>
