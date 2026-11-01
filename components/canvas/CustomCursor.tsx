@@ -1,15 +1,29 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Sparkles, Eye, EyeOff } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import {
+  Eye,
+  EyeOff,
+  Copy,
+  Check,
+  ArrowUp,
+  Layers,
+  MessageSquare,
+  Compass,
+} from "lucide-react";
 
 export default function CustomCursor() {
+  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
 
   const [isMobile, setIsMobile] = useState<boolean>(true);
   const [dragonEnabled, setDragonEnabled] = useState<boolean>(true);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
 
   // Check mobile and load persistent toggle preference
   useEffect(() => {
@@ -40,6 +54,64 @@ export default function CustomCursor() {
     try {
       localStorage.setItem("nexora_dragon_enabled", String(nextState));
     } catch (_) {}
+  };
+
+  // Custom Right-Click Context Menu Listener
+  useEffect(() => {
+    if (typeof window === "undefined" || isMobile) return;
+
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      // Keep menu inside viewport boundaries
+      const menuWidth = 240;
+      const menuHeight = 280;
+      const x = Math.min(e.clientX, window.innerWidth - menuWidth - 12);
+      const y = Math.min(e.clientY, window.innerHeight - menuHeight - 12);
+      setContextMenu({ x, y });
+    };
+
+    const handleCloseMenu = () => {
+      setContextMenu(null);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setContextMenu(null);
+    };
+
+    window.addEventListener("contextmenu", handleContextMenu);
+    window.addEventListener("click", handleCloseMenu);
+    window.addEventListener("scroll", handleCloseMenu, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("contextmenu", handleContextMenu);
+      window.removeEventListener("click", handleCloseMenu);
+      window.removeEventListener("scroll", handleCloseMenu);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMobile]);
+
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(window.location.href);
+      setCopiedLink(true);
+      setTimeout(() => {
+        setCopiedLink(false);
+        setContextMenu(null);
+      }, 900);
+    }
+  };
+
+  const handleNavigate = (path: string) => {
+    setContextMenu(null);
+    router.push(path);
+  };
+
+  const handleScrollTop = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setContextMenu(null);
   };
 
   useEffect(() => {
@@ -342,32 +414,122 @@ export default function CustomCursor() {
         </svg>
       </div>
 
-      {/* Discrete Floating Toggle for Dragon Cursor */}
-      <div className="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-2">
-        <button
-          onClick={toggleDragon}
-          type="button"
-          title={dragonEnabled ? "Turn off dragon follower" : "Turn on dragon follower"}
-          data-clickable="true"
-          className="group flex items-center gap-2.5 rounded-full border border-white/[0.12] bg-[#111216]/90 backdrop-blur-md px-3.5 py-1.5 text-[11px] text-neutral-300 hover:border-cream-400/40 hover:text-white transition-all shadow-[0_8px_30px_rgb(0,0,0,0.5)] focus:outline-none"
-        >
-          <span
-            className={`h-2 w-2 rounded-full transition-all duration-300 ${
-              dragonEnabled
-                ? "bg-cream-300 shadow-[0_0_8px_rgba(223,213,198,0.9)] scale-100"
-                : "bg-neutral-600 scale-75"
-            }`}
-          />
-          <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 group-hover:text-cream-200">
-            Dragon {dragonEnabled ? "ON" : "OFF"}
-          </span>
-          {dragonEnabled ? (
-            <Eye className="h-3 w-3 text-cream-300 opacity-70 group-hover:opacity-100" />
-          ) : (
-            <EyeOff className="h-3 w-3 text-neutral-500 opacity-70 group-hover:opacity-100" />
-          )}
-        </button>
-      </div>
+      {/* Custom Right-Click Context Menu */}
+      <AnimatePresence>
+        {contextMenu && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -4 }}
+            transition={{ duration: 0.12, ease: "easeOut" }}
+            style={{ left: contextMenu.x, top: contextMenu.y }}
+            className="fixed z-50 w-60 rounded-2xl border border-white/15 bg-[#0e0f14]/95 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-xl select-none"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Menu Header */}
+            <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.08] mb-1.5">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400">
+                Quick Menu
+              </span>
+              <span className="text-[9px] uppercase font-mono text-cream-300">
+                Nexora
+              </span>
+            </div>
+
+            {/* Dragon Follower Toggle Option */}
+            <button
+              type="button"
+              data-clickable="true"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleDragon();
+              }}
+              className="w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs text-neutral-200 hover:bg-white/[0.08] hover:text-white transition-all group"
+            >
+              <div className="flex items-center gap-2.5">
+                {dragonEnabled ? (
+                  <Eye className="h-4 w-4 text-cream-300" />
+                ) : (
+                  <EyeOff className="h-4 w-4 text-neutral-500" />
+                )}
+                <span>Dragon Follower</span>
+              </div>
+              <span
+                className={`rounded-full px-2 py-0.5 text-[9px] font-mono uppercase tracking-wider transition-all ${
+                  dragonEnabled
+                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold"
+                    : "bg-neutral-800 text-neutral-500 border border-neutral-700"
+                }`}
+              >
+                {dragonEnabled ? "ON" : "OFF"}
+              </span>
+            </button>
+
+            <div className="my-1.5 h-[1px] bg-white/[0.06]" />
+
+            {/* Quick Navigation Items */}
+            <button
+              type="button"
+              data-clickable="true"
+              onClick={() => handleNavigate("/order")}
+              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+            >
+              <Layers className="h-4 w-4 text-cream-400" />
+              <span>Start New Order</span>
+            </button>
+
+            <button
+              type="button"
+              data-clickable="true"
+              onClick={() => handleNavigate("/dashboard")}
+              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+            >
+              <MessageSquare className="h-4 w-4 text-cream-400" />
+              <span>My Orders & Chat</span>
+            </button>
+
+            <button
+              type="button"
+              data-clickable="true"
+              onClick={() => handleNavigate("/services")}
+              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+            >
+              <Compass className="h-4 w-4 text-cream-400" />
+              <span>View Services</span>
+            </button>
+
+            <div className="my-1.5 h-[1px] bg-white/[0.06]" />
+
+            {/* Utility Options */}
+            <button
+              type="button"
+              data-clickable="true"
+              onClick={handleCopyLink}
+              className="w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+            >
+              <div className="flex items-center gap-2.5">
+                {copiedLink ? (
+                  <Check className="h-4 w-4 text-emerald-400" />
+                ) : (
+                  <Copy className="h-4 w-4 text-neutral-400" />
+                )}
+                <span>{copiedLink ? "Link Copied!" : "Copy Page Link"}</span>
+              </div>
+              <span className="text-[10px] font-mono text-neutral-500">URL</span>
+            </button>
+
+            <button
+              type="button"
+              data-clickable="true"
+              onClick={handleScrollTop}
+              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+            >
+              <ArrowUp className="h-4 w-4 text-neutral-400" />
+              <span>Scroll to Top</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
