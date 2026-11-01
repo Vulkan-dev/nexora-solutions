@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Layers,
   Sparkles,
+  ArrowRight,
 } from "lucide-react";
 
 const STAGES = [
@@ -140,14 +141,16 @@ export default function CustomerDashboardPage() {
   const currentStageIndex = STAGES.findIndex((s) => s.key === selectedOrder?.status);
 
   return (
-    <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 py-16">
+    <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 sm:py-12 lg:py-16">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/[0.08] gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-8 border-b border-white/[0.08] gap-4">
         <div>
           <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
             Customer Dashboard
           </div>
-          <h1 className="text-3xl font-light text-white">My Orders & Messages</h1>
+          <h1 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
+            My Orders & Messages
+          </h1>
           <p className="text-xs text-neutral-400 mt-1">
             Track your orders, check development progress, and chat directly with me.
           </p>
@@ -170,29 +173,82 @@ export default function CustomerDashboardPage() {
         </div>
       </div>
 
-      {/* Main Grid */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Orders List (4 cols) */}
-        <div className="lg:col-span-4 space-y-4">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-2">
-            My Orders ({orders.length})
+      {/* Loading Skeleton */}
+      {loading && orders.length === 0 ? (
+        <div className="mt-10 rounded-3xl border border-white/[0.08] bg-surface p-12 text-center text-xs text-neutral-400 font-mono">
+          <RefreshCw className="h-6 w-6 animate-spin mx-auto text-cream-400 mb-3" />
+          <span>Loading your orders...</span>
+        </div>
+      ) : orders.length === 0 ? (
+        /* Empty State: Unified, responsive, generous spacing and quick action cards */
+        <div className="mt-10 rounded-3xl border border-white/[0.08] bg-surface p-8 sm:p-14 lg:p-16 text-center space-y-6 max-w-3xl mx-auto shadow-sm">
+          <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl border border-cream-400/30 bg-cream-400/10 text-cream-300 mx-auto shadow-glow">
+            <Layers className="h-8 w-8 sm:h-10 sm:w-10 stroke-[1.8]" />
           </div>
 
-          {loading && orders.length === 0 ? (
-            <div className="rounded-xl border border-white/[0.08] bg-surface p-8 text-center text-xs text-neutral-500 font-mono">
-              Loading your orders...
+          <div className="space-y-2.5 max-w-md mx-auto">
+            <h2 className="text-xl sm:text-2xl font-light text-white tracking-tight">
+              No Orders Found Yet
+            </h2>
+            <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
+              You haven&apos;t placed any orders yet. Once you submit a project, you can track live progress and chat directly with the developer here.
+            </p>
+          </div>
+
+          <div className="pt-4 pb-2">
+            <Link href="/order" className="inline-block">
+              <MagneticButton
+                variant="primary"
+                className="px-8 py-3.5 text-xs uppercase tracking-wider font-semibold flex items-center justify-center gap-2.5 shadow-glow"
+              >
+                <span>Place Your First Order</span>
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+            </Link>
+          </div>
+
+          {/* Quick Start Options */}
+          <div className="pt-8 border-t border-white/[0.06]">
+            <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-4 text-center">
+              Or Choose What You Want to Build:
             </div>
-          ) : orders.length === 0 ? (
-            <div className="rounded-xl border border-white/[0.08] bg-surface p-8 text-center space-y-4">
-              <Layers className="mx-auto h-6 w-6 text-neutral-600" />
-              <div className="text-xs text-neutral-400">No orders found yet.</div>
-              <Link href="/order">
-                <MagneticButton variant="primary" className="px-4 py-2 text-xs uppercase tracking-wider">
-                  <span>Place Your First Order</span>
-                </MagneticButton>
-              </Link>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-left">
+              {[
+                { title: "SaaS App", desc: "Subscriptions, dashboard & payments", href: "/order?type=saas" },
+                { title: "Fullstack Web App", desc: "Fast modern website & database", href: "/order?type=fullstack" },
+                { title: "Discord Bot", desc: "Slash commands, roles & web panel", href: "/order?type=discord" },
+              ].map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className="rounded-2xl border border-white/[0.06] bg-surfaceElevated p-4 hover:border-cream-400/30 hover:bg-white/[0.04] transition-all group flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="text-sm font-medium text-white group-hover:text-cream-200 transition-colors">
+                      {item.title}
+                    </div>
+                    <div className="text-xs text-neutral-400 mt-1 leading-relaxed">
+                      {item.desc}
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-1 text-[10px] font-mono text-cream-400 group-hover:translate-x-1 transition-transform">
+                    <span>Configure</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
+                </Link>
+              ))}
             </div>
-          ) : (
+          </div>
+        </div>
+      ) : (
+        /* Orders Exist: Responsive 2-column grid */
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Orders List (5 cols on lg, 4 on xl) */}
+          <div className="lg:col-span-5 xl:col-span-4 space-y-4">
+            <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-2">
+              My Orders ({orders.length})
+            </div>
+
             <div className="space-y-3">
               {orders.map((ord) => {
                 const isSelected = selectedOrder?.id === ord.id;
@@ -200,9 +256,9 @@ export default function CustomerDashboardPage() {
                   <div
                     key={ord.id}
                     onClick={() => setSelectedOrder(ord)}
-                    className={`cursor-pointer rounded-xl p-4 border transition-all ${
+                    className={`cursor-pointer rounded-2xl p-4 sm:p-5 border transition-all ${
                       isSelected
-                        ? "border-white/30 bg-surfaceElevated shadow-sm"
+                        ? "border-cream-400/50 bg-surfaceElevated shadow-glow"
                         : "border-white/[0.06] bg-surface hover:border-white/20"
                     }`}
                   >
@@ -215,24 +271,23 @@ export default function CustomerDashboardPage() {
                       </span>
                     </div>
 
-                    <div className="font-normal text-sm text-white mb-1">
+                    <div className="font-medium text-sm text-white mb-1">
                       {ord.package?.service?.title || ord.serviceTitle || "Custom Architecture"}
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-neutral-400 pt-2 border-t border-white/[0.04]">
-                      <span className="font-serif text-cream-200">{formatCurrency(ord.totalPrice)}</span>
+                    <div className="flex items-center justify-between text-xs text-neutral-400 pt-3 border-t border-white/[0.04]">
+                      <span className="font-mono text-cream-200 text-xs">{formatCurrency(ord.totalPrice)}</span>
                       <span className="text-[10px] font-mono text-neutral-500">{formatDate(ord.createdAt)}</span>
                     </div>
                   </div>
                 );
               })}
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* Right Column: Order Detail & Timeline (8 cols) */}
+        {/* Right Column: Order Detail & Timeline (7 cols on lg, 8 on xl) */}
         {selectedOrder ? (
-          <div className="lg:col-span-8 space-y-8">
+          <div className="lg:col-span-7 xl:col-span-8 space-y-8">
             {/* Visual Lifecycle Stepper */}
             <div className="rounded-2xl border border-white/[0.08] bg-surface p-6 sm:p-8 space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.06] pb-4">
@@ -420,11 +475,12 @@ export default function CustomerDashboardPage() {
             </div>
           </div>
         ) : (
-          <div className="lg:col-span-8 flex items-center justify-center rounded-2xl border border-white/[0.08] bg-surface p-16 text-center text-xs text-neutral-500 font-mono">
+          <div className="lg:col-span-7 xl:col-span-8 flex items-center justify-center rounded-2xl border border-white/[0.08] bg-surface p-16 text-center text-xs text-neutral-500 font-mono">
             Select an order from the list to see details and chat.
           </div>
         )}
       </div>
+      )}
 
       {/* Revision Modal */}
       {showRevisionModal && (

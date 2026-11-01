@@ -263,7 +263,7 @@ function OrderWizardContent() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-6 sm:px-10 lg:px-16 py-16">
+    <div className="w-full max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16">
       {/* Wizard Header & Progress */}
       <div className="mb-12 text-center max-w-2xl mx-auto">
         <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">

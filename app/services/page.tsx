@@ -29,7 +29,7 @@ export default function ServicesPage() {
   });
 
   return (
-    <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 py-20">
+    <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 sm:py-16 lg:py-20">
       {/* Header */}
       <div className="max-w-3xl mb-16">
         <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-3">

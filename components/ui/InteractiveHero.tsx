@@ -40,11 +40,11 @@ export default function InteractiveHero() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full flex flex-col justify-between px-6 pt-10 pb-12 sm:px-10 lg:px-16"
+      className="relative w-full max-w-7xl 2xl:max-w-[1536px] mx-auto flex flex-col justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 sm:pt-10 pb-12 sm:pb-16"
       style={{ perspective: 1200 }}
     >
       {/* Top Editorial Index Tag */}
-      <div className="flex items-center justify-between text-[11px] tracking-widest uppercase text-neutral-400 border-b border-white/[0.08] pb-4 mb-12">
+      <div className="flex items-center justify-between text-[11px] tracking-widest uppercase text-neutral-400 border-b border-white/[0.08] pb-4 mb-8 sm:mb-12">
         <div className="flex items-center gap-3">
           <span className="h-1.5 w-1.5 rounded-full bg-cream-400" />
           <span className="font-mono text-neutral-300">Nexora Solutions — Web & Bot Development</span>
@@ -62,13 +62,13 @@ export default function InteractiveHero() {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="max-w-4xl py-4 sm:py-8"
+        className="max-w-4xl 2xl:max-w-5xl py-4 sm:py-8"
       >
         <div className="text-[11px] uppercase tracking-widest text-cream-400 mb-5 font-mono">
           [ Full-Stack Websites • SaaS Platforms • Discord Bots ]
         </div>
 
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-white leading-[1.08]">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl font-light tracking-tight text-white leading-[1.08]">
           Fast, Modern <br />
           <span className="font-serif italic text-cream-200">Websites, SaaS Apps</span> & Discord Bots.
         </h1>
