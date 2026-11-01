@@ -15,10 +15,10 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: "/", label: "Index" },
-    { href: "/services", label: "Works & Capabilities" },
-    { href: "/order", label: "Commission" },
-    { href: "/dashboard", label: "Client Suite" },
+    { href: "/", label: "Home" },
+    { href: "/services", label: "Services" },
+    { href: "/order", label: "Order Now" },
+    { href: "/dashboard", label: "My Orders & Chat" },
   ];
 
   if (session?.user?.role === "ADMIN") {
@@ -102,12 +102,12 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
               <Link href="/auth/signin">
                 <span className="text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition-colors px-2">
-                  Client Ingress
+                  Sign In
                 </span>
               </Link>
               <Link href="/order">
                 <MagneticButton variant="primary" className="px-5 py-2 text-[11px] font-semibold uppercase tracking-wider">
-                  <span>Commission</span>
+                  <span>Order Now</span>
                 </MagneticButton>
               </Link>
             </div>

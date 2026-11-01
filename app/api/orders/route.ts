@@ -138,6 +138,11 @@ export async function POST(req: NextRequest) {
         status: "PENDING",
         paymentStatus: "UNPAID",
         requirements: data.requirements,
+        appType: data.appType || service.title,
+        customAppType: data.customAppType || "",
+        colorThemeMode: data.colorThemeMode || "DEV_CHOOSES",
+        customColors: data.customColors || [],
+        referenceLinks: data.referenceLinks || "",
         selectedAddons: resolvedAddons,
         files: data.uploadedFiles.map((f: any) => ({
           id: `file_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`,

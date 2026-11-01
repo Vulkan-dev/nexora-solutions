@@ -1,10 +1,15 @@
 import { z } from "zod";
 
 export const CreateOrderSchema = z.object({
-  serviceId: z.string().min(1, "Service ID is required"),
-  packageId: z.string().min(1, "Package ID is required"),
+  serviceId: z.string().default("srv-fullstack"),
+  packageId: z.string().default("pkg-standard"),
   addonIds: z.array(z.string()).default([]),
-  requirements: z.string().min(10, "Requirements must be at least 10 characters long").max(5000),
+  appType: z.string().optional(),
+  customAppType: z.string().optional(),
+  colorThemeMode: z.enum(["DEV_CHOOSES", "CUSTOM"]).default("DEV_CHOOSES"),
+  customColors: z.array(z.string()).default([]),
+  referenceLinks: z.string().optional(),
+  requirements: z.string().min(5, "Requirements must be at least 5 characters long").max(5000),
   turnstileToken: z.string().optional(),
   clientName: z.string().optional(),
   clientEmail: z.string().email().optional(),

@@ -22,27 +22,27 @@ export default function HomePage() {
       <section className="mx-auto max-w-6xl px-6 sm:px-10 lg:px-16">
         <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-cream-400 font-mono mb-6">
           <span className="h-[1px] w-8 bg-cream-400" />
-          <span>Statement of Intent</span>
+          <span>Core Capabilities</span>
         </div>
 
         <TextReveal
-          text="We create singular digital platforms where kinetic elegance meets relentless architectural restraint. Every interaction is shaped by intention, every transition is tuned by physics, and every surface is sculpted to elevate discerning houses into enduring legacies."
+          text="I engineer production-ready full stack web applications, scalable SaaS systems, intelligent workflow automations, and custom Discord bots. Fast turnaround, clean maintainable code, resilient databases, and cinematic user interfaces."
           className="text-2xl sm:text-4xl md:text-5xl font-light tracking-tight text-cream-100 leading-[1.25]"
           wordClassName="hover:text-cream-400 transition-colors"
         />
 
         <div className="mt-12 flex flex-wrap items-center gap-12 text-xs text-neutral-400 border-t border-white/[0.08] pt-8">
           <div>
-            <div className="text-white font-serif text-lg">60fps</div>
-            <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Kinetic Frame Stability</div>
+            <div className="text-white font-serif text-lg">Next.js 14+</div>
+            <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Modern Full-Stack Web</div>
           </div>
           <div>
-            <div className="text-white font-serif text-lg">100%</div>
-            <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Bespoke Vector & Shader Craft</div>
+            <div className="text-white font-serif text-lg">SaaS Architecture</div>
+            <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Stripe, Auth & PostgreSQL</div>
           </div>
           <div>
-            <div className="text-white font-serif text-lg">Private</div>
-            <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Direct Atelier Collaboration</div>
+            <div className="text-white font-serif text-lg">Bots & Automations</div>
+            <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Discord.js & Background Pipelines</div>
           </div>
         </div>
       </section>
@@ -99,9 +99,9 @@ export default function HomePage() {
                       <div className="text-2xl font-light text-white font-serif">{formatCurrency(featured.basePrice)}</div>
                     </div>
 
-                    <Link href={`/services/${featured.slug}`}>
+                    <Link href={`/order?type=saas`}>
                       <MagneticButton variant="primary" className="px-6 py-2.5 text-xs uppercase tracking-wider font-semibold">
-                        <span>Inspect Commission</span>
+                        <span>Order Now</span>
                         <ArrowUpRight className="h-3.5 w-3.5" />
                       </MagneticButton>
                     </Link>
@@ -234,28 +234,28 @@ export default function HomePage() {
       <section className="mx-auto max-w-5xl px-6 sm:px-10 lg:px-16">
         <div className="rounded-3xl border border-white/[0.12] bg-surfaceElevated p-10 sm:p-16 text-center">
           <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-4">
-            Private Inquiry // Vol. XXIV
+            Start Your Software Quest
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-light text-white tracking-tight">
-            Commission a Signature Platform
+            Ready to Build Your Application?
           </h2>
 
           <p className="mt-4 text-xs sm:text-sm text-neutral-400 max-w-md mx-auto leading-relaxed">
-            Select your architectural tier, configure bespoke enhancements, and track staging updates through our private client suite.
+            Select your app type, customize your brand color palette, and submit your project to begin development immediately.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link href="/order">
               <MagneticButton variant="primary" className="px-8 py-3 text-xs uppercase tracking-widest font-semibold">
-                <span>Begin Commission</span>
+                <span>Order Now</span>
                 <ArrowRight className="h-4 w-4" />
               </MagneticButton>
             </Link>
 
-            <Link href="/auth/signin">
+            <Link href="/dashboard">
               <MagneticButton variant="outline" className="px-6 py-3 text-xs uppercase tracking-widest">
-                <span>Client Access</span>
+                <span>My Orders & Chat</span>
               </MagneticButton>
             </Link>
           </div>

@@ -82,6 +82,31 @@ export default function CustomerDashboardPage() {
     }
   };
 
+  const handleRequestStaffChat = async () => {
+    if (!selectedOrder) return;
+    setSubmittingAction(true);
+    try {
+      const res = await fetch(`/api/orders/${selectedOrder.id}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "👋 Client requested a direct discussion with the lead developer regarding project specifications.",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSelectedOrder((prev: any) => ({
+          ...prev,
+          updates: [data.message, ...(prev.updates || [])],
+        }));
+      }
+    } catch (e) {
+      console.error("Failed to request chat:", e);
+    } finally {
+      setSubmittingAction(false);
+    }
+  };
+
   const handleRequestRevision = async () => {
     if (!revisionNote.trim() || !selectedOrder) return;
     setSubmittingAction(true);
@@ -266,24 +291,86 @@ export default function CustomerDashboardPage() {
                 </div>
               </div>
 
+              {/* Requirements & Visual Scope Badges */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {selectedOrder.appType && (
+                  <div className="rounded-xl border border-white/[0.04] bg-surfaceElevated p-4">
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-1">
+                      Target App Type:
+                    </div>
+                    <div className="text-xs text-cream-200 font-medium">
+                      {selectedOrder.appType} {selectedOrder.customAppType && `(${selectedOrder.customAppType})`}
+                    </div>
+                  </div>
+                )}
+
+                {selectedOrder.customColors && selectedOrder.customColors.length > 0 ? (
+                  <div className="rounded-xl border border-white/[0.04] bg-surfaceElevated p-4">
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-1">
+                      Color Palette:
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      {selectedOrder.customColors.map((c: string, i: number) => (
+                        <span
+                          key={i}
+                          className="h-4 w-4 rounded-full border border-white/20"
+                          style={{ backgroundColor: c }}
+                          title={c}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-white/[0.04] bg-surfaceElevated p-4">
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-1">
+                      Color Palette:
+                    </div>
+                    <div className="text-xs text-neutral-400 font-mono">Developer Curated Palette</div>
+                  </div>
+                )}
+              </div>
+
               {/* Requirements Note */}
               {selectedOrder.requirements && (
                 <div className="rounded-xl border border-white/[0.04] bg-surfaceElevated p-4">
                   <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-1">
                     Commission Scope:
                   </div>
-                  <p className="text-xs text-neutral-300 leading-relaxed">
+                  <p className="text-xs text-neutral-300 leading-relaxed whitespace-pre-wrap">
                     {selectedOrder.requirements}
                   </p>
+                </div>
+              )}
+
+              {/* Reference Links if provided */}
+              {selectedOrder.referenceLinks && (
+                <div className="rounded-xl border border-white/[0.04] bg-surfaceElevated p-4">
+                  <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-1">
+                    Reference Links:
+                  </div>
+                  <div className="text-xs font-mono text-cream-300 truncate">
+                    {selectedOrder.referenceLinks}
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Direct Studio Messaging Thread */}
             <div className="rounded-2xl border border-white/[0.08] bg-surface p-6 sm:p-8 space-y-6">
-              <div className="flex items-center gap-2 border-b border-white/[0.06] pb-4">
-                <MessageSquare className="h-4 w-4 text-cream-300" />
-                <h3 className="text-sm font-medium text-white">Production Correspondence & Milestones</h3>
+              <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-cream-300" />
+                  <h3 className="text-sm font-medium text-white">Direct Chat with Developer & Staff</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRequestStaffChat}
+                  disabled={submittingAction}
+                  className="rounded-full border border-cream-400/30 bg-cream-400/10 px-3 py-1 text-[11px] font-mono text-cream-300 hover:bg-cream-400/20 transition-all flex items-center gap-1.5"
+                >
+                  <Sparkles className="h-3 w-3 text-cream-400" />
+                  <span>Request Staff Chat</span>
+                </button>
               </div>
 
               {/* Messages List */}

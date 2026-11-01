@@ -13,7 +13,13 @@ export default function ServicesPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const categories = ["All", "Signature Digital Works", "Creative Technology", "System Engineering"];
+  const categories = [
+    "All",
+    "Software as a Service",
+    "Web Engineering",
+    "Bot Development",
+    "Automation Engineering",
+  ];
 
   const filteredServices = allServices.filter((service) => {
     const matchesCategory = selectedCategory === "All" || service.category === selectedCategory;
@@ -129,7 +135,7 @@ export default function ServicesPage() {
                 </Link>
                 <Link href={`/order?serviceId=${service.id}`}>
                   <MagneticButton variant="primary" className="px-4 py-1.5 text-xs uppercase tracking-wider font-semibold">
-                    <span>Select</span>
+                    <span>Order Now</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </MagneticButton>
                 </Link>

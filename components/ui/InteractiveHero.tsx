@@ -65,30 +65,30 @@ export default function InteractiveHero() {
         className="max-w-4xl py-4 sm:py-8"
       >
         <div className="text-[11px] uppercase tracking-widest text-cream-400 mb-5 font-mono">
-          [ 01 // Bespoke Digital Architecture ]
+          [ Full-Stack Engineering • SaaS • Automations • Discord Bots ]
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-white leading-[1.08]">
-          Architecture for the <br />
-          <span className="font-serif italic text-cream-200">Uncompromising</span> Mind.
+          High-Performance <br />
+          <span className="font-serif italic text-cream-200">SaaS, Web Apps</span> & Automations.
         </h1>
 
-        <p className="mt-6 text-sm sm:text-base text-neutral-300 max-w-xl leading-relaxed">
-          We sculpt bespoke digital environments defined by structural poise, kinetic restraint, and tactile elegance. Tailored for iconic houses and singular creators.
+        <p className="mt-6 text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed">
+          I build production-grade full-stack web applications, scalable SaaS systems, intelligent workflow automations, and custom Discord bots with clean architecture, robust security, and cinematic UI.
         </p>
 
         {/* Action Magnetic Buttons */}
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Link href="/order">
-            <MagneticButton variant="primary" className="px-7 py-3 text-xs tracking-wider uppercase font-semibold">
-              <span>Commission Work</span>
-              <ArrowUpRight className="h-3.5 w-3.5" />
+            <MagneticButton variant="primary" className="px-8 py-3.5 text-xs tracking-wider uppercase font-semibold">
+              <span>Order Now</span>
+              <ArrowUpRight className="h-4 w-4" />
             </MagneticButton>
           </Link>
 
           <Link href="/services">
-            <MagneticButton variant="outline" className="px-6 py-3 text-xs tracking-wider uppercase">
-              <span>Explore Portfolio</span>
+            <MagneticButton variant="outline" className="px-6 py-3.5 text-xs tracking-wider uppercase">
+              <span>Explore Services</span>
             </MagneticButton>
           </Link>
         </div>
@@ -97,20 +97,20 @@ export default function InteractiveHero() {
       {/* Bottom Architectural Credits Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 pt-8 border-t border-white/[0.08] text-xs">
         <div>
-          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Discipline</div>
-          <div className="text-neutral-200 mt-1 font-medium">Kinetic Digital Design</div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Specialty</div>
+          <div className="text-neutral-200 mt-1 font-medium">Full-Stack & SaaS Systems</div>
+        </div>
+        <div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Offerings</div>
+          <div className="text-cream-300 mt-1 font-medium">Web Apps • Bots • Automations</div>
+        </div>
+        <div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Core Tech</div>
+          <div className="text-neutral-200 mt-1 font-medium">Next.js • Supabase • Python</div>
         </div>
         <div>
           <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Availability</div>
-          <div className="text-cream-300 mt-1 font-medium">Limited Commissions</div>
-        </div>
-        <div>
-          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Output</div>
-          <div className="text-neutral-200 mt-1 font-medium">Bespoke Platforms & Systems</div>
-        </div>
-        <div>
-          <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Studio Origin</div>
-          <div className="text-neutral-200 mt-1 font-medium">Geneva • London • New York</div>
+          <div className="text-cream-300 mt-1 font-medium">Open for Orders</div>
         </div>
       </div>
     </div>

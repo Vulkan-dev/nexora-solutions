@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { getAllServices } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/utils";
 import MagneticButton from "@/components/ui/MagneticButton";
@@ -20,7 +21,89 @@ import {
   LogIn,
   Zap,
   UserCheck,
+  Layers,
+  Globe,
+  Bot,
+  Workflow,
+  Sparkles,
+  Palette,
+  Plus,
+  X,
+  ExternalLink,
+  MessageSquare,
 } from "lucide-react";
+
+// Predefined curated color presets
+const COLOR_PRESETS = [
+  {
+    name: "Midnight Obsidian & Gold",
+    colors: ["#090a0d", "#c5a880", "#f6f2ea", "#181920"],
+  },
+  {
+    name: "Neon Cyberpunk",
+    colors: ["#0a0e17", "#00ffcc", "#ff007f", "#131b2b"],
+  },
+  {
+    name: "Minimalist Monochrome",
+    colors: ["#0f1015", "#3b82f6", "#ffffff", "#1e2029"],
+  },
+  {
+    name: "Emerald Forest",
+    colors: ["#061a14", "#10b981", "#ecfdf5", "#0b2e24"],
+  },
+  {
+    name: "Royal Amethyst",
+    colors: ["#0d0914", "#a855f7", "#faf5ff", "#1b1429"],
+  },
+];
+
+const APP_TYPES = [
+  {
+    id: "saas",
+    serviceId: "srv-saas",
+    title: "SaaS App",
+    badge: "Most Requested",
+    icon: Layers,
+    desc: "Multi-tenant platforms, recurring Stripe subscriptions, auth, user & admin dashboards, databases.",
+    startingPrice: 2800,
+  },
+  {
+    id: "fullstack",
+    serviceId: "srv-fullstack",
+    title: "Fullstack Web Application",
+    badge: "Core Engineering",
+    icon: Globe,
+    desc: "Next.js 14+ App Router, responsive modern UI, custom APIs, PostgreSQL / Supabase, payments.",
+    startingPrice: 1900,
+  },
+  {
+    id: "discord",
+    serviceId: "srv-discord",
+    title: "Discord Bots",
+    badge: "Community Tools",
+    icon: Bot,
+    desc: "Slash commands, auto-roles, payment/crypto gating, AI moderation, and web management dashboard.",
+    startingPrice: 750,
+  },
+  {
+    id: "automations",
+    serviceId: "srv-automations",
+    title: "Automations & Workflows",
+    badge: "Efficiency Engine",
+    icon: Workflow,
+    desc: "Background jobs, data scrapers, multi-app webhooks, AI agent pipelines, Discord/Telegram alerts.",
+    startingPrice: 950,
+  },
+  {
+    id: "others",
+    serviceId: "srv-fullstack",
+    title: "Others (Custom Project)",
+    badge: "Bespoke Request",
+    icon: Sparkles,
+    desc: "Custom scripts, integrations, unique architectures, or specialized software engineering.",
+    startingPrice: 1500,
+  },
+];
 
 function OrderWizardContent() {
   const router = useRouter();
@@ -28,41 +111,76 @@ function OrderWizardContent() {
   const { data: session, status: authStatus, update } = useSession();
   const allServices = getAllServices();
 
-  const initialServiceId = searchParams.get("serviceId") || allServices[0]?.id;
-  const initialPackageId = searchParams.get("packageId") || "";
+  const queryType = searchParams.get("type") || "saas";
+  const matchedAppType = APP_TYPES.find((t) => t.id === queryType) || APP_TYPES[0];
 
+  // Steps: 1: App Type, 2: Color Theme, 3: Details & References, 4: Review & Auth, 5: Success
   const [step, setStep] = useState<number>(1);
-  const [selectedServiceId, setSelectedServiceId] = useState<string>(initialServiceId);
-  const [selectedPackageId, setSelectedPackageId] = useState<string>(initialPackageId);
-  const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
+
+  // Step 1: App Type
+  const [selectedAppTypeId, setSelectedAppTypeId] = useState<string>(matchedAppType.id);
+  const [customAppType, setCustomAppType] = useState<string>("");
+
+  // Step 2: Color Theme
+  const [colorMode, setColorMode] = useState<"DEV_CHOOSES" | "CUSTOM">("DEV_CHOOSES");
+  const [colors, setColors] = useState<string[]>(["#090a0d", "#c5a880", "#f6f2ea", "#181920"]);
+  const [selectedColorIdx, setSelectedColorIdx] = useState<number>(1);
+  const [activePickerColor, setActivePickerColor] = useState<string>("#c5a880");
+
+  // Step 3: Requirements & References
   const [requirements, setRequirements] = useState<string>("");
+  const [referenceLinks, setReferenceLinks] = useState<string>("");
   const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; url: string; type: string; size?: number }>>([]);
+
+  // Auth & Submission State
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [simulatingAuth, setSimulatingAuth] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [orderSuccessId, setOrderSuccessId] = useState<string | null>(null);
 
-  const selectedService = allServices.find((s) => s.id === selectedServiceId) || allServices[0];
+  const activeAppType = APP_TYPES.find((a) => a.id === selectedAppTypeId) || APP_TYPES[0];
+  const matchedService = allServices.find((s) => s.id === activeAppType.serviceId) || allServices[0];
+  const selectedPackage = matchedService?.packages?.[0];
 
-  useEffect(() => {
-    if (!selectedPackageId && selectedService?.packages?.[0]) {
-      setSelectedPackageId(selectedService.packages[0].id);
-    }
-  }, [selectedService, selectedPackageId]);
+  // Simulated session for non-blocking testing
+  const [simulatedSession, setSimulatedSession] = useState<{ user: { name: string; email: string; role: string } } | null>(null);
+  const isUserAuthenticated = !!(session?.user || simulatedSession?.user);
+  const activeUser = session?.user || simulatedSession?.user;
 
-  const selectedPackage = selectedService?.packages.find((p) => p.id === selectedPackageId) || selectedService?.packages[0];
+  // Sync color picker with selected chip
+  const handleSelectColorChip = (idx: number) => {
+    setSelectedColorIdx(idx);
+    setActivePickerColor(colors[idx] || "#c5a880");
+  };
 
-  const basePrice = selectedPackage?.price || 0;
-  const addonsTotal = selectedAddonIds.reduce((sum, addonId) => {
-    const addon = selectedService?.addons.find((a) => a.id === addonId);
-    return sum + (addon ? addon.price : 0);
-  }, 0);
-  const totalPrice = basePrice + addonsTotal;
+  const handleUpdateActiveColor = (hex: string) => {
+    setActivePickerColor(hex);
+    setColors((prev) => {
+      const copy = [...prev];
+      copy[selectedColorIdx] = hex;
+      return copy;
+    });
+  };
 
-  const toggleAddon = (id: string) => {
-    setSelectedAddonIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+  const handleAddColor = () => {
+    if (colors.length >= 7) return;
+    const newColor = activePickerColor;
+    setColors((prev) => [...prev, newColor]);
+    setSelectedColorIdx(colors.length);
+  };
+
+  const handleRemoveColor = (idxToRemove: number) => {
+    if (colors.length <= 1) return;
+    const updated = colors.filter((_, idx) => idx !== idxToRemove);
+    setColors(updated);
+    setSelectedColorIdx(Math.max(0, idxToRemove - 1));
+    setActivePickerColor(updated[Math.max(0, idxToRemove - 1)] || "#c5a880");
+  };
+
+  const handleApplyPreset = (presetColors: string[]) => {
+    setColors(presetColors);
+    setSelectedColorIdx(1);
+    setActivePickerColor(presetColors[1] || "#c5a880");
   };
 
   const handleSimulatedFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,21 +201,16 @@ function OrderWizardContent() {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const [simulatedSession, setSimulatedSession] = useState<{ user: { name: string; email: string; role: string } } | null>(null);
-  const isUserAuthenticated = !!(session?.user || simulatedSession?.user);
-  const activeUser = session?.user || simulatedSession?.user;
-
   const handleSimulatedClientLogin = async () => {
     setSimulatingAuth(true);
     try {
-      const res = await signIn("simulated-auth", {
+      await signIn("simulated-auth", {
         role: "CUSTOMER",
         name: "Alexandra Vance",
         email: "alexandra.vance@atelier-client.com",
         redirect: false,
       });
 
-      // Instantly activate authenticated state without reloading page or losing steps
       setSimulatedSession({
         user: {
           name: "Alexandra Vance",
@@ -106,7 +219,6 @@ function OrderWizardContent() {
         },
       });
 
-      // Trigger session sync
       if (typeof update === "function") {
         await update();
       }
@@ -119,7 +231,7 @@ function OrderWizardContent() {
 
   const handleSubmitOrder = async () => {
     if (!isUserAuthenticated) {
-      setSubmitError("Please sign in with Google or use test simulation before submitting your commission.");
+      setSubmitError("Please sign in with Google or use test simulation before submitting your order.");
       return;
     }
 
@@ -128,13 +240,17 @@ function OrderWizardContent() {
 
     try {
       const payload = {
-        serviceId: selectedService.id,
-        packageId: selectedPackage.id,
-        addonIds: selectedAddonIds,
-        requirements: requirements || "Standard architectural specifications as selected.",
+        serviceId: matchedService.id,
+        packageId: selectedPackage?.id || "pkg-default",
+        appType: activeAppType.title,
+        customAppType: activeAppType.id === "others" ? customAppType : "",
+        colorThemeMode: colorMode,
+        customColors: colorMode === "CUSTOM" ? colors : [],
+        referenceLinks,
+        requirements: requirements || `Quest order for ${activeAppType.title}. Standard specifications.`,
         uploadedFiles,
-        clientName: activeUser?.name || "Alexandra Vance",
-        clientEmail: activeUser?.email || "alexandra.vance@atelier-client.com",
+        clientName: activeUser?.name || "Client",
+        clientEmail: activeUser?.email || "client@example.com",
       };
 
       const res = await fetch("/api/orders", {
@@ -146,7 +262,7 @@ function OrderWizardContent() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to submit commission");
+        throw new Error(data.error || "Failed to submit order");
       }
 
       setOrderSuccessId(data.orderId);
@@ -160,521 +276,764 @@ function OrderWizardContent() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 sm:px-10 lg:px-16 py-16">
-      {/* Wizard Step Navigation */}
-      <div className="mb-12 border-b border-white/[0.08] pb-6">
-        <div className="flex items-center justify-between max-w-2xl mx-auto">
+      {/* Wizard Header & Progress */}
+      <div className="mb-12 text-center max-w-2xl mx-auto">
+        <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
+          Project Quest // Commission
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-light text-white tracking-tight">
+          Build Your Custom Software
+        </h1>
+        <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+          Tell us about what you want to build, choose your visual theme, and submit your project to begin development.
+        </p>
+      </div>
+
+      {/* Steps Indicator */}
+      <div className="mb-14 flex items-center justify-center">
+        <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto py-2">
           {[
-            { num: 1, title: "Tier" },
-            { num: 2, title: "Enhancements" },
-            { num: 3, title: "Briefing" },
-            { num: 4, title: "Review & Access" },
-          ].map((item) => (
-            <div key={item.num} className="flex items-center gap-3">
-              <div
-                className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-mono transition-all ${
-                  step === item.num
-                    ? "bg-cream-100 text-neutral-900 font-bold"
-                    : step > item.num
-                    ? "bg-white/10 text-cream-200"
-                    : "text-neutral-500 border border-white/[0.08]"
+            { num: 1, label: "App Type" },
+            { num: 2, label: "Color Theme" },
+            { num: 3, label: "Details & Links" },
+            { num: 4, label: "Review & Submit" },
+          ].map((s) => (
+            <React.Fragment key={s.num}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (step < 5 && s.num <= step) setStep(s.num);
+                }}
+                disabled={step === 5}
+                className={`flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-mono transition-all ${
+                  step === s.num
+                    ? "bg-cream-100 text-neutral-900 font-semibold shadow-atelier"
+                    : step > s.num
+                    ? "border border-white/20 bg-surface text-neutral-300 hover:border-cream-400/30"
+                    : "border border-white/[0.06] bg-transparent text-neutral-500 opacity-60"
                 }`}
               >
-                {step > item.num ? "✓" : item.num}
-              </div>
-              <span
-                className={`text-xs uppercase tracking-widest ${
-                  step === item.num ? "text-cream-100" : "text-neutral-500"
-                }`}
-              >
-                {item.title}
-              </span>
-            </div>
+                <span>0{s.num}.</span>
+                <span className="hidden sm:inline">{s.label}</span>
+              </button>
+              {s.num < 4 && <div className="h-[1px] w-4 sm:w-8 bg-white/[0.08]" />}
+            </React.Fragment>
           ))}
         </div>
       </div>
 
-      {/* Main Container */}
-      <div className="rounded-2xl border border-white/[0.08] bg-surface p-8 sm:p-12">
-        <AnimatePresence mode="wait">
-          {/* STEP 1: Select Service & Package */}
-          {step === 1 && (
-            <motion.div
-              key="step1"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-8"
-            >
-              <div>
-                <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-                  Step 01 // Configuration
-                </div>
-                <h2 className="text-2xl font-light text-white">Select Discipline & Production Tier</h2>
-                <p className="text-xs text-neutral-400 mt-1">Choose the service and desired edition level.</p>
-              </div>
+      {/* Step Content */}
+      <AnimatePresence mode="wait">
+        {/* STEP 1: WHICH TYPE OF APP */}
+        {step === 1 && (
+          <motion.div
+            key="step1"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-8"
+          >
+            <div className="border-b border-white/[0.08] pb-4">
+              <span className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
+                Step 01 // Selection
+              </span>
+              <h2 className="text-2xl font-light text-white tracking-tight mt-1">
+                Which type of app do you need to build?
+              </h2>
+            </div>
 
-              {/* Service Category Buttons */}
-              <div className="flex flex-wrap gap-2">
-                {allServices.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => {
-                      setSelectedServiceId(s.id);
-                      setSelectedPackageId(s.packages[0]?.id || "");
-                      setSelectedAddonIds([]);
-                    }}
-                    className={`rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-all ${
-                      selectedServiceId === s.id
-                        ? "bg-cream-100 text-neutral-900 font-semibold"
-                        : "bg-surfaceElevated text-neutral-400 hover:text-white border border-white/[0.08]"
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {APP_TYPES.map((type) => {
+                const Icon = type.icon;
+                const isSelected = selectedAppTypeId === type.id;
+                return (
+                  <div
+                    key={type.id}
+                    onClick={() => setSelectedAppTypeId(type.id)}
+                    className={`group relative cursor-pointer rounded-2xl border p-6 transition-all duration-300 flex flex-col justify-between ${
+                      isSelected
+                        ? "border-cream-400 bg-surfaceElevated shadow-glow"
+                        : "border-white/[0.08] bg-surface/70 hover:border-white/20 hover:bg-surfaceElevated/50"
                     }`}
                   >
-                    {s.title}
-                  </button>
-                ))}
-              </div>
-
-              {/* Packages List */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                {selectedService.packages.map((pkg) => {
-                  const isSelected = selectedPackageId === pkg.id;
-                  return (
-                    <div
-                      key={pkg.id}
-                      onClick={() => setSelectedPackageId(pkg.id)}
-                      className={`cursor-pointer rounded-xl p-6 transition-all border ${
-                        isSelected
-                          ? "border-white/40 bg-surfaceElevated shadow-atelier"
-                          : "border-white/[0.08] bg-surfaceElevated/40 hover:border-white/20"
-                      }`}
-                    >
+                    <div>
                       <div className="flex items-center justify-between mb-4">
-                        <span className="font-medium text-white text-sm">{pkg.name}</span>
                         <div
-                          className={`h-4 w-4 rounded-full border flex items-center justify-center ${
+                          className={`flex h-10 w-10 items-center justify-center rounded-xl border ${
                             isSelected
-                              ? "border-cream-300 bg-cream-100 text-neutral-900"
-                              : "border-neutral-600"
+                              ? "border-cream-400/40 bg-cream-400/10 text-cream-200"
+                              : "border-white/10 bg-white/[0.03] text-neutral-400 group-hover:text-white"
                           }`}
                         >
-                          {isSelected && <span className="h-1.5 w-1.5 rounded-full bg-neutral-900" />}
+                          <Icon className="h-5 w-5" />
                         </div>
+                        <span className="text-[9px] uppercase tracking-wider font-mono text-neutral-500">
+                          {type.badge}
+                        </span>
                       </div>
 
-                      <div className="text-2xl font-light text-white font-serif mb-2">
-                        {formatCurrency(pkg.price)}
-                      </div>
-
-                      <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 mb-4 font-mono">
-                        <Clock className="h-3 w-3 text-cream-400" />
-                        <span>{pkg.deliveryDays} business days</span>
-                      </div>
-
-                      <p className="text-xs text-neutral-400 mb-6 leading-relaxed">{pkg.description}</p>
-
-                      <div className="space-y-2 border-t border-white/[0.06] pt-4">
-                        {pkg.features.map((feat, i) => (
-                          <div key={i} className="flex items-start gap-2 text-[11px] text-neutral-300">
-                            <span className="h-1 w-1 rounded-full bg-cream-400 flex-shrink-0 mt-1" />
-                            <span>{feat}</span>
-                          </div>
-                        ))}
-                      </div>
+                      <h3 className="text-lg font-medium text-white mb-2">{type.title}</h3>
+                      <p className="text-xs text-neutral-400 leading-relaxed mb-4">{type.desc}</p>
                     </div>
-                  );
-                })}
-              </div>
 
-              <div className="flex justify-end pt-6 border-t border-white/[0.08]">
-                <MagneticButton
-                  onClick={() => setStep(2)}
-                  disabled={!selectedPackageId}
-                  variant="primary"
-                  className="px-6 py-2.5 text-xs uppercase tracking-wider font-semibold"
-                >
-                  <span>Continue to Enhancements</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </MagneticButton>
-              </div>
-            </motion.div>
-          )}
-
-          {/* STEP 2: Choose Add-ons */}
-          {step === 2 && (
-            <motion.div
-              key="step2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-8"
-            >
-              <div>
-                <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-                  Step 02 // Enhancements
-                </div>
-                <h2 className="text-2xl font-light text-white">Select Optional Enhancements</h2>
-                <p className="text-xs text-neutral-400 mt-1">
-                  Attach bespoke production add-ons. Investment calculations update automatically.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {selectedService.addons.map((addon) => {
-                  const isChecked = selectedAddonIds.includes(addon.id);
-                  return (
-                    <div
-                      key={addon.id}
-                      onClick={() => toggleAddon(addon.id)}
-                      className={`cursor-pointer flex items-center justify-between rounded-xl p-5 border transition-all ${
-                        isChecked
-                          ? "border-white/30 bg-surfaceElevated"
-                          : "border-white/[0.08] bg-surfaceElevated/50 hover:border-white/20"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`h-4 w-4 rounded-sm border flex items-center justify-center ${
-                            isChecked
-                              ? "border-cream-300 bg-cream-100 text-neutral-900"
-                              : "border-neutral-600"
-                          }`}
-                        >
-                          {isChecked && <Check className="h-3 w-3 stroke-[3]" />}
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-white">{addon.name}</div>
-                          <div className="text-[11px] text-neutral-500 font-mono">Bespoke Addition</div>
-                        </div>
-                      </div>
-                      <div className="text-sm font-serif text-cream-200">
-                        +{formatCurrency(addon.price)}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Summary Bar */}
-              <div className="rounded-xl border border-white/[0.08] bg-surfaceElevated p-5 flex items-center justify-between">
-                <div>
-                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Commission Investment</div>
-                  <div className="text-2xl font-light text-white font-serif">{formatCurrency(totalPrice)}</div>
-                </div>
-                <div className="text-xs text-neutral-400 font-mono">
-                  {selectedPackage?.name} + {selectedAddonIds.length} Add-on(s)
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-6 border-t border-white/[0.08]">
-                <MagneticButton
-                  onClick={() => setStep(1)}
-                  variant="outline"
-                  className="px-5 py-2 text-xs uppercase tracking-wider"
-                >
-                  <ArrowLeft className="h-3.5 w-3.5" />
-                  <span>Back</span>
-                </MagneticButton>
-
-                <MagneticButton
-                  onClick={() => setStep(3)}
-                  variant="primary"
-                  className="px-6 py-2.5 text-xs uppercase tracking-wider font-semibold"
-                >
-                  <span>Project Briefing</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </MagneticButton>
-              </div>
-            </motion.div>
-          )}
-
-          {/* STEP 3: Requirements & File Uploads */}
-          {step === 3 && (
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-8"
-            >
-              <div>
-                <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-                  Step 03 // Briefing & Materials
-                </div>
-                <h2 className="text-2xl font-light text-white">Project Vision & Reference Files</h2>
-                <p className="text-xs text-neutral-400 mt-1">
-                  Specify aesthetic references, brand guidelines, and attach design assets or Figma links.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-mono">
-                  Commission Brief & Design Objectives
-                </label>
-                <textarea
-                  value={requirements}
-                  onChange={(e) => setRequirements(e.target.value)}
-                  rows={5}
-                  placeholder="Outline your creative vision, brand identity, key references, or bespoke functional requirements..."
-                  className="w-full rounded-xl border border-white/[0.08] bg-surfaceElevated p-4 text-xs text-white placeholder-neutral-500 focus:border-white/30 focus:outline-none"
-                />
-              </div>
-
-              {/* Upload Dropzone */}
-              <div className="space-y-3">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-mono">
-                  Reference Materials (Figma, PDF, Brand Assets)
-                </label>
-                <div className="relative rounded-xl border border-dashed border-white/[0.15] bg-surfaceElevated/30 p-8 text-center transition-colors hover:border-white/30">
-                  <Upload className="mx-auto h-6 w-6 text-neutral-400 mb-2" />
-                  <div className="text-xs text-white font-medium">Select or drag files here</div>
-                  <p className="text-[10px] text-neutral-500 mt-1 font-mono">
-                    Direct asset dropzone for references and guidelines
-                  </p>
-                  <input
-                    type="file"
-                    multiple
-                    onChange={handleSimulatedFileUpload}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                </div>
-
-                {uploadedFiles.length > 0 && (
-                  <div className="space-y-2 pt-2">
-                    {uploadedFiles.map((f, i) => (
+                    <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
+                      <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
+                        From {formatCurrency(type.startingPrice)}
+                      </span>
                       <div
-                        key={i}
-                        className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-surfaceElevated p-3 text-xs"
+                        className={`h-4 w-4 rounded-full border flex items-center justify-center transition-all ${
+                          isSelected ? "border-cream-400 bg-cream-400" : "border-white/20"
+                        }`}
                       >
-                        <div className="flex items-center gap-2 truncate">
-                          <FileText className="h-4 w-4 text-cream-300 flex-shrink-0" />
-                          <span className="truncate text-neutral-200">{f.name}</span>
-                        </div>
-                        <button
-                          onClick={() => removeFile(i)}
-                          className="text-neutral-500 hover:text-white transition-colors"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        {isSelected && <Check className="h-2.5 w-2.5 text-neutral-950 stroke-[3]" />}
                       </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Custom description field if "Others" selected */}
+            {selectedAppTypeId === "others" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="rounded-2xl border border-cream-400/30 bg-surfaceElevated p-6 space-y-3"
+              >
+                <label className="block text-xs uppercase tracking-wider text-cream-300 font-mono">
+                  Describe Your Custom App / System Type:
+                </label>
+                <input
+                  type="text"
+                  value={customAppType}
+                  onChange={(e) => setCustomAppType(e.target.value)}
+                  placeholder="e.g. Chrome Extension, AI Trading Bot, Web Scraping Engine, Custom CRM..."
+                  className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder-neutral-500 focus:border-cream-400 focus:outline-none"
+                />
+              </motion.div>
+            )}
+
+            {/* Next Step CTA */}
+            <div className="pt-6 flex justify-end">
+              <MagneticButton
+                variant="primary"
+                onClick={() => setStep(2)}
+                className="px-8 py-3 text-xs uppercase tracking-wider font-semibold"
+              >
+                <span>Continue to Color Theme</span>
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+            </div>
+          </motion.div>
+        )}
+
+        {/* STEP 2: COLOR THEME & PALETTE PICKER */}
+        {step === 2 && (
+          <motion.div
+            key="step2"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-8"
+          >
+            <div className="border-b border-white/[0.08] pb-4">
+              <span className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
+                Step 02 // Aesthetics
+              </span>
+              <h2 className="text-2xl font-light text-white tracking-tight mt-1">
+                Choose Color Theme & Brand Styling
+              </h2>
+            </div>
+
+            {/* Mode Selector */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div
+                onClick={() => setColorMode("DEV_CHOOSES")}
+                className={`cursor-pointer rounded-2xl border p-6 transition-all duration-300 ${
+                  colorMode === "DEV_CHOOSES"
+                    ? "border-cream-400 bg-surfaceElevated shadow-glow"
+                    : "border-white/[0.08] bg-surface/70 hover:border-white/20"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <Sparkles className="h-4 w-4 text-cream-300" />
+                    <h3 className="text-base font-medium text-white">Let Dev Choose for You</h3>
+                  </div>
+                  <span className="rounded bg-cream-400/20 px-2 py-0.5 text-[9px] font-mono uppercase text-cream-300">
+                    Recommended
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  We will tailor a bespoke, high-contrast, modern luxury color palette optimized for your target audience, readability, and brand prestige.
+                </p>
+              </div>
+
+              <div
+                onClick={() => setColorMode("CUSTOM")}
+                className={`cursor-pointer rounded-2xl border p-6 transition-all duration-300 ${
+                  colorMode === "CUSTOM"
+                    ? "border-cream-400 bg-surfaceElevated shadow-glow"
+                    : "border-white/[0.08] bg-surface/70 hover:border-white/20"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <Palette className="h-4 w-4 text-cream-300" />
+                    <h3 className="text-base font-medium text-white">Custom Color Theme</h3>
+                  </div>
+                  <span className="rounded bg-white/10 px-2 py-0.5 text-[9px] font-mono uppercase text-neutral-300">
+                    Interactive
+                  </span>
+                </div>
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  Use the color wheel to hand-pick your primary, secondary, and accent colors. Add, edit, or remove colors to match your brand guide.
+                </p>
+              </div>
+            </div>
+
+            {/* Interactive Color Wheel & Palette Editor */}
+            {colorMode === "CUSTOM" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="rounded-3xl border border-white/[0.1] bg-surfaceElevated p-6 sm:p-8 space-y-8"
+              >
+                {/* 1. Curated Quick Inspiration Presets */}
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-400 font-mono mb-3">
+                    Quick Preset Inspirations
+                  </div>
+                  <div className="flex flex-wrap gap-2.5">
+                    {COLOR_PRESETS.map((preset) => (
+                      <button
+                        key={preset.name}
+                        type="button"
+                        onClick={() => handleApplyPreset(preset.colors)}
+                        className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-neutral-300 hover:border-white/25 hover:text-white transition-all"
+                      >
+                        <div className="flex -space-x-1.5 overflow-hidden">
+                          {preset.colors.map((c, i) => (
+                            <span
+                              key={i}
+                              className="inline-block h-3.5 w-3.5 rounded-full border border-black/40"
+                              style={{ backgroundColor: c }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[11px]">{preset.name}</span>
+                      </button>
                     ))}
                   </div>
-                )}
-              </div>
-
-              <div className="flex items-center justify-between pt-6 border-t border-white/[0.08]">
-                <MagneticButton
-                  onClick={() => setStep(2)}
-                  variant="outline"
-                  className="px-5 py-2 text-xs uppercase tracking-wider"
-                >
-                  <ArrowLeft className="h-3.5 w-3.5" />
-                  <span>Back</span>
-                </MagneticButton>
-
-                <MagneticButton
-                  onClick={() => setStep(4)}
-                  variant="primary"
-                  className="px-6 py-2.5 text-xs uppercase tracking-wider font-semibold"
-                >
-                  <span>Review & Client Verification</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </MagneticButton>
-              </div>
-            </motion.div>
-          )}
-
-          {/* STEP 4: Review & Client Ingress Gate */}
-          {step === 4 && (
-            <motion.div
-              key="step4"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-8"
-            >
-              <div>
-                <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-                  Step 04 // Review & Access
-                </div>
-                <h2 className="text-2xl font-light text-white">Review & Confirm Commission</h2>
-                <p className="text-xs text-neutral-400 mt-1">
-                  Authenticate as a client to register your commission and access your private progress timeline.
-                </p>
-              </div>
-
-              {submitError && (
-                <div className="flex items-center gap-3 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-300">
-                  <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                  <span>{submitError}</span>
-                </div>
-              )}
-
-              {/* Order Breakdown Card */}
-              <div className="rounded-xl border border-white/[0.08] bg-surfaceElevated p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
-                  <div>
-                    <div className="text-base font-normal text-white">{selectedService.title}</div>
-                    <div className="text-xs text-cream-300 font-mono mt-0.5">{selectedPackage?.name} Tier</div>
-                  </div>
-                  <div className="text-lg font-serif text-white">{formatCurrency(basePrice)}</div>
                 </div>
 
-                {selectedAddonIds.length > 0 && (
-                  <div className="space-y-2 border-b border-white/[0.06] pb-4">
-                    <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
-                      Selected Enhancements:
+                {/* 2. Color Palette Chips (Add / Edit / Remove) */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
+                      Your Active Color Palette ({colors.length}/7)
                     </div>
-                    {selectedAddonIds.map((aId) => {
-                      const addon = selectedService.addons.find((a) => a.id === aId);
+                    <button
+                      type="button"
+                      onClick={handleAddColor}
+                      disabled={colors.length >= 7}
+                      className="inline-flex items-center gap-1.5 text-xs text-cream-300 hover:text-white transition-colors disabled:opacity-40"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      <span>Add Color</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {colors.map((color, idx) => {
+                      const isSelected = selectedColorIdx === idx;
                       return (
-                        <div key={aId} className="flex items-center justify-between text-xs text-neutral-300">
-                          <span>{addon?.name}</span>
-                          <span className="font-serif text-cream-200">+{formatCurrency(addon?.price || 0)}</span>
+                        <div
+                          key={idx}
+                          onClick={() => handleSelectColorChip(idx)}
+                          className={`relative cursor-pointer rounded-xl border p-3 flex items-center justify-between transition-all ${
+                            isSelected
+                              ? "border-cream-400 bg-white/[0.06] shadow-glow"
+                              : "border-white/10 bg-black/40 hover:border-white/20"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span
+                              className="h-6 w-6 rounded-lg border border-white/20 shadow-sm"
+                              style={{ backgroundColor: color }}
+                            />
+                            <div>
+                              <div className="text-[10px] uppercase font-mono text-neutral-400">
+                                {idx === 0 ? "Base" : idx === 1 ? "Primary" : idx === 2 ? "Accent" : `Color ${idx + 1}`}
+                              </div>
+                              <div className="text-xs font-mono text-white uppercase">{color}</div>
+                            </div>
+                          </div>
+
+                          {colors.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveColor(idx);
+                              }}
+                              className="text-neutral-500 hover:text-red-400 transition-colors p-1"
+                              title="Remove color"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          )}
                         </div>
                       );
                     })}
                   </div>
-                )}
+                </div>
 
-                <div className="flex items-center justify-between pt-2">
-                  <div className="text-xs uppercase tracking-wider text-neutral-400 font-mono">Total Commission Investment</div>
-                  <div className="text-3xl font-light text-white font-serif">{formatCurrency(totalPrice)}</div>
+                {/* 3. Color Wheel & Hex Input */}
+                <div className="rounded-2xl border border-white/[0.08] bg-black/30 p-5 flex flex-col sm:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    {/* HTML5 Native Color Wheel */}
+                    <div className="relative flex items-center justify-center">
+                      <input
+                        type="color"
+                        value={activePickerColor}
+                        onChange={(e) => handleUpdateActiveColor(e.target.value)}
+                        className="h-14 w-14 cursor-pointer rounded-full border-2 border-white/30 bg-transparent p-0 transition-transform hover:scale-105"
+                        title="Click to open Color Wheel"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-neutral-400 font-mono">
+                        Color Wheel Selection
+                      </div>
+                      <div className="text-xs text-neutral-300 mt-0.5">
+                        Click the swatch to open the color wheel & adjust the hex value.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <span className="font-mono text-xs text-neutral-400">HEX:</span>
+                    <input
+                      type="text"
+                      value={activePickerColor}
+                      onChange={(e) => handleUpdateActiveColor(e.target.value)}
+                      className="w-28 rounded-lg border border-white/10 bg-black/60 px-3 py-2 text-xs font-mono uppercase text-white focus:border-cream-400 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* 4. Live UI Mockup Preview */}
+                <div className="rounded-2xl border border-white/[0.08] p-5 space-y-3">
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-400 font-mono">
+                    Live Palette Harmony Preview
+                  </div>
+                  <div
+                    className="rounded-xl p-5 border transition-all"
+                    style={{
+                      backgroundColor: colors[0] || "#090a0d",
+                      borderColor: colors[1] || "#c5a880",
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span
+                        className="text-xs font-semibold uppercase tracking-wider"
+                        style={{ color: colors[1] || "#c5a880" }}
+                      >
+                        Sample Interface Card
+                      </span>
+                      <span
+                        className="h-2 w-2 rounded-full"
+                        style={{ backgroundColor: colors[2] || "#f6f2ea" }}
+                      />
+                    </div>
+                    <p
+                      className="text-xs leading-relaxed"
+                      style={{ color: colors[2] || "#f6f2ea" }}
+                    >
+                      This preview demonstrates how your chosen base background, primary accent, and text contrast harmoniously in production.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step Controls */}
+            <div className="pt-6 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back</span>
+              </button>
+
+              <MagneticButton
+                variant="primary"
+                onClick={() => setStep(3)}
+                className="px-8 py-3 text-xs uppercase tracking-wider font-semibold"
+              >
+                <span>Continue to Details & References</span>
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+            </div>
+          </motion.div>
+        )}
+
+        {/* STEP 3: ADDITIONAL INFO & REFERENCES */}
+        {step === 3 && (
+          <motion.div
+            key="step3"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-8"
+          >
+            <div className="border-b border-white/[0.08] pb-4">
+              <span className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
+                Step 03 // Specifications
+              </span>
+              <h2 className="text-2xl font-light text-white tracking-tight mt-1">
+                Project Details, References & Uploads
+              </h2>
+            </div>
+
+            {/* 1. Requirements Textarea */}
+            <div className="space-y-2">
+              <label className="block text-xs uppercase tracking-wider text-neutral-300 font-mono">
+                Project Details & Key Features <span className="text-cream-400">*</span>
+              </label>
+              <textarea
+                value={requirements}
+                onChange={(e) => setRequirements(e.target.value)}
+                rows={5}
+                placeholder="Describe what your app should do, core features (e.g. user authentication, payment tiers, discord slash commands, web scraping targets), and any special requirements..."
+                className="w-full rounded-2xl border border-white/10 bg-surfaceElevated p-4 text-xs text-white placeholder-neutral-500 focus:border-cream-400 focus:outline-none transition-colors"
+              />
+            </div>
+
+            {/* 2. Reference Websites / Inspiration Links */}
+            <div className="space-y-2">
+              <label className="block text-xs uppercase tracking-wider text-neutral-300 font-mono">
+                Inspiration Links & Reference Websites
+              </label>
+              <input
+                type="text"
+                value={referenceLinks}
+                onChange={(e) => setReferenceLinks(e.target.value)}
+                placeholder="e.g. https://linear.app, https://stripe.com, competitor links, dribbble shots..."
+                className="w-full rounded-xl border border-white/10 bg-surfaceElevated px-4 py-3 text-xs text-white placeholder-neutral-500 focus:border-cream-400 focus:outline-none"
+              />
+            </div>
+
+            {/* 3. File & Asset Upload Dropzone */}
+            <div className="space-y-2">
+              <label className="block text-xs uppercase tracking-wider text-neutral-300 font-mono">
+                Upload Mockups, Wireframes or Brand Assets (Optional)
+              </label>
+
+              <div className="relative rounded-2xl border-2 border-dashed border-white/15 bg-surface/50 p-8 text-center hover:border-cream-400/40 transition-colors">
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleSimulatedFileUpload}
+                  className="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+                />
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/[0.04] text-neutral-400">
+                    <Upload className="h-5 w-5 text-cream-300" />
+                  </div>
+                  <div className="text-xs text-neutral-300">
+                    <span className="font-semibold text-white">Click to select files</span> or drag and drop
+                  </div>
+                  <div className="text-[10px] text-neutral-500 font-mono">
+                    PNG, JPG, PDF, SVG, DOCX, ZIP up to 64MB
+                  </div>
                 </div>
               </div>
 
-              {/* User Authentication Gate (Mandatory before submitting) */}
-              <div className="rounded-xl border border-white/[0.08] bg-surfaceElevated/70 p-6 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-xs uppercase tracking-wider text-neutral-300 font-mono">
-                      Client Authentication Status
+              {/* Uploaded File List */}
+              {uploadedFiles.length > 0 && (
+                <div className="space-y-2 pt-2">
+                  {uploadedFiles.map((f, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between rounded-xl border border-white/10 bg-surfaceElevated px-4 py-2.5 text-xs text-neutral-300"
+                    >
+                      <div className="flex items-center gap-2.5 truncate max-w-sm">
+                        <FileText className="h-4 w-4 text-cream-400 flex-shrink-0" />
+                        <span className="truncate">{f.name}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(i)}
+                        className="text-neutral-500 hover:text-red-400 transition-colors"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
                     </div>
-                    <div className="text-xs text-neutral-400 mt-1">
-                      {isUserAuthenticated
-                        ? `Authenticated as ${activeUser?.name || activeUser?.email}`
-                        : "Sign in with Google before confirming your commission."}
-                    </div>
-                  </div>
-                  {isUserAuthenticated && (
-                    <div className="flex items-center gap-1.5 text-xs text-cream-200 font-mono">
-                      <UserCheck className="h-4 w-4" />
-                      <span>Verified Client</span>
-                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Step Controls */}
+            <div className="pt-6 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back</span>
+              </button>
+
+              <MagneticButton
+                variant="primary"
+                onClick={() => {
+                  if (!requirements.trim()) {
+                    setRequirements(`Custom development project for ${activeAppType.title}.`);
+                  }
+                  setStep(4);
+                }}
+                className="px-8 py-3 text-xs uppercase tracking-wider font-semibold"
+              >
+                <span>Continue to Review</span>
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+            </div>
+          </motion.div>
+        )}
+
+        {/* STEP 4: REVIEW, AUTHENTICATION & SUBMISSION */}
+        {step === 4 && (
+          <motion.div
+            key="step4"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-8"
+          >
+            <div className="border-b border-white/[0.08] pb-4">
+              <span className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
+                Step 04 // Confirmation
+              </span>
+              <h2 className="text-2xl font-light text-white tracking-tight mt-1">
+                Review & Confirm Your Quest
+              </h2>
+            </div>
+
+            {/* Review Summary Card */}
+            <div className="rounded-3xl border border-white/[0.1] bg-surfaceElevated p-6 sm:p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">App Type</div>
+                  <div className="text-lg font-medium text-white mt-1">{activeAppType.title}</div>
+                  {activeAppType.id === "others" && customAppType && (
+                    <div className="text-xs text-cream-300 font-mono mt-0.5">({customAppType})</div>
                   )}
                 </div>
 
-                {!isUserAuthenticated && (
-                  <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                    {/* Real Google OAuth Login */}
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Visual Direction</div>
+                  <div className="flex items-center gap-2 mt-1">
+                    {colorMode === "DEV_CHOOSES" ? (
+                      <span className="text-xs text-cream-200 font-mono">Developer Curated Palette</span>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        {colors.map((c, i) => (
+                          <span
+                            key={i}
+                            className="h-4 w-4 rounded-full border border-white/20"
+                            style={{ backgroundColor: c }}
+                            title={c}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Specifications</div>
+                  <p className="text-xs text-neutral-300 mt-1 leading-relaxed whitespace-pre-wrap">
+                    {requirements || "Standard specifications as selected."}
+                  </p>
+                </div>
+
+                {referenceLinks && (
+                  <div className="md:col-span-2">
+                    <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">References</div>
+                    <div className="text-xs text-cream-300 mt-1 font-mono">{referenceLinks}</div>
+                  </div>
+                )}
+
+                {uploadedFiles.length > 0 && (
+                  <div className="md:col-span-2">
+                    <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Attachments</div>
+                    <div className="text-xs text-neutral-300 mt-1">{uploadedFiles.length} file(s) attached</div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Client Authentication Gate */}
+            <div className="rounded-3xl border border-white/[0.1] bg-surface p-6 sm:p-8 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
+                    Account Verification
+                  </div>
+                  <h3 className="text-base font-medium text-white mt-1">Client Credentials</h3>
+                </div>
+
+                {isUserAuthenticated && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 text-[11px] font-mono text-emerald-300">
+                    <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>Verified</span>
+                  </span>
+                )}
+              </div>
+
+              {!isUserAuthenticated ? (
+                <div className="space-y-4 pt-2">
+                  <p className="text-xs text-neutral-400 leading-relaxed">
+                    Please log in with Google to associate this quest with your account so you can track progress and correspond directly with our development team.
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row items-center gap-3">
                     <button
+                      type="button"
                       onClick={() => signIn("google", { callbackUrl: "/order" })}
-                      className="flex-1 flex items-center justify-center gap-2.5 rounded-full border border-white/10 bg-surface px-5 py-3 text-xs text-white hover:border-white/25 transition-all"
+                      className="w-full sm:w-auto flex items-center justify-center gap-3 rounded-full border border-white/20 bg-surfaceElevated px-6 py-2.5 text-xs font-medium text-white hover:border-white/30 transition-all"
                     >
-                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24">
+                      <svg className="h-4 w-4" viewBox="0 0 24 24">
                         <path
-                          fill="#4285F4"
-                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                          fill="#EA4335"
+                          d="M12 5c1.57 0 2.98.54 4.09 1.6l3.07-3.07C17.3 1.76 14.85 1 12 1 7.48 1 3.66 3.56 1.78 7.3l3.66 2.84C6.31 7.22 8.93 5 12 5z"
                         />
                         <path
-                          fill="#34A853"
-                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                          fill="#4285F4"
+                          d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58l3.71 2.88c2.17-2 3.42-4.94 3.42-8.7z"
                         />
                         <path
                           fill="#FBBC05"
-                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                          d="M5.44 14.86c-.24-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29L1.78 7.44C.65 9.7 0 12.23 0 15s.65 5.3 1.78 7.56l3.66-2.7z"
                         />
                         <path
-                          fill="#EA4335"
-                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                          fill="#34A853"
+                          d="M12 23c3.24 0 5.95-1.08 7.93-2.91l-3.71-2.88c-1.08.72-2.45 1.16-4.22 1.16-3.07 0-5.69-2.22-6.56-5.14L1.78 16c1.88 3.74 5.7 6.3 10.22 6.3z"
                         />
                       </svg>
-                      <span className="uppercase tracking-wider text-[11px]">Sign in with Google</span>
+                      <span>Sign in with Google</span>
                     </button>
 
-                    {/* Test Simulation Button */}
                     <button
+                      type="button"
                       onClick={handleSimulatedClientLogin}
                       disabled={simulatingAuth}
-                      className="flex-1 flex items-center justify-center gap-2 rounded-full border border-cream-400/40 bg-cream-100/10 px-5 py-3 text-xs text-cream-200 hover:bg-cream-100/20 transition-all font-mono"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full border border-cream-400/30 bg-cream-400/10 px-5 py-2.5 text-xs text-cream-300 hover:bg-cream-400/20 transition-all font-mono"
                     >
-                      <Zap className="h-3.5 w-3.5 text-cream-300" />
-                      <span>{simulatingAuth ? "Simulating..." : "⚡ Test Mode: Simulate Client Login"}</span>
+                      <Zap className="h-3.5 w-3.5 text-cream-400" />
+                      <span>{simulatingAuth ? "Simulating..." : "Test Simulation Login"}</span>
                     </button>
                   </div>
-                )}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-white/[0.08] bg-black/30 p-4 flex items-center justify-between text-xs">
+                  <div>
+                    <div className="text-white font-medium">{activeUser?.name}</div>
+                    <div className="text-neutral-400 font-mono text-[11px]">{activeUser?.email}</div>
+                  </div>
+                  <span className="text-neutral-500 font-mono text-[10px]">Client Suite Ready</span>
+                </div>
+              )}
+            </div>
+
+            {submitError && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 flex items-center gap-3 text-xs text-red-300">
+                <AlertCircle className="h-4 w-4 text-red-400 flex-shrink-0" />
+                <span>{submitError}</span>
               </div>
+            )}
 
-              <div className="flex items-center justify-between pt-6 border-t border-white/[0.08]">
-                <MagneticButton
-                  onClick={() => setStep(3)}
-                  disabled={isSubmitting}
-                  variant="outline"
-                  className="px-5 py-2 text-xs uppercase tracking-wider"
-                >
-                  <ArrowLeft className="h-3.5 w-3.5" />
-                  <span>Back</span>
-                </MagneticButton>
+            {/* Submit & Back Controls */}
+            <div className="pt-6 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back</span>
+              </button>
 
-                <MagneticButton
-                  onClick={handleSubmitOrder}
-                  disabled={isSubmitting || !isUserAuthenticated}
-                  variant="primary"
-                  className="px-8 py-3 text-xs uppercase tracking-widest font-semibold disabled:opacity-40"
-                >
-                  {isSubmitting ? (
-                    <span>Registering Commission...</span>
-                  ) : !isUserAuthenticated ? (
-                    <span>Please Authenticate to Confirm</span>
-                  ) : (
-                    <>
-                      <CreditCard className="h-3.5 w-3.5" />
-                      <span>Confirm Commission ({formatCurrency(totalPrice)})</span>
-                    </>
-                  )}
-                </MagneticButton>
+              <MagneticButton
+                variant="primary"
+                onClick={handleSubmitOrder}
+                disabled={isSubmitting}
+                className="px-10 py-3.5 text-xs uppercase tracking-widest font-semibold"
+              >
+                <span>{isSubmitting ? "Submitting Quest..." : "Submit Order Now"}</span>
+                <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+            </div>
+          </motion.div>
+        )}
+
+        {/* STEP 5: SUCCESS & DIRECT ACCESS TO MY ORDERS */}
+        {step === 5 && (
+          <motion.div
+            key="step5"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="rounded-3xl border border-white/[0.12] bg-surfaceElevated p-8 sm:p-14 text-center max-w-2xl mx-auto space-y-8"
+          >
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-cream-400/40 bg-cream-400/10 mx-auto text-cream-300 shadow-glow">
+              <Check className="h-8 w-8 stroke-[2.5]" />
+            </div>
+
+            <div className="space-y-3">
+              <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
+                Order Registered // {orderSuccessId || "PENDING"}
               </div>
-            </motion.div>
-          )}
-
-          {/* STEP 5: Success Confirmation */}
-          {step === 5 && (
-            <motion.div
-              key="step5"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-12 space-y-6"
-            >
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-cream-100 text-neutral-900 shadow-sm">
-                <Check className="h-7 w-7" />
-              </div>
-
-              <h2 className="text-3xl font-light text-white">Commission Confirmed</h2>
-              <p className="text-xs text-neutral-400 max-w-md mx-auto leading-relaxed">
-                Your commission reference <span className="font-mono text-cream-200">{orderSuccessId}</span> has been entered into our atelier production queue.
+              <h2 className="text-3xl font-light text-white tracking-tight">
+                Your Quest Has Been Placed
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-md mx-auto">
+                Our engineering team has received your specifications. You can now access your private orders dashboard to check live progress, review milestones, and chat directly with staff.
               </p>
+            </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/dashboard" className="w-full sm:w-auto">
                 <MagneticButton
-                  onClick={() => router.push("/dashboard")}
                   variant="primary"
-                  className="px-6 py-2.5 text-xs uppercase tracking-wider font-semibold"
+                  className="w-full sm:w-auto px-8 py-3.5 text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2"
                 >
-                  <span>Open Client Suite</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <MessageSquare className="h-4 w-4" />
+                  <span>Go to My Orders & Chat with Dev</span>
                 </MagneticButton>
+              </Link>
 
+              <Link href="/services" className="w-full sm:w-auto">
                 <MagneticButton
-                  onClick={() => router.push("/services")}
                   variant="outline"
-                  className="px-5 py-2.5 text-xs uppercase tracking-wider"
+                  className="w-full sm:w-auto px-6 py-3.5 text-xs uppercase tracking-widest"
                 >
-                  <span>Return to Index</span>
+                  <span>Explore Catalog</span>
                 </MagneticButton>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -683,8 +1042,8 @@ export default function OrderWizardPage() {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-5xl py-24 text-center text-xs text-neutral-400 font-mono uppercase tracking-widest">
-          Loading Atelier Commission Suite...
+        <div className="min-h-[70vh] flex items-center justify-center text-xs font-mono text-neutral-500">
+          Loading quest configurator...
         </div>
       }
     >

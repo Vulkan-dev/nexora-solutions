@@ -109,7 +109,7 @@ export default function ServiceDetailPage({
                     variant={isFeatured ? "primary" : "secondary"}
                     className="w-full py-3 text-xs uppercase tracking-wider font-semibold"
                   >
-                    <span>Commission {pkg.name}</span>
+                    <span>Order {pkg.name}</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </MagneticButton>
                 </Link>
