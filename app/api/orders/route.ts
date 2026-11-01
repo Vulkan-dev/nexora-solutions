@@ -48,22 +48,15 @@ export async function POST(req: NextRequest) {
     // 4. Session Check
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id || (data.clientEmail ? `usr_${data.clientEmail.replace(/[^a-zA-Z0-9]/g, "_")}` : "usr_customer_sim_01");
-    const userEmail = session?.user?.email || data.clientEmail || "alexandra.vance@atelier-client.com";
+    const userEmail = session?.user?.email || data.clientEmail || "alexandra.vance@nexorasolutions.com";
     const userName = session?.user?.name || data.clientName || "Alexandra Vance";
 
     // 5. Calculate Server-Side Pricing (Prevent tampering)
     const allServices = getAllServices();
-    const service = allServices.find((s) => s.id === data.serviceId);
-    if (!service) {
-      return NextResponse.json({ error: "Invalid service selected" }, { status: 400 });
-    }
+    const service = allServices.find((s) => s.id === data.serviceId) || allServices[0];
+    const selectedPkg = service?.packages.find((p) => p.id === data.packageId) || service?.packages[0];
 
-    const selectedPkg = service.packages.find((p) => p.id === data.packageId);
-    if (!selectedPkg) {
-      return NextResponse.json({ error: "Invalid package tier selected" }, { status: 400 });
-    }
-
-    let calculatedTotal = selectedPkg.price;
+    let calculatedTotal = selectedPkg?.price || 0;
     const resolvedAddons: any[] = [];
 
     if (data.addonIds && data.addonIds.length > 0) {

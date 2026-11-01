@@ -30,10 +30,10 @@ export default function Navbar() {
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 sm:px-10 lg:px-16">
         {/* Brand Logo */}
         <Link href="/" className="group flex items-baseline gap-2 text-white">
-          <span className="text-sm font-semibold tracking-[0.2em] uppercase text-cream-100">
-            RADIANT
+          <span className="text-sm font-semibold tracking-[0.25em] uppercase text-cream-100">
+            NEXORA
           </span>
-          <span className="text-[10px] text-neutral-500 tracking-widest uppercase">Atelier</span>
+          <span className="text-[10px] text-neutral-500 tracking-[0.25em] uppercase">Solutions</span>
         </Link>
 
         {/* Center Minimal Navigation */}

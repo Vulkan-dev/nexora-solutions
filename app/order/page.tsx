@@ -6,30 +6,24 @@ import { useSession, signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { getAllServices } from "@/lib/catalog";
-import { formatCurrency } from "@/lib/utils";
 import MagneticButton from "@/components/ui/MagneticButton";
 import {
   Check,
-  Clock,
   ArrowRight,
   ArrowLeft,
   Upload,
   FileText,
-  CreditCard,
   Trash2,
   AlertCircle,
-  LogIn,
   Zap,
   UserCheck,
   Layers,
   Globe,
   Bot,
-  Workflow,
   Sparkles,
   Palette,
   Plus,
   X,
-  ExternalLink,
   MessageSquare,
 } from "lucide-react";
 
@@ -65,7 +59,6 @@ const APP_TYPES = [
     badge: "Most Requested",
     icon: Layers,
     desc: "Multi-tenant platforms, recurring Stripe subscriptions, auth, user & admin dashboards, databases.",
-    startingPrice: 2800,
   },
   {
     id: "fullstack",
@@ -74,7 +67,6 @@ const APP_TYPES = [
     badge: "Core Engineering",
     icon: Globe,
     desc: "Next.js 14+ App Router, responsive modern UI, custom APIs, PostgreSQL / Supabase, payments.",
-    startingPrice: 1900,
   },
   {
     id: "discord",
@@ -83,16 +75,6 @@ const APP_TYPES = [
     badge: "Community Tools",
     icon: Bot,
     desc: "Slash commands, auto-roles, payment/crypto gating, AI moderation, and web management dashboard.",
-    startingPrice: 750,
-  },
-  {
-    id: "automations",
-    serviceId: "srv-automations",
-    title: "Automations & Workflows",
-    badge: "Efficiency Engine",
-    icon: Workflow,
-    desc: "Background jobs, data scrapers, multi-app webhooks, AI agent pipelines, Discord/Telegram alerts.",
-    startingPrice: 950,
   },
   {
     id: "others",
@@ -101,7 +83,6 @@ const APP_TYPES = [
     badge: "Bespoke Request",
     icon: Sparkles,
     desc: "Custom scripts, integrations, unique architectures, or specialized software engineering.",
-    startingPrice: 1500,
   },
 ];
 
@@ -130,7 +111,9 @@ function OrderWizardContent() {
   // Step 3: Requirements & References
   const [requirements, setRequirements] = useState<string>("");
   const [referenceLinks, setReferenceLinks] = useState<string>("");
-  const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; url: string; type: string; size?: number }>>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<
+    Array<{ name: string; url: string; type: string; size?: number; previewUrl?: string }>
+  >([]);
 
   // Auth & Submission State
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -187,12 +170,17 @@ function OrderWizardContent() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const newFiles = Array.from(files).map((f) => ({
-      name: f.name,
-      url: `https://utfs.io/f/atelier-${Math.random().toString(36).substring(2, 8)}-${f.name}`,
-      type: f.type || "application/octet-stream",
-      size: f.size,
-    }));
+    const newFiles = Array.from(files).map((f) => {
+      const isImg = f.type.startsWith("image/") || /\.(png|jpe?g|webp|gif|svg)$/i.test(f.name);
+      const previewUrl = isImg ? URL.createObjectURL(f) : undefined;
+      return {
+        name: f.name,
+        url: `https://storage.nexorasolutions.com/uploads/${Math.random().toString(36).substring(2, 8)}-${f.name.replace(/\s+/g, "-")}`,
+        type: f.type || "application/octet-stream",
+        size: f.size,
+        previewUrl,
+      };
+    });
 
     setUploadedFiles((prev) => [...prev, ...newFiles]);
   };
@@ -207,14 +195,14 @@ function OrderWizardContent() {
       await signIn("simulated-auth", {
         role: "CUSTOMER",
         name: "Alexandra Vance",
-        email: "alexandra.vance@atelier-client.com",
+        email: "alexandra.vance@nexorasolutions.com",
         redirect: false,
       });
 
       setSimulatedSession({
         user: {
           name: "Alexandra Vance",
-          email: "alexandra.vance@atelier-client.com",
+          email: "alexandra.vance@nexorasolutions.com",
           role: "CUSTOMER",
         },
       });
@@ -307,7 +295,7 @@ function OrderWizardContent() {
                 disabled={step === 5}
                 className={`flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-mono transition-all ${
                   step === s.num
-                    ? "bg-cream-100 text-neutral-900 font-semibold shadow-atelier"
+                    ? "bg-cream-100 text-neutral-900 font-semibold shadow-glow"
                     : step > s.num
                     ? "border border-white/20 bg-surface text-neutral-300 hover:border-cream-400/30"
                     : "border border-white/[0.06] bg-transparent text-neutral-500 opacity-60"
@@ -378,8 +366,8 @@ function OrderWizardContent() {
                     </div>
 
                     <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
-                      <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
-                        From {formatCurrency(type.startingPrice)}
+                      <span className="text-[10px] uppercase tracking-widest text-cream-300 font-mono">
+                        Bespoke Scope
                       </span>
                       <div
                         className={`h-4 w-4 rounded-full border flex items-center justify-center transition-all ${
@@ -757,27 +745,53 @@ function OrderWizardContent() {
                 </div>
               </div>
 
-              {/* Uploaded File List */}
+              {/* Uploaded File List with Visual Image Preview */}
               {uploadedFiles.length > 0 && (
-                <div className="space-y-2 pt-2">
-                  {uploadedFiles.map((f, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between rounded-xl border border-white/10 bg-surfaceElevated px-4 py-2.5 text-xs text-neutral-300"
-                    >
-                      <div className="flex items-center gap-2.5 truncate max-w-sm">
-                        <FileText className="h-4 w-4 text-cream-400 flex-shrink-0" />
-                        <span className="truncate">{f.name}</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeFile(i)}
-                        className="text-neutral-500 hover:text-red-400 transition-colors"
+                <div className="space-y-3 pt-3">
+                  <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono">
+                    Attached Files & Previews ({uploadedFiles.length})
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {uploadedFiles.map((f, i) => (
+                      <div
+                        key={i}
+                        className="group relative flex items-center justify-between rounded-2xl border border-white/10 bg-surfaceElevated p-3 text-xs text-neutral-300 hover:border-cream-400/30 transition-all"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  ))}
+                        <div className="flex items-center gap-3 truncate min-w-0">
+                          {f.previewUrl ? (
+                            <img
+                              src={f.previewUrl}
+                              alt={f.name}
+                              className="h-12 w-12 rounded-xl object-cover border border-white/20 shrink-0 bg-black/40 shadow-sm"
+                            />
+                          ) : (
+                            <div className="h-12 w-12 rounded-xl border border-white/10 bg-white/[0.03] flex items-center justify-center shrink-0 text-cream-400">
+                              <FileText className="h-5 w-5" />
+                            </div>
+                          )}
+                          <div className="truncate min-w-0">
+                            <div className="truncate font-medium text-white">{f.name}</div>
+                            <div className="text-[10px] text-neutral-500 font-mono flex items-center gap-2 mt-0.5">
+                              {f.previewUrl ? (
+                                <span className="text-emerald-400">Image Preview Ready</span>
+                              ) : (
+                                <span>Document</span>
+                              )}
+                              {f.size && <span>• {(f.size / 1024).toFixed(1)} KB</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeFile(i)}
+                          className="text-neutral-500 hover:text-red-400 transition-colors p-2 shrink-0 ml-2"
+                          title="Remove file"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -876,8 +890,30 @@ function OrderWizardContent() {
 
                 {uploadedFiles.length > 0 && (
                   <div className="md:col-span-2">
-                    <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Attachments</div>
-                    <div className="text-xs text-neutral-300 mt-1">{uploadedFiles.length} file(s) attached</div>
+                    <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-2">
+                      Attachments ({uploadedFiles.length})
+                    </div>
+                    <div className="flex flex-wrap gap-2.5">
+                      {uploadedFiles.map((f, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-black/40 p-2 pr-3 text-xs"
+                        >
+                          {f.previewUrl ? (
+                            <img
+                              src={f.previewUrl}
+                              alt={f.name}
+                              className="h-8 w-8 rounded-lg object-cover border border-white/20"
+                            />
+                          ) : (
+                            <div className="h-8 w-8 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center text-cream-400">
+                              <FileText className="h-4 w-4" />
+                            </div>
+                          )}
+                          <span className="truncate max-w-[150px] text-neutral-300 font-mono text-[11px]">{f.name}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

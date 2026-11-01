@@ -25,7 +25,7 @@ function SignInContent() {
       const res = await signIn("simulated-auth", {
         role,
         name: role === "ADMIN" ? "Studio Lead Director" : "Alexandra Vance",
-        email: role === "ADMIN" ? "director@radiant-atelier.com" : "alexandra.vance@atelier-client.com",
+        email: role === "ADMIN" ? "director@nexorasolutions.com" : "alexandra.vance@nexorasolutions.com",
         redirect: false,
         callbackUrl: targetUrl,
       });

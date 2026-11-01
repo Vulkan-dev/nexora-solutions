@@ -47,9 +47,9 @@ export default function InteractiveHero() {
       <div className="flex items-center justify-between text-[11px] tracking-widest uppercase text-neutral-400 border-b border-white/[0.08] pb-4 mb-12">
         <div className="flex items-center gap-3">
           <span className="h-1.5 w-1.5 rounded-full bg-cream-400" />
-          <span className="font-mono text-neutral-300">Atelier Studio — Private Editions</span>
+          <span className="font-mono text-neutral-300">Nexora Solutions — Engineering Studio</span>
         </div>
-        <div className="hidden sm:block text-neutral-500 font-mono">Digital Direction & Architecture</div>
+        <div className="hidden sm:block text-neutral-500 font-mono">Full-Stack Development & Architecture</div>
         <div className="font-mono text-neutral-500">Vol. XXIV</div>
       </div>
 
@@ -65,16 +65,16 @@ export default function InteractiveHero() {
         className="max-w-4xl py-4 sm:py-8"
       >
         <div className="text-[11px] uppercase tracking-widest text-cream-400 mb-5 font-mono">
-          [ Full-Stack Engineering • SaaS • Automations • Discord Bots ]
+          [ Full-Stack Web Development • SaaS Systems • Discord Bots ]
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-white leading-[1.08]">
           High-Performance <br />
-          <span className="font-serif italic text-cream-200">SaaS, Web Apps</span> & Automations.
+          <span className="font-serif italic text-cream-200">SaaS, Web Apps</span> & Discord Bots.
         </h1>
 
         <p className="mt-6 text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed">
-          I build production-grade full-stack web applications, scalable SaaS systems, intelligent workflow automations, and custom Discord bots with clean architecture, robust security, and cinematic UI.
+          I build production-grade full-stack web applications, scalable SaaS systems, and custom Discord bots with clean architecture, robust security, and cinematic UI.
         </p>
 
         {/* Action Magnetic Buttons */}
@@ -102,11 +102,11 @@ export default function InteractiveHero() {
         </div>
         <div>
           <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Offerings</div>
-          <div className="text-cream-300 mt-1 font-medium">Web Apps • Bots • Automations</div>
+          <div className="text-cream-300 mt-1 font-medium">Web Apps • SaaS • Discord Bots</div>
         </div>
         <div>
           <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Core Tech</div>
-          <div className="text-neutral-200 mt-1 font-medium">Next.js • Supabase • Python</div>
+          <div className="text-neutral-200 mt-1 font-medium">Next.js • Supabase • TypeScript</div>
         </div>
         <div>
           <div className="text-neutral-500 uppercase text-[10px] tracking-widest font-mono">Availability</div>

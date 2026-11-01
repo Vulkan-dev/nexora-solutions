@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
         const role: "CUSTOMER" | "ADMIN" = credentials.role === "ADMIN" ? "ADMIN" : "CUSTOMER";
         const email =
           credentials.email ||
-          (role === "ADMIN" ? "director@radiant-atelier.com" : "alexandra.vance@atelier-client.com");
+          (role === "ADMIN" ? "director@nexorasolutions.com" : "alexandra.vance@nexorasolutions.com");
         const name =
           credentials.name || (role === "ADMIN" ? "Lead Studio Director" : "Alexandra Vance");
 

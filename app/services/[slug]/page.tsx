@@ -80,10 +80,10 @@ export default function ServiceDetailPage({
                   </p>
 
                   <div className="mb-6 flex items-baseline gap-2">
-                    <span className="text-3xl font-light text-white font-serif">
-                      {formatCurrency(pkg.price)}
+                    <span className="text-xl font-light text-cream-200 font-mono">
+                      Custom Scope
                     </span>
-                    <span className="text-[11px] text-neutral-500 uppercase tracking-wider">production fee</span>
+                    <span className="text-[11px] text-neutral-500 uppercase tracking-wider font-mono">// Tailored Delivery</span>
                   </div>
 
                   <div className="mb-8 flex items-center gap-2 rounded-xl bg-white/[0.03] px-3.5 py-2 text-xs text-neutral-300 border border-white/[0.05]">
@@ -135,10 +135,10 @@ export default function ServiceDetailPage({
               >
                 <div>
                   <div className="text-sm font-medium text-white">{addon.name}</div>
-                  <div className="text-[11px] text-neutral-500 mt-0.5">Bespoke Add-on</div>
+                  <div className="text-[11px] text-neutral-500 mt-0.5">Bespoke Enhancement</div>
                 </div>
-                <div className="text-sm font-serif text-cream-200">
-                  +{formatCurrency(addon.price)}
+                <div className="text-xs font-mono text-cream-200">
+                  Included on Request
                 </div>
               </div>
             ))}

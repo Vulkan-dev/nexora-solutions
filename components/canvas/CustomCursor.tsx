@@ -26,7 +26,7 @@ export default function CustomCursor() {
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    const savedPref = localStorage.getItem("radiant_dragon_enabled");
+    const savedPref = localStorage.getItem("nexora_dragon_enabled") ?? localStorage.getItem("radiant_dragon_enabled");
     if (savedPref !== null) {
       setDragonEnabled(savedPref === "true");
     }
@@ -38,7 +38,7 @@ export default function CustomCursor() {
     const nextState = !dragonEnabled;
     setDragonEnabled(nextState);
     try {
-      localStorage.setItem("radiant_dragon_enabled", String(nextState));
+      localStorage.setItem("nexora_dragon_enabled", String(nextState));
     } catch (_) {}
   };
 

@@ -6,11 +6,12 @@ import SmoothScroll from "@/components/ui/SmoothScroll";
 import SessionProviderWrapper from "@/components/ui/SessionProviderWrapper";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export const metadata: Metadata = {
-  title: "RADIANT | Kinetic Web Architecture & Full-Stack Platform",
+  title: "Nexora Solutions | Full-Stack Web, SaaS & Discord Systems",
   description:
-    "Ultra-high performance, cinematic digital platform engineered with Next.js 14, spring-physics interactions, and enterprise security.",
+    "Bespoke engineering for high-performance full-stack web applications, scalable SaaS systems, and custom Discord bots with cinematic visual craft.",
 };
 
 export default function RootLayout({
@@ -20,9 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className="min-h-screen bg-background text-neutral-100 antialiased flex flex-col selection:bg-blue-600/30 selection:text-white">
+      <body className="min-h-screen bg-background text-neutral-100 antialiased flex flex-col selection:bg-cream-400/30 selection:text-white">
         <SessionProviderWrapper>
           <SmoothScroll>
+            {/* Custom Cinematic Loading Screen */}
+            <LoadingScreen />
+
             {/* Ambient Kinetic Canvas Layers */}
             <ParticleBackground />
             <CustomCursor />

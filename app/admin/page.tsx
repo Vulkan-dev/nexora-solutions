@@ -98,7 +98,7 @@ export default function AdminPanelPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/[0.08] gap-4">
         <div>
           <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-            Operations Console // Atelier Control
+            Operations Console // Nexora Solutions Management
           </div>
           <h1 className="text-3xl font-light text-white">Studio Management Hub</h1>
           <p className="text-xs text-neutral-400 mt-1">

@@ -26,7 +26,7 @@ export default function HomePage() {
         </div>
 
         <TextReveal
-          text="I engineer production-ready full stack web applications, scalable SaaS systems, intelligent workflow automations, and custom Discord bots. Fast turnaround, clean maintainable code, resilient databases, and cinematic user interfaces."
+          text="I engineer production-ready full stack web applications, scalable SaaS systems, and custom Discord bots. Fast turnaround, clean maintainable code, resilient databases, and cinematic user interfaces."
           className="text-2xl sm:text-4xl md:text-5xl font-light tracking-tight text-cream-100 leading-[1.25]"
           wordClassName="hover:text-cream-400 transition-colors"
         />
@@ -41,8 +41,8 @@ export default function HomePage() {
             <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Stripe, Auth & PostgreSQL</div>
           </div>
           <div>
-            <div className="text-white font-serif text-lg">Bots & Automations</div>
-            <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Discord.js & Background Pipelines</div>
+            <div className="text-white font-serif text-lg">Discord Bots</div>
+            <div className="text-[11px] text-neutral-500 uppercase tracking-wider mt-0.5">Discord.js & Community Tools</div>
           </div>
         </div>
       </section>
@@ -95,8 +95,8 @@ export default function HomePage() {
 
                   <div className="pt-6 flex items-center gap-6">
                     <div>
-                      <div className="text-[10px] uppercase tracking-widest text-neutral-500">Starting Investment</div>
-                      <div className="text-2xl font-light text-white font-serif">{formatCurrency(featured.basePrice)}</div>
+                      <div className="text-[10px] uppercase tracking-widest text-neutral-500">Project Scope</div>
+                      <div className="text-xl font-light text-cream-200 font-mono">Bespoke Estimate</div>
                     </div>
 
                     <Link href={`/order?type=saas`}>
@@ -111,7 +111,7 @@ export default function HomePage() {
                 {/* Right Decorative Aesthetic Panel */}
                 <div className="lg:col-span-5 h-full min-h-[260px] rounded-xl border border-white/[0.08] bg-black/40 p-6 flex flex-col justify-between">
                   <div className="flex justify-between items-start text-xs text-neutral-500 font-mono">
-                    <span>EDITION: ATELIER-01</span>
+                    <span>EDITION: NEXORA-01</span>
                     <span>STUDIO VERIFIED</span>
                   </div>
 
@@ -169,13 +169,13 @@ export default function HomePage() {
 
               <div className="mt-8 pt-4 border-t border-white/[0.08] flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-neutral-500">Tier Starting</div>
-                  <div className="text-xl font-light text-white font-serif">{formatCurrency(service.basePrice)}</div>
+                  <div className="text-[10px] uppercase tracking-widest text-neutral-500">Scope</div>
+                  <div className="text-sm font-light text-cream-200 font-mono">Tailored Estimate</div>
                 </div>
 
                 <Link href={`/services/${service.slug}`}>
                   <MagneticButton variant="outline" className="px-5 py-2 text-xs uppercase tracking-wider">
-                    <span>Examine</span>
+                    <span>Inspect</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </MagneticButton>
                 </Link>

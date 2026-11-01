@@ -18,7 +18,6 @@ export default function ServicesPage() {
     "Software as a Service",
     "Web Engineering",
     "Bot Development",
-    "Automation Engineering",
   ];
 
   const filteredServices = allServices.filter((service) => {
@@ -34,13 +33,13 @@ export default function ServicesPage() {
       {/* Header */}
       <div className="max-w-3xl mb-16">
         <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-3">
-          Disciplines & Editions // 01
+          Nexora Solutions // Capabilities
         </div>
         <h1 className="text-4xl sm:text-5xl font-light text-white tracking-tight leading-tight">
-          Commission Catalog & Works
+          Software & System Disciplines
         </h1>
         <p className="mt-4 text-sm text-neutral-400 leading-relaxed max-w-xl">
-          Every commission includes dedicated creative direction, custom kinetic modeling, private client suite tracking, and perpetual production licensing.
+          Every project includes dedicated full-stack architecture, clean codebases, private milestone tracking, and direct developer correspondence.
         </p>
       </div>
 
@@ -76,31 +75,33 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      {/* Services Grid (Editorial layout) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Services Grid (Balanced 3-column layout) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
         {filteredServices.map((service, idx) => (
-          <TiltCard key={service.id} className="flex flex-col justify-between p-8 bg-surface">
-            <div className="space-y-5">
-              <div className="flex items-center justify-between text-xs font-mono text-neutral-500">
-                <span>0{idx + 1} // {service.category}</span>
-                <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3 text-cream-400" />
-                  {service.packages[0]?.deliveryDays}d
-                </span>
+          <TiltCard key={service.id} className="flex flex-col justify-between p-8 bg-surface h-full">
+            <div className="flex-1 flex flex-col justify-between space-y-5">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-xs font-mono text-neutral-500">
+                  <span>0{idx + 1} // {service.category}</span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-3 w-3 text-cream-400" />
+                    {service.packages[0]?.deliveryDays}d
+                  </span>
+                </div>
+
+                <h2 className="text-2xl font-normal text-white">
+                  <Link href={`/services/${service.slug}`} className="hover:text-cream-200 transition-colors">
+                    {service.title}
+                  </Link>
+                </h2>
+
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                  {service.description}
+                </p>
               </div>
 
-              <h2 className="text-2xl font-normal text-white">
-                <Link href={`/services/${service.slug}`} className="hover:text-cream-200 transition-colors">
-                  {service.title}
-                </Link>
-              </h2>
-
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                {service.description}
-              </p>
-
-              {/* Package Tiers Preview */}
-              <div className="pt-4 border-t border-white/[0.06] space-y-2.5">
+              {/* Package Tiers Preview (Equally spaced and aligned) */}
+              <div className="pt-4 border-t border-white/[0.06] space-y-2.5 mt-auto">
                 <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">
                   Production Tiers:
                 </div>
@@ -113,17 +114,20 @@ export default function ServicesPage() {
                       <div className="font-medium text-neutral-200">{pkg.name}</div>
                       <div className="text-[10px] text-neutral-500">{pkg.features.length} deliverables included</div>
                     </div>
-                    <div className="font-serif text-cream-200">{formatCurrency(pkg.price)}</div>
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-cream-300">
+                      Tiered Scope
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* Pinned Bottom Action Bar (Symmetrically aligned across all cards) */}
             <div className="mt-8 pt-4 border-t border-white/[0.08] flex items-center justify-between">
               <div>
-                <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Starting At</div>
-                <div className="text-xl font-light text-white font-serif">
-                  {formatCurrency(service.basePrice)}
+                <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono">Estimate</div>
+                <div className="text-sm font-medium text-cream-200 font-mono">
+                  Custom Quote
                 </div>
               </div>
 

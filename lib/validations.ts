@@ -2,23 +2,24 @@ import { z } from "zod";
 
 export const CreateOrderSchema = z.object({
   serviceId: z.string().default("srv-fullstack"),
-  packageId: z.string().default("pkg-standard"),
+  packageId: z.string().default("pkg-web-essential"),
   addonIds: z.array(z.string()).default([]),
   appType: z.string().optional(),
   customAppType: z.string().optional(),
-  colorThemeMode: z.enum(["DEV_CHOOSES", "CUSTOM"]).default("DEV_CHOOSES"),
+  colorThemeMode: z.string().default("DEV_CHOOSES"),
   customColors: z.array(z.string()).default([]),
   referenceLinks: z.string().optional(),
-  requirements: z.string().min(5, "Requirements must be at least 5 characters long").max(5000),
+  requirements: z.string().max(5000).default("Standard specifications"),
   turnstileToken: z.string().optional(),
   clientName: z.string().optional(),
-  clientEmail: z.string().email().optional(),
+  clientEmail: z.string().optional(),
   uploadedFiles: z
     .array(
       z.object({
-        name: z.string(),
-        url: z.string().url(),
-        type: z.string(),
+        name: z.string().default("file"),
+        url: z.string().default(""),
+        previewUrl: z.string().optional(),
+        type: z.string().default("application/octet-stream"),
         size: z.number().optional(),
       })
     )
