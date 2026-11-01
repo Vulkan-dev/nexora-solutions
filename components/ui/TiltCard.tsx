@@ -7,15 +7,15 @@ import { cn } from "@/lib/utils";
 interface TiltCardProps {
   children: React.ReactNode;
   className?: string;
-  maxTilt?: number; // degrees
+  maxTilt?: number;
   glareOpacity?: number;
 }
 
 export default function TiltCard({
   children,
   className,
-  maxTilt = 12,
-  glareOpacity = 0.15,
+  maxTilt = 8,
+  glareOpacity = 0.08,
 }: TiltCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -24,12 +24,12 @@ export default function TiltCard({
   const mouseY = useMotionValue(0.5);
 
   const rotateX = useSpring(useTransform(mouseY, [0, 1], [maxTilt, -maxTilt]), {
-    stiffness: 250,
-    damping: 25,
+    stiffness: 220,
+    damping: 28,
   });
   const rotateY = useSpring(useTransform(mouseX, [0, 1], [-maxTilt, maxTilt]), {
-    stiffness: 250,
-    damping: 25,
+    stiffness: 220,
+    damping: 28,
   });
 
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });
@@ -45,10 +45,7 @@ export default function TiltCard({
     setGlarePos({ x: x * 100, y: y * 100 });
   };
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
+  const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => {
     setIsHovered(false);
     mouseX.set(0.5);
@@ -56,7 +53,7 @@ export default function TiltCard({
   };
 
   return (
-    <div style={{ perspective: 1000 }} className="h-full">
+    <div style={{ perspective: 1200 }} className="h-full">
       <motion.div
         ref={cardRef}
         onMouseMove={handleMouseMove}
@@ -68,22 +65,20 @@ export default function TiltCard({
           transformStyle: "preserve-3d",
         }}
         className={cn(
-          "relative h-full overflow-hidden rounded-2xl border border-borderDark bg-surface/90 p-6 backdrop-blur-xl transition-shadow duration-300",
-          isHovered ? "shadow-card-glow border-neutral-600/60" : "shadow-md",
+          "relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-surface p-6 sm:p-8 transition-colors duration-300 hover:border-white/[0.18]",
           className
         )}
       >
-        {/* Specular Glare Overlay */}
+        {/* Subtle, soft specular sheen */}
         <div
           className="pointer-events-none absolute inset-0 transition-opacity duration-300"
           style={{
             opacity: isHovered ? glareOpacity : 0,
-            background: `radial-gradient(circle 280px at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.4), transparent 80%)`,
+            background: `radial-gradient(circle 320px at ${glarePos.x}% ${glarePos.y}%, rgba(255,250,240,0.3), transparent 75%)`,
           }}
         />
 
-        {/* Content with subtle z-elevation */}
-        <div style={{ transform: "translateZ(30px)" }} className="relative z-10 h-full">
+        <div style={{ transform: "translateZ(18px)" }} className="relative z-10 h-full">
           {children}
         </div>
       </motion.div>

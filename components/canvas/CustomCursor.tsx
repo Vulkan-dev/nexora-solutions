@@ -2,178 +2,216 @@
 
 import React, { useEffect, useRef } from "react";
 
-interface Segment {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  angle: number;
-}
-
 export default function CustomCursor() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: -100, y: -100, targetX: -100, targetY: -100, isHovering: false });
-  const segmentsRef = useRef<Segment[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    // Only enable on pointer/fine devices (desktop mouse)
+    // Only activate on devices with fine pointer (mouse)
     if (typeof window === "undefined" || window.matchMedia("(pointer: coarse)").matches) {
       return;
     }
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const svg = svgRef.current;
+    const screenGroup = svg?.querySelector("#screen");
+    if (!svg || !screenGroup) return;
 
-    let animationFrameId: number;
-    const NUM_SEGMENTS = 26;
-    const SEGMENT_DIST = 9;
+    const xmlns = "http://www.w3.org/2000/svg";
+    const xlinkns = "http://www.w3.org/1999/xlink";
 
-    // Initialize segments
-    segmentsRef.current = Array.from({ length: NUM_SEGMENTS }, () => ({
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-      vx: 0,
-      vy: 0,
-      angle: 0,
-    }));
+    const viewBoxWidth = 300;
+    const viewBoxHeight = 300;
+    const viewBoxXMin = -150;
+    const viewBoxYMin = -150;
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    const mapToSvgCoords = (pixelX: number, pixelY: number) => {
+      const svgX = (pixelX / width) * viewBoxWidth + viewBoxXMin;
+      const svgY = (pixelY / height) * viewBoxHeight + viewBoxYMin;
+      return { x: svgX, y: svgY };
+    };
+
+    const N = 30;
+    const elems: Array<{ use: SVGUseElement | null; x: number; y: number }> = [];
+    const initialCoords = mapToSvgCoords(width / 2, height / 2);
+
+    for (let i = 0; i < N; i++) {
+      elems[i] = { use: null, x: initialCoords.x, y: initialCoords.y };
+    }
+
+    const pointer = { x: initialCoords.x, y: initialCoords.y };
+    const radm = Math.min(viewBoxWidth, viewBoxHeight) / 6 - 20;
+    let frm = Math.random();
+    let rad = 0;
+
+    // Clear any previous elements in screenGroup
+    while (screenGroup.firstChild) {
+      screenGroup.removeChild(screenGroup.firstChild);
+    }
+
+    const prepend = (useId: string, i: number) => {
+      const elem = document.createElementNS(xmlns, "use") as SVGUseElement;
+      elems[i].use = elem;
+      elem.setAttributeNS(xlinkns, "href", "#" + useId);
+      elem.setAttribute("href", "#" + useId);
+      screenGroup.prepend(elem);
+    };
+
+    for (let i = 1; i < N; i++) {
+      if (i === 1) prepend("Cabeza", i);
+      else if (i === 6 || i === 13) prepend("Aletas", i);
+      else prepend("Espina", i);
+    }
+
+    const handlePointerMove = (e: PointerEvent) => {
+      const svgCoords = mapToSvgCoords(e.clientX, e.clientY);
+      pointer.x = svgCoords.x;
+      pointer.y = svgCoords.y;
+      rad = 0;
+    };
 
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      width = window.innerWidth;
+      height = window.innerHeight;
     };
-    handleResize();
-    window.addEventListener("resize", handleResize);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current.targetX = e.clientX;
-      mouseRef.current.targetY = e.clientY;
+    window.addEventListener("pointermove", handlePointerMove, false);
+    window.addEventListener("resize", handleResize, false);
 
-      // Check if hovering clickable
-      const target = e.target as HTMLElement | null;
-      if (
-        target?.closest("button") ||
-        target?.closest("a") ||
-        target?.closest("[data-clickable='true']") ||
-        target?.tagName === "INPUT" ||
-        target?.tagName === "TEXTAREA"
-      ) {
-        mouseRef.current.isHovering = true;
-      } else {
-        mouseRef.current.isHovering = false;
-      }
-    };
-    window.addEventListener("mousemove", handleMouseMove);
+    let animationFrameId: number;
 
-    const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const run = () => {
+      animationFrameId = requestAnimationFrame(run);
+      const e0 = elems[0];
+      const ax = (Math.cos(3 * frm) * rad * viewBoxWidth) / viewBoxHeight;
+      const ay = (Math.sin(4 * frm) * rad * viewBoxHeight) / viewBoxWidth;
 
-      const mouse = mouseRef.current;
-      // Smooth interpolation for primary mouse dot
-      mouse.x += (mouse.targetX - mouse.x) * 0.25;
-      mouse.y += (mouse.targetY - mouse.y) * 0.25;
+      e0.x += (ax + pointer.x - e0.x) / 10;
+      e0.y += (ay + pointer.y - e0.y) / 10;
 
-      const segments = segmentsRef.current;
-      if (segments.length === 0) return;
+      for (let i = 1; i < N; i++) {
+        const e = elems[i];
+        const ep = elems[i - 1];
+        const a = Math.atan2(e.y - ep.y, e.x - ep.x);
 
-      // Head segment follows mouse
-      const head = segments[0];
-      const dxHead = mouse.x - head.x;
-      const dyHead = mouse.y - head.y;
-      head.vx = (head.vx + dxHead * 0.2) * 0.65;
-      head.vy = (head.vy + dyHead * 0.2) * 0.65;
-      head.x += head.vx;
-      head.y += head.vy;
-      head.angle = Math.atan2(head.vy, head.vx);
+        e.x += (ep.x - e.x + (Math.cos(a) * (100 - i)) / 22) / 4;
+        e.y += (ep.y - e.y + (Math.sin(a) * (100 - i)) / 22) / 4;
 
-      // Trailing dragon spine segments with spring-distance constraints
-      for (let i = 1; i < segments.length; i++) {
-        const prev = segments[i - 1];
-        const curr = segments[i];
+        const s = (162 + 4 * (1 - i)) / 300;
 
-        const dx = prev.x - curr.x;
-        const dy = prev.y - curr.y;
-        const dist = Math.hypot(dx, dy) || 1;
-
-        curr.angle = Math.atan2(dy, dx);
-
-        // Constrained pull
-        const targetDist = SEGMENT_DIST;
-        const diff = (dist - targetDist) / dist;
-        const springX = dx * diff * 0.45;
-        const springY = dy * diff * 0.45;
-
-        curr.vx = (curr.vx + springX) * 0.72;
-        curr.vy = (curr.vy + springY) * 0.72;
-
-        curr.x += curr.vx;
-        curr.y += curr.vy;
-      }
-
-      // Draw Dragon Spine & Ribs / Fins
-      const isHover = mouse.isHovering;
-      const primaryColor = isHover ? "rgba(96, 165, 250, 0.9)" : "rgba(147, 197, 253, 0.7)";
-      const glowColor = isHover ? "rgba(59, 130, 246, 0.4)" : "rgba(37, 99, 235, 0.25)";
-
-      // Draw ethereal glow along segments
-      for (let i = segments.length - 1; i >= 0; i--) {
-        const seg = segments[i];
-        const progress = 1 - i / segments.length;
-        const radius = Math.max(1.2, 5.5 * Math.pow(progress, 0.8));
-
-        // Lateral dragon spines/ribs
-        if (i % 2 === 0 && i > 1 && i < segments.length - 3) {
-          const finLength = radius * 2.8;
-          const perpAngle = seg.angle + Math.PI / 2;
-          const fx1 = seg.x + Math.cos(perpAngle) * finLength;
-          const fy1 = seg.y + Math.sin(perpAngle) * finLength;
-          const fx2 = seg.x - Math.cos(perpAngle) * finLength;
-          const fy2 = seg.y - Math.sin(perpAngle) * finLength;
-
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(96, 165, 250, ${0.35 * progress})`;
-          ctx.lineWidth = 1;
-          ctx.moveTo(fx1, fy1);
-          ctx.lineTo(fx2, fy2);
-          ctx.stroke();
+        if (e.use) {
+          e.use.setAttribute(
+            "transform",
+            `translate(${(ep.x + e.x) / 2},${(ep.y + e.y) / 2}) rotate(${
+              (180 / Math.PI) * a
+            }) scale(${s},${s})`
+          );
         }
-
-        // Segment node
-        ctx.beginPath();
-        ctx.arc(seg.x, seg.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = i === 0 ? primaryColor : `rgba(147, 197, 253, ${0.75 * progress})`;
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = isHover ? 16 : 8;
-        ctx.fill();
       }
 
-      // Draw primary pointer dot
-      ctx.beginPath();
-      ctx.arc(mouse.x, mouse.y, isHover ? 7 : 3.5, 0, Math.PI * 2);
-      ctx.fillStyle = isHover ? "#60a5fa" : "#ffffff";
-      ctx.shadowColor = isHover ? "#3b82f6" : "rgba(255, 255, 255, 0.8)";
-      ctx.shadowBlur = isHover ? 20 : 10;
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      if (rad < radm) rad++;
+      frm += 0.003;
 
-      animationFrameId = requestAnimationFrame(render);
+      if (rad > 60) {
+        pointer.x += (0 - pointer.x) * 0.05;
+        pointer.y += (0 - pointer.y) * 0.05;
+      }
     };
 
-    render();
+    run();
 
     return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-50 h-full w-full"
+    <div
+      ref={containerRef}
+      className="pointer-events-none fixed inset-0 z-50 h-screen w-screen overflow-hidden"
       aria-hidden="true"
-    />
+    >
+      <svg
+        ref={svgRef}
+        viewBox="-150 -150 300 300"
+        preserveAspectRatio="xMidYMid meet"
+        className="h-full w-full pointer-events-none opacity-80"
+      >
+        <defs>
+          {/* Cabeza / Head */}
+          <g id="Cabeza">
+            <path
+              style={{ fill: "#e5ded4", fillOpacity: 0.95 }}
+              d="M-28.9,-1.1L-28.55 -1.95Q-28.1 -3.1 -27.25 -2.95L-26.7 -2.95Q-27.7 -1.65 -28.9 -1.1M-18.35,-1.8Q-15.1 -10.3 -9.6 -6.05Q-15.1 -6.2 -18.35 -1.8M-18.35,1.1Q-15.1 5.45 -9.6 5.35Q-15.1 9.55 -18.35 1.1M-26.7,2.2L-27.25 2.25Q-28.1 2.4 -28.55 1.2L-28.9 0.35Q-27.7 0.9 -26.7 2.2"
+            />
+            <path
+              style={{ fill: "#1a1a1d", fillOpacity: 0.9 }}
+              d="M-21.05,-8.25Q-13.6 -15.95 -1.3 -12.1Q-7.85 -8.5 -5.85 -4.35Q-2.3 -4.85 10.5 0.15Q0 4.35 -5.85 3.65Q-7.85 7.75 -1.25 12.45Q-13.6 15.2 -21.05 7.5Q-29.55 4.05 -30.2 -0.35Q-29.55 -4.8 -21.05 -8.25M-26.7,-2.95L-27.25 -2.95Q-28.1 -3.1 -28.55 -1.95L-28.9 -1.1Q-27.7 -1.65 -26.7 -2.95M-9.6,-6.05Q-15.1 -10.3 -18.35 -1.8Q-15.1 -6.2 -9.6 -6.05M-9.6,5.35Q-15.1 5.45 -18.35 1.1Q-15.1 9.55 -9.6 5.35M-28.9,0.35L-28.55 1.2Q-28.1 2.4 -27.25 2.25L-26.7 2.2Q-27.7 0.9 -28.9 0.35"
+            />
+          </g>
+
+          {/* Aletas / Wings */}
+          <g id="Aletas">
+            <linearGradient
+              id="DragonWingGrad"
+              gradientUnits="userSpaceOnUse"
+              x1="-819.2"
+              y1="0"
+              x2="819.2"
+              y2="0"
+            >
+              <stop offset="0" style={{ stopColor: "#ded7cb", stopOpacity: 0.85 }} />
+              <stop offset="0.6" style={{ stopColor: "#524f4a", stopOpacity: 0.5 }} />
+              <stop offset="1" style={{ stopColor: "#18181a", stopOpacity: 0.2 }} />
+            </linearGradient>
+            <path
+              style={{ fill: "url(#DragonWingGrad)" }}
+              d="M29.75,-36.85Q-17.75 -61.45 -42.05 -40.95L-45.35 -38.35L-53.7 -41.15L-51.15 -44.85Q-34.85 -68.4 21 -57.8Q-32.2 -72.1 -50.25 -50Q-53.85 -45.65 -56.05 -41.95L-64.7 -43.35L-60.6 -50.3Q-45.9 -75.55 5.1 -79.35Q-2.2 -79.8 -9.45 -79.15Q-16.2 -78.55 -22.85 -77.15Q-29.85 -75.65 -36.5 -73Q-43.05 -70.4 -48.8 -66.85Q-54.55 -63.35 -56.8 -60.3L-60.5 -55.4Q-62.95 -52.1 -67 -43.55L-70.55 -43.55L-76.35 -42.95Q-74.6 -49.1 -71.85 -54.85Q-68.9 -61.25 -64.8 -67.1Q-60.8 -73 -55.45 -77.55Q-49.9 -82.35 -43.65 -85.85L-30.6 -92.7Q-24.05 -95.95 -17 -98.25Q-63.75 -86.35 -73.65 -57.1Q-75.75 -50.75 -77.45 -42.75Q-82.9 -41.75 -88 -39.65Q-87.65 -46.65 -86.3 -53.05Q-79.8 -89.8 -36.65 -117.2Q-80.65 -94.5 -87.55 -59.55Q-88.65 -54.15 -88.95 -39.4L-89.8 -38.85L-92.7 -37.6Q-93.75 -44.35 -94.1 -51.15Q-94.4 -58.2 -93.25 -65.1Q-92.15 -72.5 -90.05 -79.65Q-88.05 -86.55 -85 -93Q-82.1 -99.3 -78.45 -105.15Q-74.6 -111.35 -70.25 -117.25Q-65.95 -123.1 -61.1 -128.55Q-70.3 -119.35 -77.9 -108.7Q-86 -97.3 -90.8 -84.05Q-95.8 -70.5 -96 -56.15Q-96.1 -46 -94.05 -36.05L-93.25 -31.55Q-93.5 -35.65 -92.35 -36Q-79.85 -42 -66.6 -40.45Q-52.45 -38.85 -39.2 -33.25Q-28.3 -29.9 -21.25 -24.15Q-17.8 -23.3 -8.6 -15.6Q-12.1 -20.75 -16.75 -24.5Q-24.55 -30.7 -34.25 -34.05L-42.55 -37Q-38.9 -41.25 -31.5 -43.25Q-24.05 -45.3 -16.2 -46.3Q-8.35 -47.35 -1 -46Q5.95 -44.75 12.75 -42.85Q19.85 -40.9 29.75 -36.85M-92.45,-27.35L-94.95 -36.25Q-109.7 -105 -27.95 -154.65Q-98.65 -103.8 -91.75 -39.4L-89.95 -40.2Q-92.2 -105.25 -5.6 -130.9Q-78.8 -99.95 -87.45 -40.9Q-83.15 -42.95 -78.45 -43.95Q-70 -101.3 17.65 -103.8Q-56.9 -93.4 -74.5 -44.55L-67.4 -45.45Q-49.1 -94.95 39.25 -75.65Q-36.75 -84.35 -62.25 -44.25L-57.3 -43.6Q-31.65 -86.5 56.15 -46.05Q-20.3 -73.35 -51.35 -41.7L-45.95 -39.75Q-17.85 -71.35 51.85 -24.8Q-8.7 -56.4 -39.75 -37.05Q-28.15 -34.05 -14.25 -24.45Q-8.6 -19.85 -5.8 -16.95Q5.95 -2.4 20 0Q5.95 2.4 -5.8 16.95Q-8.6 19.85 -14.25 24.45Q-28.15 34.05 -39.75 37.05Q-8.7 56.4 51.85 24.8Q-17.85 71.35 -45.95 39.75L-51.35 41.7Q-20.3 73.35 56.15 46.1Q-31.65 86.5 -57.3 43.65L-62.25 44.3Q-36.75 84.35 39.25 75.7Q-49.1 94.95 -67.4 45.5L-74.5 44.6Q-56.9 93.4 17.65 103.85Q-70 101.3 -78.45 43.95Q-83.15 42.95 -87.45 40.9Q-78.8 99.95 -5.6 130.9Q-92.2 105.25 -89.95 40.25L-91.75 39.4Q-98.65 103.8 -27.95 154.65Q-109.7 105 -94.95 36.3L-92.45 27.35Q-93.05 33.9 -92.05 34.75Q-91.1 35.55 -88.95 36.7L-87.95 37Q-83.7 38.25 -79.05 38.8L-77.25 38.95Q-72.55 39.3 -67.5 38.85L-65.45 38.65Q-44.4 36.05 -17.8 19.6Q-9.9 12.8 -15.15 4.4Q-18.15 3.15 -19 0Q-18.15 -3.15 -15.15 -4.4Q-9.9 -12.8 -17.8 -19.6L-17.8 -19.55Q-44.4 -36.05 -65.45 -38.6L-67.5 -38.8Q-72.55 -39.3 -77.25 -38.95L-79.05 -38.75Q-83.7 -38.25 -87.95 -36.95L-88.95 -36.65Q-91.1 -35.55 -92.05 -34.7Q-93.05 -33.9 -92.45 -27.35"
+            />
+          </g>
+
+          {/* Espina / Spine */}
+          <g id="Espina">
+            <linearGradient
+              id="DragonSpineGrad1"
+              gradientUnits="userSpaceOnUse"
+              gradientTransform="matrix(0.0935974, 0, 0, 0.188782, -20.55, 0)"
+              x1="-819.2"
+              x2="819.2"
+              y1="0"
+              y2="0"
+            >
+              <stop offset="0" style={{ stopColor: "#ded7cb", stopOpacity: 0.9 }} />
+              <stop offset="1" style={{ stopColor: "#2a292d", stopOpacity: 0.6 }} />
+            </linearGradient>
+            <path
+              style={{ fill: "url(#DragonSpineGrad1)" }}
+              d="M-18.8,0Q-17.85 -5.7 -12.3 -9.6Q-11.2 -5.35 -6.5 -8.25L-6.45 -8.2L-6.2 -8.3Q1.25 -16.25 6.65 -12.4Q0.05 -12.55 0 -5.95Q2.7 -2.4 7.75 -4.1Q18 -1.45 18.8 0L-18.8 0"
+            />
+            <linearGradient
+              id="DragonSpineGrad2"
+              gradientUnits="userSpaceOnUse"
+              gradientTransform="matrix(0.0229492, 0, 0, 0.0152893, 0, -0.05)"
+              x1="-819.2"
+              x2="819.2"
+              y1="0"
+              y2="0"
+            >
+              <stop offset="0" style={{ stopColor: "#ded7cb", stopOpacity: 0.9 }} />
+              <stop offset="1" style={{ stopColor: "#2a292d", stopOpacity: 0.6 }} />
+            </linearGradient>
+            <path
+              style={{ fill: "url(#DragonSpineGrad2)" }}
+              d="M18.8,0Q18 1.45 7.75 4.1Q2.7 2.4 0 5.95Q0.05 12.55 6.65 12.4Q1.25 16.25 -6.2 8.35Q-6.35 8.25 -6.45 8.25L-6.5 8.25Q-11.2 5.35 -12.3 9.6Q-17.85 5.7 -18.8 0L18.8 0"
+            />
+          </g>
+        </defs>
+        <g id="screen" />
+      </svg>
+    </div>
   );
 }

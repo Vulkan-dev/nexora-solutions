@@ -4,32 +4,22 @@ import React, { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
 import MagneticButton from "./MagneticButton";
-import { ArrowRight, Sparkles, ShieldCheck, Zap } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export default function InteractiveHero() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Mouse coordinate values normalized between -0.5 and 0.5
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springConfig = { damping: 25, stiffness: 120 };
+  const springConfig = { damping: 28, stiffness: 140 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  // Layer 1: Ambient background glow
-  const bgGlowX = useTransform(smoothX, [-0.5, 0.5], [-40, 40]);
-  const bgGlowY = useTransform(smoothY, [-0.5, 0.5], [-40, 40]);
-
-  // Layer 2: Main Typography 3D tilt & shift
-  const textX = useTransform(smoothX, [-0.5, 0.5], [-18, 18]);
-  const textY = useTransform(smoothY, [-0.5, 0.5], [-18, 18]);
-  const rotateX = useTransform(smoothY, [-0.5, 0.5], [8, -8]);
-  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-8, 8]);
-
-  // Layer 3: Floating badge
-  const badgeX = useTransform(smoothX, [-0.5, 0.5], [-28, 28]);
-  const badgeY = useTransform(smoothY, [-0.5, 0.5], [-28, 28]);
+  const textX = useTransform(smoothX, [-0.5, 0.5], [-12, 12]);
+  const textY = useTransform(smoothY, [-0.5, 0.5], [-12, 12]);
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [5, -5]);
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-5, 5]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
@@ -50,34 +40,20 @@ export default function InteractiveHero() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-4 py-24 sm:px-6 lg:px-8"
+      className="relative min-h-[85vh] flex flex-col justify-between px-6 pt-28 pb-16 sm:px-10 lg:px-16"
       style={{ perspective: 1200 }}
     >
-      {/* Dynamic Background Glow Layer */}
-      <motion.div
-        style={{ x: bgGlowX, y: bgGlowY }}
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[550px] w-[750px] rounded-full bg-gradient-to-tr from-blue-600/20 via-indigo-500/15 to-transparent blur-[140px]"
-      />
+      {/* Top Editorial Index Tag */}
+      <div className="flex items-center justify-between text-[11px] tracking-widest uppercase text-neutral-400 border-b border-white/[0.08] pb-4">
+        <div className="flex items-center gap-3">
+          <span className="h-1.5 w-1.5 rounded-full bg-cream-300" />
+          <span>Atelier Studio — Private Editions</span>
+        </div>
+        <div className="hidden sm:block">Digital Direction & Architecture</div>
+        <div>Vol. XXIV</div>
+      </div>
 
-      {/* Floating Status Pill */}
-      <motion.div
-        style={{ x: badgeX, y: badgeY }}
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="mb-8 inline-flex items-center gap-2 rounded-full border border-neutral-700/60 bg-surface/80 px-4 py-1.5 text-xs font-medium text-neutral-300 shadow-lg backdrop-blur-md"
-      >
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-        </span>
-        <span className="tracking-wide uppercase text-neutral-400 text-[10px]">Architecture & Design</span>
-        <span className="h-3 w-[1px] bg-neutral-700" />
-        <span className="text-neutral-200">Accepting Select Q4 Engagements</span>
-        <Sparkles className="h-3 w-3 text-amber-400 ml-1" />
-      </motion.div>
-
-      {/* Reactive 3D Main Typography */}
+      {/* Main Reactive Typography Area */}
       <motion.div
         style={{
           x: textX,
@@ -86,68 +62,57 @@ export default function InteractiveHero() {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="max-w-4xl text-center"
+        className="my-auto max-w-5xl"
       >
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.08]">
-          Crafting Digital Masterpieces with{" "}
-          <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
-            Kinetic Precision
-          </span>
+        <div className="text-xs uppercase tracking-widest text-cream-400 mb-6 font-mono">
+          [ 01 // Bespoke Digital Architecture ]
+        </div>
+
+        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal tracking-tight text-white leading-[1.04]">
+          Architecture for the <br />
+          <span className="font-serif italic text-cream-200">Uncompromising</span> Mind.
         </h1>
 
-        <p className="mt-6 text-base sm:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-          High-end web engineering, bespoke animations, and production architectures tailored for visionary brands demanding absolute distinction.
+        <p className="mt-8 text-base sm:text-lg text-neutral-300 max-w-2xl leading-relaxed">
+          We sculpt bespoke digital environments defined by structural poise, kinetic restraint, and tactile elegance. Tailored for iconic houses and singular creators.
         </p>
 
         {/* Action Magnetic Buttons */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <div className="mt-10 flex flex-wrap items-center gap-4">
           <Link href="/order">
-            <MagneticButton variant="glow" className="px-8 py-3.5 text-base">
-              <span>Initiate Project</span>
-              <ArrowRight className="h-4 w-4" />
+            <MagneticButton variant="primary" className="px-7 py-3 text-xs tracking-wider uppercase font-semibold">
+              <span>Commission Work</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </MagneticButton>
           </Link>
 
           <Link href="/services">
-            <MagneticButton variant="secondary" className="px-7 py-3.5 text-base">
-              <span>Explore Services</span>
+            <MagneticButton variant="outline" className="px-6 py-3 text-xs tracking-wider uppercase">
+              <span>Explore Portfolio</span>
             </MagneticButton>
           </Link>
         </div>
-
-        {/* Value Highlights */}
-        <div className="mt-14 grid grid-cols-2 md:grid-cols-3 gap-6 text-left max-w-2xl mx-auto pt-8 border-t border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
-              <Zap className="h-4 w-4" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-white">Sub-100ms</div>
-              <div className="text-xs text-neutral-400">Serverless Latency</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-              <ShieldCheck className="h-4 w-4" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-white">Enterprise RBAC</div>
-              <div className="text-xs text-neutral-400">Google OAuth & MFA</div>
-            </div>
-          </div>
-
-          <div className="col-span-2 md:col-span-1 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
-              <Sparkles className="h-4 w-4" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-white">Cinematic UI</div>
-              <div className="text-xs text-neutral-400">Fluid Spring Physics</div>
-            </div>
-          </div>
-        </div>
       </motion.div>
+
+      {/* Bottom Architectural Credits Bar */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-white/[0.08] text-xs">
+        <div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-wider">Discipline</div>
+          <div className="text-neutral-200 mt-1 font-medium">Kinetic Digital Design</div>
+        </div>
+        <div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-wider">Availability</div>
+          <div className="text-cream-300 mt-1 font-medium">Limited Commissions</div>
+        </div>
+        <div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-wider">Output</div>
+          <div className="text-neutral-200 mt-1 font-medium">Bespoke Platforms & Systems</div>
+        </div>
+        <div>
+          <div className="text-neutral-500 uppercase text-[10px] tracking-wider">Studio Origin</div>
+          <div className="text-neutral-200 mt-1 font-medium">Geneva • London • New York</div>
+        </div>
+      </div>
     </div>
   );
 }

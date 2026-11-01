@@ -7,32 +7,25 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import MagneticButton from "@/components/ui/MagneticButton";
 import {
   Clock,
-  CheckCircle2,
-  AlertCircle,
-  FileText,
   MessageSquare,
   Send,
-  Download,
-  Upload,
   RefreshCw,
-  Sparkles,
-  ChevronRight,
-  Shield,
   Layers,
+  Sparkles,
 } from "lucide-react";
 
 const STAGES = [
-  { key: "PENDING", label: "Pending" },
+  { key: "PENDING", label: "Registered" },
   { key: "UNDER_REVIEW", label: "Under Review" },
   { key: "ACCEPTED", label: "Accepted" },
-  { key: "IN_PROGRESS", label: "In Progress" },
-  { key: "AWAITING_RESPONSE", label: "Client Review" },
+  { key: "IN_PROGRESS", label: "Production" },
+  { key: "AWAITING_RESPONSE", label: "Client Staging" },
   { key: "REVISION", label: "Revision" },
-  { key: "COMPLETED", label: "Completed" },
+  { key: "COMPLETED", label: "Delivered" },
 ];
 
 export default function CustomerDashboardPage() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [orders, setOrders] = useState<any[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,7 +34,6 @@ export default function CustomerDashboardPage() {
   const [showRevisionModal, setShowRevisionModal] = useState<boolean>(false);
   const [submittingAction, setSubmittingAction] = useState<boolean>(false);
 
-  // Fetch orders
   const loadOrders = async () => {
     try {
       setLoading(true);
@@ -123,56 +115,55 @@ export default function CustomerDashboardPage() {
   const currentStageIndex = STAGES.findIndex((s) => s.key === selectedOrder?.status);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      {/* Dashboard Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/5 gap-4">
+    <div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 py-16">
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/[0.08] gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-400 mb-2">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Customer Portal</span>
+          <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
+            Client Portal // Suite 01
           </div>
-          <h1 className="text-3xl font-extrabold text-white">Project Control Center</h1>
+          <h1 className="text-3xl font-light text-white">Private Production Suite</h1>
           <p className="text-xs text-neutral-400 mt-1">
-            Track active architectural builds, communicate with engineers, and review deliverables.
+            Track active commissions, inspect live staging milestones, and correspond directly with our lead architects.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={loadOrders}
-            className="flex items-center gap-2 rounded-full border border-neutral-800 bg-surfaceElevated px-4 py-2 text-xs text-neutral-300 hover:text-white transition-colors"
+            className="flex items-center gap-2 rounded-full border border-white/10 bg-surface px-4 py-2 text-xs text-neutral-300 hover:text-white transition-colors uppercase tracking-wider font-mono text-[11px]"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
-            <span>Refresh</span>
+            <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
+            <span>Sync</span>
           </button>
 
           <Link href="/order">
-            <MagneticButton variant="glow" className="px-5 py-2 text-xs">
-              <span>Commission New Order</span>
+            <MagneticButton variant="primary" className="px-5 py-2 text-xs uppercase tracking-wider font-semibold">
+              <span>Commission New Work</span>
             </MagneticButton>
           </Link>
         </div>
       </div>
 
-      {/* Main Content Layout */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* Main Grid */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Orders List (4 cols) */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
-            Your Orders ({orders.length})
+          <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-2">
+            Commissions List ({orders.length})
           </div>
 
           {loading && orders.length === 0 ? (
-            <div className="rounded-2xl border border-white/5 bg-surface/50 p-8 text-center text-xs text-neutral-500">
-              Loading orders...
+            <div className="rounded-xl border border-white/[0.08] bg-surface p-8 text-center text-xs text-neutral-500 font-mono">
+              Loading client records...
             </div>
           ) : orders.length === 0 ? (
-            <div className="rounded-2xl border border-white/5 bg-surface/50 p-8 text-center space-y-4">
-              <Layers className="mx-auto h-8 w-8 text-neutral-600" />
-              <div className="text-xs text-neutral-400">No active or past orders found.</div>
+            <div className="rounded-xl border border-white/[0.08] bg-surface p-8 text-center space-y-4">
+              <Layers className="mx-auto h-6 w-6 text-neutral-600" />
+              <div className="text-xs text-neutral-400">No active commissions recorded.</div>
               <Link href="/order">
-                <MagneticButton variant="glow" className="px-4 py-2 text-xs">
-                  <span>Start Your First Order</span>
+                <MagneticButton variant="primary" className="px-4 py-2 text-xs uppercase tracking-wider">
+                  <span>Commission First Piece</span>
                 </MagneticButton>
               </Link>
             </div>
@@ -184,36 +175,28 @@ export default function CustomerDashboardPage() {
                   <div
                     key={ord.id}
                     onClick={() => setSelectedOrder(ord)}
-                    className={`cursor-pointer rounded-2xl p-4 border transition-all ${
+                    className={`cursor-pointer rounded-xl p-4 border transition-all ${
                       isSelected
-                        ? "border-blue-500 bg-blue-950/20 shadow-neon"
-                        : "border-borderDark bg-surface/60 hover:border-neutral-600"
+                        ? "border-white/30 bg-surfaceElevated shadow-sm"
+                        : "border-white/[0.06] bg-surface hover:border-white/20"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-[11px] text-neutral-400 truncate max-w-[140px]">
+                      <span className="font-mono text-[10px] text-neutral-500 truncate max-w-[140px]">
                         {ord.id}
                       </span>
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                          ord.status === "COMPLETED"
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                            : ord.status === "IN_PROGRESS"
-                            ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                            : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                        }`}
-                      >
+                      <span className="rounded-full bg-white/5 border border-white/10 px-2 py-0.5 text-[9px] font-mono uppercase tracking-wider text-cream-200">
                         {ord.status.replace("_", " ")}
                       </span>
                     </div>
 
-                    <div className="font-bold text-sm text-white mb-1">
-                      {ord.package?.service?.title || ord.serviceTitle || "Cinematic Architecture"}
+                    <div className="font-normal text-sm text-white mb-1">
+                      {ord.package?.service?.title || ord.serviceTitle || "Custom Architecture"}
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-neutral-400 pt-2 border-t border-white/5">
-                      <span>{formatCurrency(ord.totalPrice)}</span>
-                      <span>{formatDate(ord.createdAt)}</span>
+                    <div className="flex items-center justify-between text-xs text-neutral-400 pt-2 border-t border-white/[0.04]">
+                      <span className="font-serif text-cream-200">{formatCurrency(ord.totalPrice)}</span>
+                      <span className="text-[10px] font-mono text-neutral-500">{formatDate(ord.createdAt)}</span>
                     </div>
                   </div>
                 );
@@ -222,37 +205,39 @@ export default function CustomerDashboardPage() {
           )}
         </div>
 
-        {/* Right Column: Order Detail & Timeline Hub (8 cols) */}
+        {/* Right Column: Order Detail & Timeline (8 cols) */}
         {selectedOrder ? (
           <div className="lg:col-span-8 space-y-8">
-            {/* 8-Stage Progress Lifecycle Timeline */}
-            <div className="rounded-3xl border border-white/10 bg-surface/80 p-6 backdrop-blur-xl space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-4">
+            {/* Visual Lifecycle Stepper */}
+            <div className="rounded-2xl border border-white/[0.08] bg-surface p-6 sm:p-8 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.06] pb-4">
                 <div>
-                  <div className="text-xs text-neutral-400">Order ID: {selectedOrder.id}</div>
-                  <h2 className="text-xl font-bold text-white">
-                    {selectedOrder.package?.name || selectedOrder.packageName || "Enterprise Tier"}
+                  <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500">
+                    Ref: {selectedOrder.id}
+                  </div>
+                  <h2 className="text-xl font-normal text-white mt-1">
+                    {selectedOrder.package?.name || selectedOrder.packageName || "Studio Edition"}
                   </h2>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <div className="text-[10px] uppercase tracking-wider text-neutral-500">Payment</div>
-                    <div className="text-xs font-bold text-emerald-400">
+                    <div className="text-[9px] uppercase tracking-widest text-neutral-500 font-mono">Settlement</div>
+                    <div className="text-xs font-mono text-cream-200">
                       {selectedOrder.paymentStatus || "UNPAID"}
                     </div>
                   </div>
                   {selectedOrder.status === "AWAITING_RESPONSE" && (
                     <button
                       onClick={() => setShowRevisionModal(true)}
-                      className="rounded-full bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 text-xs font-semibold text-amber-400 hover:bg-amber-500/20 transition-all"
+                      className="rounded-full border border-white/20 bg-surfaceElevated px-3 py-1 text-xs text-cream-100 hover:border-white/40 transition-all font-mono"
                     >
-                      Request Revision
+                      Request Revisions
                     </button>
                   )}
                 </div>
               </div>
 
-              {/* Visual Lifecycle Stepper */}
+              {/* Progress Milestones */}
               <div className="pt-2">
                 <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
                   {STAGES.map((stage, idx) => {
@@ -261,22 +246,18 @@ export default function CustomerDashboardPage() {
                     return (
                       <div
                         key={stage.key}
-                        className={`rounded-xl p-2.5 text-center border transition-all ${
+                        className={`rounded-lg p-2.5 text-center border transition-all ${
                           isCurrent
-                            ? "border-blue-500 bg-blue-500/15 shadow-neon"
+                            ? "border-cream-300 bg-white/10 text-white"
                             : isDone
-                            ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-400"
-                            : "border-white/5 bg-white/[0.02] text-neutral-500"
+                            ? "border-white/10 bg-white/[0.03] text-cream-300"
+                            : "border-white/[0.04] bg-transparent text-neutral-600"
                         }`}
                       >
-                        <div className="text-[10px] font-bold uppercase mb-1">
-                          {isDone ? "✓ Done" : isCurrent ? "● Active" : `${idx + 1}`}
+                        <div className="text-[9px] font-mono uppercase mb-1">
+                          {isDone ? "✓" : isCurrent ? "●" : `0${idx + 1}`}
                         </div>
-                        <div
-                          className={`text-xs font-semibold truncate ${
-                            isCurrent ? "text-white" : isDone ? "text-emerald-300" : "text-neutral-500"
-                          }`}
-                        >
+                        <div className="text-[11px] truncate font-medium">
                           {stage.label}
                         </div>
                       </div>
@@ -285,11 +266,11 @@ export default function CustomerDashboardPage() {
                 </div>
               </div>
 
-              {/* Requirements & Details */}
+              {/* Requirements Note */}
               {selectedOrder.requirements && (
-                <div className="rounded-2xl border border-white/5 bg-surfaceElevated/40 p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1">
-                    Requirements Specification:
+                <div className="rounded-xl border border-white/[0.04] bg-surfaceElevated p-4">
+                  <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 mb-1">
+                    Commission Scope:
                   </div>
                   <p className="text-xs text-neutral-300 leading-relaxed">
                     {selectedOrder.requirements}
@@ -298,80 +279,80 @@ export default function CustomerDashboardPage() {
               )}
             </div>
 
-            {/* Direct Project Messaging Thread */}
-            <div className="rounded-3xl border border-white/10 bg-surface/80 p-6 backdrop-blur-xl space-y-6">
-              <div className="flex items-center gap-2 border-b border-white/5 pb-4">
-                <MessageSquare className="h-4 w-4 text-blue-400" />
-                <h3 className="text-sm font-bold text-white">Project Activity & Communications Thread</h3>
+            {/* Direct Studio Messaging Thread */}
+            <div className="rounded-2xl border border-white/[0.08] bg-surface p-6 sm:p-8 space-y-6">
+              <div className="flex items-center gap-2 border-b border-white/[0.06] pb-4">
+                <MessageSquare className="h-4 w-4 text-cream-300" />
+                <h3 className="text-sm font-medium text-white">Production Correspondence & Milestones</h3>
               </div>
 
-              {/* Updates / Messages */}
-              <div className="space-y-4 max-h-[360px] overflow-y-auto pr-2">
+              {/* Messages List */}
+              <div className="space-y-3 max-h-[340px] overflow-y-auto pr-2">
                 {selectedOrder.updates && selectedOrder.updates.length > 0 ? (
                   selectedOrder.updates.map((upd: any, index: number) => (
                     <div
                       key={index}
-                      className="rounded-2xl border border-white/5 bg-surfaceElevated/60 p-4 space-y-1.5"
+                      className="rounded-xl border border-white/[0.04] bg-surfaceElevated p-4 space-y-1.5"
                     >
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-blue-400">
-                          {upd.author?.name || upd.author || "Architectural Team"}
+                        <span className="font-medium text-cream-200">
+                          {upd.author?.name || upd.author || "Lead Architect"}
                         </span>
-                        <span className="text-[10px] text-neutral-500">
+                        <span className="text-[10px] font-mono text-neutral-500">
                           {formatDate(upd.createdAt)}
                         </span>
                       </div>
-                      <p className="text-xs text-neutral-200 leading-relaxed">{upd.message}</p>
+                      <p className="text-xs text-neutral-300 leading-relaxed">{upd.message}</p>
                     </div>
                   ))
                 ) : (
-                  <div className="py-8 text-center text-xs text-neutral-500">
-                    No timeline notes posted yet.
+                  <div className="py-8 text-center text-xs text-neutral-500 font-mono">
+                    No correspondence dispatched yet.
                   </div>
                 )}
               </div>
 
               {/* New Message Input */}
-              <div className="flex gap-2 pt-2 border-t border-white/5">
+              <div className="flex gap-2 pt-2 border-t border-white/[0.06]">
                 <input
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                  placeholder="Send a message or query to the engineering team..."
-                  className="flex-1 rounded-full border border-borderDark bg-surfaceElevated px-4 py-2.5 text-xs text-white placeholder-neutral-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  placeholder="Send an instruction to the studio team..."
+                  className="flex-1 rounded-full border border-white/[0.08] bg-surfaceElevated px-4 py-2.5 text-xs text-white placeholder-neutral-500 focus:border-white/30 focus:outline-none"
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={submittingAction || !newMessage.trim()}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white shadow-neon hover:bg-blue-500 transition-colors disabled:opacity-40"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-cream-100 text-neutral-900 hover:bg-white transition-colors disabled:opacity-30"
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
           </div>
         ) : (
-          <div className="lg:col-span-8 flex items-center justify-center rounded-3xl border border-white/5 bg-surface/30 p-12 text-center text-xs text-neutral-500">
-            Select an order from the left list to review its live progress timeline.
+          <div className="lg:col-span-8 flex items-center justify-center rounded-2xl border border-white/[0.08] bg-surface p-16 text-center text-xs text-neutral-500 font-mono">
+            Select a commission record to review active progress.
           </div>
         )}
       </div>
 
-      {/* Revision Request Modal */}
+      {/* Revision Modal */}
       {showRevisionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-          <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-surfaceElevated p-6 space-y-4">
-            <h3 className="text-lg font-bold text-white">Request Revisions</h3>
+          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-surfaceElevated p-6 space-y-4">
+            <h3 className="text-base font-normal text-white">Request Revisions</h3>
             <p className="text-xs text-neutral-400">
-              Please specify the adjustments you would like made to the staged deliverables.
+              Please detail the aesthetic or structural adjustments requested.
             </p>
             <textarea
               rows={4}
               value={revisionNote}
               onChange={(e) => setRevisionNote(e.target.value)}
-              placeholder="Detail your requested revisions clearly..."
-              className="w-full rounded-2xl border border-borderDark bg-surface p-3 text-xs text-white placeholder-neutral-500 focus:border-blue-500 focus:outline-none"
+              placeholder="Outline requested changes..."
+              className="w-full rounded-xl border border-white/[0.08] bg-surface p-3 text-xs text-white placeholder-neutral-500 focus:border-white/30 focus:outline-none"
             />
             <div className="flex justify-end gap-2 pt-2">
               <button
@@ -383,9 +364,9 @@ export default function CustomerDashboardPage() {
               <button
                 onClick={handleRequestRevision}
                 disabled={submittingAction || !revisionNote.trim()}
-                className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold text-black hover:bg-amber-400 disabled:opacity-40"
+                className="rounded-full bg-cream-100 px-5 py-2 text-xs font-semibold text-neutral-900 hover:bg-white disabled:opacity-30"
               >
-                Submit Revision Request
+                Submit Request
               </button>
             </div>
           </div>

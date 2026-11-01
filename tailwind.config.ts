@@ -10,36 +10,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#08090b",
-        surface: "#101216",
-        surfaceElevated: "#181b22",
-        borderDark: "#262b35",
-        accent: {
-          primary: "#3b82f6",
-          glow: "#60a5fa",
-          amber: "#f59e0b",
-          emerald: "#10b981",
-          rose: "#f43f5e",
+        background: "#0c0d0e",
+        surface: "#141517",
+        surfaceElevated: "#1b1c1f",
+        borderDark: "#26272b",
+        cream: {
+          50: "#faf8f5",
+          100: "#f5f0e8",
+          200: "#eae2d5",
+          300: "#ded2bf",
+          400: "#c8a97e",
+          500: "#b59364",
         },
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "specular-shine": "radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 60%)",
-      },
-      animation: {
-        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "float": "float 6s ease-in-out infinite",
-      },
-      keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
+        stoneMuted: "#8e8d8a",
       },
       boxShadow: {
-        "neon": "0 0 20px -3px rgba(59, 130, 246, 0.3)",
-        "neon-amber": "0 0 20px -3px rgba(245, 158, 11, 0.3)",
-        "card-glow": "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+        subtle: "0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4)",
+        atelier: "0 20px 40px -15px rgba(0, 0, 0, 0.7)",
       },
     },
   },
