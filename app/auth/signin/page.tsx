@@ -2,37 +2,63 @@
 
 import React, { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Zap, ShieldAlert, ArrowLeft } from "lucide-react";
 
 function SignInContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [loading, setLoading] = useState<boolean>(false);
+  const [simulatingRole, setSimulatingRole] = useState<string | null>(null);
 
   const handleGoogleLogin = () => {
     setLoading(true);
     signIn("google", { callbackUrl });
   };
 
+  const handleSimulateLogin = async (role: "CUSTOMER" | "ADMIN") => {
+    setSimulatingRole(role);
+    try {
+      const targetUrl = role === "ADMIN" ? "/admin" : callbackUrl;
+      const res = await signIn("simulated-auth", {
+        role,
+        name: role === "ADMIN" ? "Studio Lead Director" : "Alexandra Vance",
+        email: role === "ADMIN" ? "director@radiant-atelier.com" : "alexandra.vance@atelier-client.com",
+        redirect: false,
+        callbackUrl: targetUrl,
+      });
+
+      if (res?.ok) {
+        window.location.href = targetUrl;
+      } else {
+        router.push(targetUrl);
+      }
+    } catch (e) {
+      console.error("Simulation error:", e);
+      setSimulatingRole(null);
+    }
+  };
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-6 py-20">
-      <div className="relative w-full max-w-md rounded-2xl border border-white/[0.08] bg-surface p-8 sm:p-10">
-        <div className="text-center mb-10">
+      <div className="relative w-full max-w-md rounded-2xl border border-white/[0.08] bg-surface p-8 sm:p-10 space-y-8">
+        <div className="text-center">
           <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-            Private Access // Verification
+            Client Ingress // Verification
           </div>
-          <h1 className="text-2xl font-light text-white tracking-tight">Client Suite Ingress</h1>
+          <h1 className="text-2xl font-light text-white tracking-tight">Access Your Suite</h1>
           <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
-            Authenticate to track your commissioned works and direct studio milestones.
+            Sign in with Google to commission works, review active progress, and correspond directly with our studio.
           </p>
         </div>
 
-        {/* Google OAuth Login Button */}
-        <div className="space-y-4">
+        {/* Real Google OAuth Login Button */}
+        <div>
           <button
             onClick={handleGoogleLogin}
-            disabled={loading}
+            disabled={loading || !!simulatingRole}
             className="w-full flex items-center justify-center gap-3 rounded-full border border-white/10 bg-surfaceElevated px-6 py-3.5 text-xs font-medium text-white hover:border-white/25 hover:bg-white/[0.04] transition-all focus:outline-none disabled:opacity-40"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -57,10 +83,42 @@ function SignInContent() {
           </button>
         </div>
 
+        {/* Temporary Quick Test Simulated Logins */}
+        <div className="rounded-xl border border-cream-400/20 bg-cream-400/[0.04] p-4 space-y-3">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-cream-300 font-mono">
+            <Zap className="h-3.5 w-3.5 text-cream-400" />
+            <span>Developer Testing Simulations</span>
+          </div>
+
+          <div className="flex flex-col gap-2 pt-1">
+            <button
+              onClick={() => handleSimulateLogin("CUSTOMER")}
+              disabled={!!simulatingRole}
+              className="w-full flex items-center justify-between rounded-lg border border-white/10 bg-surface px-3.5 py-2 text-xs text-neutral-200 hover:border-white/25 hover:text-white transition-all font-mono"
+            >
+              <span>⚡ Simulate Client Login</span>
+              <span className="text-[10px] text-neutral-500">Alexandra Vance</span>
+            </button>
+
+            <button
+              onClick={() => handleSimulateLogin("ADMIN")}
+              disabled={!!simulatingRole}
+              className="w-full flex items-center justify-between rounded-lg border border-white/10 bg-surface px-3.5 py-2 text-xs text-neutral-200 hover:border-white/25 hover:text-white transition-all font-mono"
+            >
+              <span>⚡ Simulate Admin Hub Access</span>
+              <span className="text-[10px] text-cream-300">Studio Director</span>
+            </button>
+          </div>
+        </div>
+
         {/* Return to Home */}
-        <div className="mt-8 pt-6 border-t border-white/[0.06] text-center">
-          <Link href="/" className="text-[11px] uppercase tracking-wider text-neutral-400 hover:text-white transition-colors font-mono">
-            ← Return to Index
+        <div className="pt-2 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-neutral-400 hover:text-white transition-colors font-mono"
+          >
+            <ArrowLeft className="h-3 w-3" />
+            <span>Return to Index</span>
           </Link>
         </div>
       </div>

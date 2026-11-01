@@ -23,10 +23,21 @@ export default function LuxuryAmbientBackground() {
 
     // Warm, architectural light orbs drifting gently
     const orbs = [
-      { x: width * 0.25, y: height * 0.2, r: 420, vx: 0.18, vy: 0.12, baseColor: "rgba(225, 215, 198, 0.035)" },
-      { x: width * 0.75, y: height * 0.6, r: 520, vx: -0.15, vy: -0.1, baseColor: "rgba(180, 160, 140, 0.025)" },
-      { x: width * 0.5, y: height * 0.85, r: 380, vx: 0.12, vy: -0.15, baseColor: "rgba(200, 190, 180, 0.02)" },
+      { x: width * 0.25, y: height * 0.2, r: 460, vx: 0.16, vy: 0.1, baseColor: "rgba(223, 213, 198, 0.04)" },
+      { x: width * 0.78, y: height * 0.55, r: 540, vx: -0.14, vy: -0.09, baseColor: "rgba(197, 168, 128, 0.032)" },
+      { x: width * 0.45, y: height * 0.88, r: 420, vx: 0.1, vy: -0.12, baseColor: "rgba(180, 150, 115, 0.025)" },
     ];
+
+    // Delicate floating ambient dust particles
+    const motes = Array.from({ length: 24 }).map(() => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 1.4 + 0.6,
+      vx: (Math.random() - 0.5) * 0.15,
+      vy: -0.1 - Math.random() * 0.15,
+      alpha: Math.random() * 0.35 + 0.1,
+      phase: Math.random() * Math.PI * 2,
+    }));
 
     let t = 0;
 
@@ -34,8 +45,8 @@ export default function LuxuryAmbientBackground() {
       t += 0.002;
       ctx.clearRect(0, 0, width, height);
 
-      // Deep obsidian solid base
-      ctx.fillStyle = "#0c0d0e";
+      // Deep rich obsidian base
+      ctx.fillStyle = "#090a0d";
       ctx.fillRect(0, 0, width, height);
 
       // Render subtle drifting caustic aura pools
@@ -43,11 +54,11 @@ export default function LuxuryAmbientBackground() {
         orb.x += orb.vx;
         orb.y += orb.vy;
 
-        if (orb.x < -100 || orb.x > width + 100) orb.vx *= -1;
-        if (orb.y < -100 || orb.y > height + 100) orb.vy *= -1;
+        if (orb.x < -120 || orb.x > width + 120) orb.vx *= -1;
+        if (orb.y < -120 || orb.y > height + 120) orb.vy *= -1;
 
-        const pulse = Math.sin(t + orb.x * 0.001) * 30;
-        const currentRadius = Math.max(150, orb.r + pulse);
+        const pulse = Math.sin(t + orb.x * 0.001) * 35;
+        const currentRadius = Math.max(160, orb.r + pulse);
 
         const grad = ctx.createRadialGradient(
           orb.x,
@@ -58,11 +69,31 @@ export default function LuxuryAmbientBackground() {
           currentRadius
         );
         grad.addColorStop(0, orb.baseColor);
-        grad.addColorStop(1, "rgba(12, 13, 14, 0)");
+        grad.addColorStop(1, "rgba(9, 10, 13, 0)");
 
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(orb.x, orb.y, currentRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Render gentle floating atmospheric motes
+      for (const mote of motes) {
+        mote.x += mote.vx;
+        mote.y += mote.vy;
+        mote.phase += 0.015;
+
+        if (mote.y < -10) {
+          mote.y = height + 10;
+          mote.x = Math.random() * width;
+        }
+        if (mote.x < -10) mote.x = width + 10;
+        if (mote.x > width + 10) mote.x = -10;
+
+        const currentAlpha = mote.alpha * (0.6 + 0.4 * Math.sin(mote.phase));
+        ctx.fillStyle = `rgba(223, 213, 198, ${currentAlpha.toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(mote.x, mote.y, mote.size, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -76,7 +107,7 @@ export default function LuxuryAmbientBackground() {
         Math.max(width, height) * 0.85
       );
       vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
-      vignette.addColorStop(1, "rgba(5, 5, 6, 0.75)");
+      vignette.addColorStop(1, "rgba(4, 5, 7, 0.8)");
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, width, height);
 

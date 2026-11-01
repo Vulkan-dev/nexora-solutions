@@ -5,12 +5,10 @@ import React, { useEffect, useRef } from "react";
 export default function CustomCursor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Only activate on devices with fine pointer (mouse)
-    if (typeof window === "undefined" || window.matchMedia("(pointer: coarse)").matches) {
-      return;
-    }
+    if (typeof window === "undefined") return;
 
     const svg = svgRef.current;
     const screenGroup = svg?.querySelector("#screen");
@@ -19,17 +17,24 @@ export default function CustomCursor() {
     const xmlns = "http://www.w3.org/2000/svg";
     const xlinkns = "http://www.w3.org/1999/xlink";
 
-    const viewBoxWidth = 300;
-    const viewBoxHeight = 300;
-    const viewBoxXMin = -150;
-    const viewBoxYMin = -150;
-
     let width = window.innerWidth;
     let height = window.innerHeight;
+    let aspect = width / height;
+
+    const updateViewBox = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      aspect = width / Math.max(1, height);
+      const svgWidth = 300 * aspect;
+      const viewBoxXMin = -svgWidth / 2;
+      svg.setAttribute("viewBox", `${viewBoxXMin} -150 ${svgWidth} 300`);
+    };
+    updateViewBox();
 
     const mapToSvgCoords = (pixelX: number, pixelY: number) => {
-      const svgX = (pixelX / width) * viewBoxWidth + viewBoxXMin;
-      const svgY = (pixelY / height) * viewBoxHeight + viewBoxYMin;
+      const svgWidth = 300 * aspect;
+      const svgX = (pixelX / width) * svgWidth - svgWidth / 2;
+      const svgY = (pixelY / height) * 300 - 150;
       return { x: svgX, y: svgY };
     };
 
@@ -42,11 +47,10 @@ export default function CustomCursor() {
     }
 
     const pointer = { x: initialCoords.x, y: initialCoords.y };
-    const radm = Math.min(viewBoxWidth, viewBoxHeight) / 6 - 20;
     let frm = Math.random();
     let rad = 0;
 
-    // Clear any previous elements in screenGroup
+    // Clear previous elements
     while (screenGroup.firstChild) {
       screenGroup.removeChild(screenGroup.firstChild);
     }
@@ -65,19 +69,61 @@ export default function CustomCursor() {
       else prepend("Espina", i);
     }
 
-    const handlePointerMove = (e: PointerEvent) => {
-      const svgCoords = mapToSvgCoords(e.clientX, e.clientY);
-      pointer.x = svgCoords.x;
-      pointer.y = svgCoords.y;
+    // Unified pointer / touch tracking for ALL devices
+    const updatePointerPos = (clientX: number, clientY: number) => {
+      const svgWidth = 300 * aspect;
+      const paddingX = 22;
+      const paddingY = 20;
+      const minX = -svgWidth / 2 + paddingX;
+      const maxX = svgWidth / 2 - paddingX;
+      const minY = -150 + paddingY;
+      const maxY = 150 - paddingY;
+
+      const svgCoords = mapToSvgCoords(clientX, clientY);
+      pointer.x = Math.max(minX, Math.min(maxX, svgCoords.x));
+      pointer.y = Math.max(minY, Math.min(maxY, svgCoords.y));
       rad = 0;
+
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${clientX - 4}px, ${clientY - 4}px, 0)`;
+        dotRef.current.style.opacity = "1";
+      }
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+      updatePointerPos(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches && e.touches[0]) {
+        updatePointerPos(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("button, a, [data-clickable='true'], input, select, textarea")) {
+        if (dotRef.current) {
+          dotRef.current.style.transform = `${dotRef.current.style.transform.split(" scale")[0]} scale(2)`;
+          dotRef.current.style.boxShadow = "0 0 14px rgba(223, 213, 198, 0.9)";
+        }
+      } else {
+        if (dotRef.current) {
+          dotRef.current.style.transform = dotRef.current.style.transform.replace(/ scale\([^)]+\)/, "");
+          dotRef.current.style.boxShadow = "0 0 8px rgba(223, 213, 198, 0.7)";
+        }
+      }
     };
 
     const handleResize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
+      updateViewBox();
     };
 
-    window.addEventListener("pointermove", handlePointerMove, false);
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("pointerdown", handlePointerMove, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchstart", handleTouchMove, { passive: true });
+    window.addEventListener("mouseover", handleMouseOver, { passive: true });
     window.addEventListener("resize", handleResize, false);
 
     let animationFrameId: number;
@@ -85,19 +131,37 @@ export default function CustomCursor() {
     const run = () => {
       animationFrameId = requestAnimationFrame(run);
       const e0 = elems[0];
-      const ax = (Math.cos(3 * frm) * rad * viewBoxWidth) / viewBoxHeight;
-      const ay = (Math.sin(4 * frm) * rad * viewBoxHeight) / viewBoxWidth;
+      const svgWidth = 300 * aspect;
+      const ax = (Math.cos(3 * frm) * rad * svgWidth) / 300;
+      const ay = (Math.sin(4 * frm) * rad * 300) / svgWidth;
+
+      const paddingX = 22;
+      const paddingY = 20;
+      const minX = -svgWidth / 2 + paddingX;
+      const maxX = svgWidth / 2 - paddingX;
+      const minY = -150 + paddingY;
+      const maxY = 150 - paddingY;
 
       e0.x += (ax + pointer.x - e0.x) / 10;
       e0.y += (ay + pointer.y - e0.y) / 10;
+
+      // Ensure head never leaves canvas bounds
+      e0.x = Math.max(minX, Math.min(maxX, e0.x));
+      e0.y = Math.max(minY, Math.min(maxY, e0.y));
 
       for (let i = 1; i < N; i++) {
         const e = elems[i];
         const ep = elems[i - 1];
         const a = Math.atan2(e.y - ep.y, e.x - ep.x);
 
-        e.x += (ep.x - e.x + (Math.cos(a) * (100 - i)) / 22) / 4;
-        e.y += (ep.y - e.y + (Math.sin(a) * (100 - i)) / 22) / 4;
+        // Original scale and distance from naborajs/DRAGON-FOLLOWS-YOU
+        const segDist = (100 - i) / 22;
+        e.x += (ep.x - e.x + Math.cos(a) * segDist) / 4;
+        e.y += (ep.y - e.y + Math.sin(a) * segDist) / 4;
+
+        // Prevent body segments from leaving canvas
+        e.x = Math.max(-svgWidth / 2 + 12, Math.min(svgWidth / 2 - 12, e.x));
+        e.y = Math.max(-140, Math.min(140, e.y));
 
         const s = (162 + 4 * (1 - i)) / 300;
 
@@ -111,6 +175,7 @@ export default function CustomCursor() {
         }
       }
 
+      const radm = Math.min(svgWidth, 300) / 6 - 20;
       if (rad < radm) rad++;
       frm += 0.003;
 
@@ -124,37 +189,59 @@ export default function CustomCursor() {
 
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerdown", handlePointerMove);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchstart", handleTouchMove);
+      window.removeEventListener("mouseover", handleMouseOver);
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="pointer-events-none fixed inset-0 z-50 h-screen w-screen overflow-hidden"
-      aria-hidden="true"
-    >
+    <>
+      {/* Precision Primary Cursor Dot */}
+      <div
+        ref={dotRef}
+        className="pointer-events-none fixed top-0 left-0 z-50 h-2 w-2 rounded-full bg-cream-100 opacity-0 transition-[opacity,box-shadow] duration-200"
+        style={{
+          boxShadow: "0 0 8px rgba(223, 213, 198, 0.7)",
+          willChange: "transform",
+        }}
+        aria-hidden="true"
+      />
+
+      <div
+        ref={containerRef}
+        className="pointer-events-none fixed inset-0 z-20 h-screen w-screen overflow-hidden"
+        style={{
+          transform: "translate3d(0,0,0)",
+          willChange: "transform",
+        }}
+        aria-hidden="true"
+      >
       <svg
         ref={svgRef}
-        viewBox="-150 -150 300 300"
-        preserveAspectRatio="xMidYMid meet"
-        className="h-full w-full pointer-events-none opacity-80"
+        preserveAspectRatio="xMidYMid slice"
+        className="h-full w-full pointer-events-none opacity-85"
       >
         <defs>
-          {/* Cabeza / Head */}
+          {/* Cabeza / Head - Luxury Champagne Gold Titanium */}
           <g id="Cabeza">
             <path
-              style={{ fill: "#e5ded4", fillOpacity: 0.95 }}
+              style={{ fill: "#dfd5c6", fillOpacity: 0.95 }}
               d="M-28.9,-1.1L-28.55 -1.95Q-28.1 -3.1 -27.25 -2.95L-26.7 -2.95Q-27.7 -1.65 -28.9 -1.1M-18.35,-1.8Q-15.1 -10.3 -9.6 -6.05Q-15.1 -6.2 -18.35 -1.8M-18.35,1.1Q-15.1 5.45 -9.6 5.35Q-15.1 9.55 -18.35 1.1M-26.7,2.2L-27.25 2.25Q-28.1 2.4 -28.55 1.2L-28.9 0.35Q-27.7 0.9 -26.7 2.2"
             />
             <path
-              style={{ fill: "#1a1a1d", fillOpacity: 0.9 }}
+              style={{ fill: "#161618", fillOpacity: 0.9 }}
               d="M-21.05,-8.25Q-13.6 -15.95 -1.3 -12.1Q-7.85 -8.5 -5.85 -4.35Q-2.3 -4.85 10.5 0.15Q0 4.35 -5.85 3.65Q-7.85 7.75 -1.25 12.45Q-13.6 15.2 -21.05 7.5Q-29.55 4.05 -30.2 -0.35Q-29.55 -4.8 -21.05 -8.25M-26.7,-2.95L-27.25 -2.95Q-28.1 -3.1 -28.55 -1.95L-28.9 -1.1Q-27.7 -1.65 -26.7 -2.95M-9.6,-6.05Q-15.1 -10.3 -18.35 -1.8Q-15.1 -6.2 -9.6 -6.05M-9.6,5.35Q-15.1 5.45 -18.35 1.1Q-15.1 9.55 -9.6 5.35M-28.9,0.35L-28.55 1.2Q-28.1 2.4 -27.25 2.25L-26.7 2.2Q-27.7 0.9 -28.9 0.35"
             />
+            {/* Eye glint in burnished gold */}
+            <circle cx="-13" cy="-3.5" r="1.2" fill="#c5a880" />
+            <circle cx="-13" cy="3.5" r="1.2" fill="#c5a880" />
           </g>
 
-          {/* Aletas / Wings */}
+          {/* Aletas / Wings - Burnished Bronze Champagne Gradient */}
           <g id="Aletas">
             <linearGradient
               id="DragonWingGrad"
@@ -164,9 +251,10 @@ export default function CustomCursor() {
               x2="819.2"
               y2="0"
             >
-              <stop offset="0" style={{ stopColor: "#ded7cb", stopOpacity: 0.85 }} />
-              <stop offset="0.6" style={{ stopColor: "#524f4a", stopOpacity: 0.5 }} />
-              <stop offset="1" style={{ stopColor: "#18181a", stopOpacity: 0.2 }} />
+              <stop offset="0" style={{ stopColor: "#dfd5c6", stopOpacity: 0.9 }} />
+              <stop offset="0.35" style={{ stopColor: "#c5a880", stopOpacity: 0.65 }} />
+              <stop offset="0.75" style={{ stopColor: "#4a3e2e", stopOpacity: 0.3 }} />
+              <stop offset="1" style={{ stopColor: "#141416", stopOpacity: 0.1 }} />
             </linearGradient>
             <path
               style={{ fill: "url(#DragonWingGrad)" }}
@@ -174,7 +262,7 @@ export default function CustomCursor() {
             />
           </g>
 
-          {/* Espina / Spine */}
+          {/* Espina / Spine - Interlocking Burnished Titanium & Champagne Ribs */}
           <g id="Espina">
             <linearGradient
               id="DragonSpineGrad1"
@@ -185,8 +273,8 @@ export default function CustomCursor() {
               y1="0"
               y2="0"
             >
-              <stop offset="0" style={{ stopColor: "#ded7cb", stopOpacity: 0.9 }} />
-              <stop offset="1" style={{ stopColor: "#2a292d", stopOpacity: 0.6 }} />
+              <stop offset="0" style={{ stopColor: "#dfd5c6", stopOpacity: 0.95 }} />
+              <stop offset="1" style={{ stopColor: "#2c2822", stopOpacity: 0.6 }} />
             </linearGradient>
             <path
               style={{ fill: "url(#DragonSpineGrad1)" }}
@@ -201,8 +289,8 @@ export default function CustomCursor() {
               y1="0"
               y2="0"
             >
-              <stop offset="0" style={{ stopColor: "#ded7cb", stopOpacity: 0.9 }} />
-              <stop offset="1" style={{ stopColor: "#2a292d", stopOpacity: 0.6 }} />
+              <stop offset="0" style={{ stopColor: "#dfd5c6", stopOpacity: 0.95 }} />
+              <stop offset="1" style={{ stopColor: "#2c2822", stopOpacity: 0.6 }} />
             </linearGradient>
             <path
               style={{ fill: "url(#DragonSpineGrad2)" }}
@@ -213,5 +301,6 @@ export default function CustomCursor() {
         <g id="screen" />
       </svg>
     </div>
+    </>
   );
 }

@@ -47,8 +47,9 @@ export async function POST(req: NextRequest) {
 
     // 4. Session Check
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id || "guest-anonymous-id";
-    const userEmail = session?.user?.email || "client@example.com";
+    const userId = session?.user?.id || (data.clientEmail ? `usr_${data.clientEmail.replace(/[^a-zA-Z0-9]/g, "_")}` : "usr_customer_sim_01");
+    const userEmail = session?.user?.email || data.clientEmail || "alexandra.vance@atelier-client.com";
+    const userName = session?.user?.name || data.clientName || "Alexandra Vance";
 
     // 5. Calculate Server-Side Pricing (Prevent tampering)
     const allServices = getAllServices();
@@ -118,12 +119,33 @@ export async function POST(req: NextRequest) {
         serviceTitle: service.title,
         packageName: selectedPkg.name,
         packageId: data.packageId,
+        package: {
+          id: selectedPkg.id,
+          name: selectedPkg.name,
+          deliveryDays: selectedPkg.deliveryDays,
+          service: {
+            id: service.id,
+            title: service.title,
+            category: service.category,
+          },
+        },
+        user: {
+          id: userId,
+          name: userName,
+          email: userEmail,
+        },
         totalPrice: calculatedTotal,
         status: "PENDING",
         paymentStatus: "UNPAID",
         requirements: data.requirements,
         selectedAddons: resolvedAddons,
-        files: data.uploadedFiles,
+        files: data.uploadedFiles.map((f: any) => ({
+          id: `file_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`,
+          fileName: f.name,
+          fileUrl: f.url,
+          fileType: f.type,
+          fileSize: f.size || 0,
+        })),
         createdAt: new Date().toISOString(),
         updates: [
           {
@@ -188,7 +210,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ orders });
     } catch (dbError) {
       // In-memory fallback
-      return NextResponse.json({ orders: fallbackOrders });
+      const filtered = isAdmin
+        ? fallbackOrders
+        : fallbackOrders.filter(
+            (o) => !userId || o.userId === userId || o.userEmail === session?.user?.email
+          );
+      return NextResponse.json({ orders: filtered.length > 0 ? filtered : fallbackOrders });
     }
   } catch (error) {
     return NextResponse.json({ error: "Failed to retrieve orders" }, { status: 500 });

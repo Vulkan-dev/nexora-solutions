@@ -6,6 +6,8 @@ export const CreateOrderSchema = z.object({
   addonIds: z.array(z.string()).default([]),
   requirements: z.string().min(10, "Requirements must be at least 10 characters long").max(5000),
   turnstileToken: z.string().optional(),
+  clientName: z.string().optional(),
+  clientEmail: z.string().email().optional(),
   uploadedFiles: z
     .array(
       z.object({

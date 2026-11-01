@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useSession, signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAllServices } from "@/lib/catalog";
 import { formatCurrency } from "@/lib/utils";
@@ -16,11 +17,15 @@ import {
   CreditCard,
   Trash2,
   AlertCircle,
+  LogIn,
+  Zap,
+  UserCheck,
 } from "lucide-react";
 
 function OrderWizardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: session, status: authStatus, update } = useSession();
   const allServices = getAllServices();
 
   const initialServiceId = searchParams.get("serviceId") || allServices[0]?.id;
@@ -33,6 +38,7 @@ function OrderWizardContent() {
   const [requirements, setRequirements] = useState<string>("");
   const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; url: string; type: string; size?: number }>>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [simulatingAuth, setSimulatingAuth] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [orderSuccessId, setOrderSuccessId] = useState<string | null>(null);
 
@@ -77,7 +83,46 @@ function OrderWizardContent() {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const [simulatedSession, setSimulatedSession] = useState<{ user: { name: string; email: string; role: string } } | null>(null);
+  const isUserAuthenticated = !!(session?.user || simulatedSession?.user);
+  const activeUser = session?.user || simulatedSession?.user;
+
+  const handleSimulatedClientLogin = async () => {
+    setSimulatingAuth(true);
+    try {
+      const res = await signIn("simulated-auth", {
+        role: "CUSTOMER",
+        name: "Alexandra Vance",
+        email: "alexandra.vance@atelier-client.com",
+        redirect: false,
+      });
+
+      // Instantly activate authenticated state without reloading page or losing steps
+      setSimulatedSession({
+        user: {
+          name: "Alexandra Vance",
+          email: "alexandra.vance@atelier-client.com",
+          role: "CUSTOMER",
+        },
+      });
+
+      // Trigger session sync
+      if (typeof update === "function") {
+        await update();
+      }
+    } catch (err) {
+      console.error("Simulation error:", err);
+    } finally {
+      setSimulatingAuth(false);
+    }
+  };
+
   const handleSubmitOrder = async () => {
+    if (!isUserAuthenticated) {
+      setSubmitError("Please sign in with Google or use test simulation before submitting your commission.");
+      return;
+    }
+
     setSubmitError(null);
     setIsSubmitting(true);
 
@@ -88,6 +133,8 @@ function OrderWizardContent() {
         addonIds: selectedAddonIds,
         requirements: requirements || "Standard architectural specifications as selected.",
         uploadedFiles,
+        clientName: activeUser?.name || "Alexandra Vance",
+        clientEmail: activeUser?.email || "alexandra.vance@atelier-client.com",
       };
 
       const res = await fetch("/api/orders", {
@@ -112,15 +159,15 @@ function OrderWizardContent() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-6 sm:px-10 lg:px-16 py-20">
+    <div className="mx-auto max-w-5xl px-6 sm:px-10 lg:px-16 py-16">
       {/* Wizard Step Navigation */}
-      <div className="mb-14 border-b border-white/[0.08] pb-6">
+      <div className="mb-12 border-b border-white/[0.08] pb-6">
         <div className="flex items-center justify-between max-w-2xl mx-auto">
           {[
             { num: 1, title: "Tier" },
             { num: 2, title: "Enhancements" },
             { num: 3, title: "Briefing" },
-            { num: 4, title: "Review" },
+            { num: 4, title: "Review & Access" },
           ].map((item) => (
             <div key={item.num} className="flex items-center gap-3">
               <div
@@ -355,7 +402,7 @@ function OrderWizardContent() {
                 </div>
                 <h2 className="text-2xl font-light text-white">Project Vision & Reference Files</h2>
                 <p className="text-xs text-neutral-400 mt-1">
-                  Specify aesthetic references, brand guidelines, and attach any design assets or Figma links.
+                  Specify aesthetic references, brand guidelines, and attach design assets or Figma links.
                 </p>
               </div>
 
@@ -429,14 +476,14 @@ function OrderWizardContent() {
                   variant="primary"
                   className="px-6 py-2.5 text-xs uppercase tracking-wider font-semibold"
                 >
-                  <span>Review Summary</span>
+                  <span>Review & Client Verification</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </MagneticButton>
               </div>
             </motion.div>
           )}
 
-          {/* STEP 4: Review & Checkout */}
+          {/* STEP 4: Review & Client Ingress Gate */}
           {step === 4 && (
             <motion.div
               key="step4"
@@ -447,11 +494,11 @@ function OrderWizardContent() {
             >
               <div>
                 <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
-                  Step 04 // Confirmation
+                  Step 04 // Review & Access
                 </div>
-                <h2 className="text-2xl font-light text-white">Review & Commission Agreement</h2>
+                <h2 className="text-2xl font-light text-white">Review & Confirm Commission</h2>
                 <p className="text-xs text-neutral-400 mt-1">
-                  Verify your selections before confirming the production engagement.
+                  Authenticate as a client to register your commission and access your private progress timeline.
                 </p>
               </div>
 
@@ -495,6 +542,68 @@ function OrderWizardContent() {
                 </div>
               </div>
 
+              {/* User Authentication Gate (Mandatory before submitting) */}
+              <div className="rounded-xl border border-white/[0.08] bg-surfaceElevated/70 p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-neutral-300 font-mono">
+                      Client Authentication Status
+                    </div>
+                    <div className="text-xs text-neutral-400 mt-1">
+                      {isUserAuthenticated
+                        ? `Authenticated as ${activeUser?.name || activeUser?.email}`
+                        : "Sign in with Google before confirming your commission."}
+                    </div>
+                  </div>
+                  {isUserAuthenticated && (
+                    <div className="flex items-center gap-1.5 text-xs text-cream-200 font-mono">
+                      <UserCheck className="h-4 w-4" />
+                      <span>Verified Client</span>
+                    </div>
+                  )}
+                </div>
+
+                {!isUserAuthenticated && (
+                  <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                    {/* Real Google OAuth Login */}
+                    <button
+                      onClick={() => signIn("google", { callbackUrl: "/order" })}
+                      className="flex-1 flex items-center justify-center gap-2.5 rounded-full border border-white/10 bg-surface px-5 py-3 text-xs text-white hover:border-white/25 transition-all"
+                    >
+                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24">
+                        <path
+                          fill="#4285F4"
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                        />
+                      </svg>
+                      <span className="uppercase tracking-wider text-[11px]">Sign in with Google</span>
+                    </button>
+
+                    {/* Test Simulation Button */}
+                    <button
+                      onClick={handleSimulatedClientLogin}
+                      disabled={simulatingAuth}
+                      className="flex-1 flex items-center justify-center gap-2 rounded-full border border-cream-400/40 bg-cream-100/10 px-5 py-3 text-xs text-cream-200 hover:bg-cream-100/20 transition-all font-mono"
+                    >
+                      <Zap className="h-3.5 w-3.5 text-cream-300" />
+                      <span>{simulatingAuth ? "Simulating..." : "⚡ Test Mode: Simulate Client Login"}</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="flex items-center justify-between pt-6 border-t border-white/[0.08]">
                 <MagneticButton
                   onClick={() => setStep(3)}
@@ -508,12 +617,14 @@ function OrderWizardContent() {
 
                 <MagneticButton
                   onClick={handleSubmitOrder}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isUserAuthenticated}
                   variant="primary"
-                  className="px-8 py-3 text-xs uppercase tracking-widest font-semibold"
+                  className="px-8 py-3 text-xs uppercase tracking-widest font-semibold disabled:opacity-40"
                 >
                   {isSubmitting ? (
                     <span>Registering Commission...</span>
+                  ) : !isUserAuthenticated ? (
+                    <span>Please Authenticate to Confirm</span>
                   ) : (
                     <>
                       <CreditCard className="h-3.5 w-3.5" />
