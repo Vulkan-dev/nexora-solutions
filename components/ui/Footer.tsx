@@ -31,10 +31,10 @@ export default function Footer() {
           <div className="md:col-span-3">
             <h4 className="text-[11px] uppercase tracking-widest text-neutral-900 mb-4 font-mono font-semibold">Navigation</h4>
             <ul className="space-y-2.5 text-xs font-medium">
-              <li><Link href="/services" className="text-neutral-600 hover:text-neutral-950 transition-colors">Services</Link></li>
-              <li><Link href="/order" className="text-neutral-600 hover:text-neutral-950 transition-colors">Order Now</Link></li>
-              <li><Link href="/dashboard" className="text-neutral-600 hover:text-neutral-950 transition-colors">My Orders & Chat</Link></li>
-              <li><Link href="/auth/signin" className="text-neutral-600 hover:text-neutral-950 transition-colors">Sign In</Link></li>
+              <li><Link href="/services" className="text-neutral-700 hover:text-neutral-950 transition-colors">Services</Link></li>
+              <li><Link href="/order" className="text-neutral-700 hover:text-neutral-950 transition-colors">Order Now</Link></li>
+              <li><Link href="/dashboard" className="text-neutral-700 hover:text-neutral-950 transition-colors">My Orders & Chat</Link></li>
+              <li><Link href="/auth/signin" className="text-neutral-700 hover:text-neutral-950 transition-colors">Sign In</Link></li>
             </ul>
           </div>
 
@@ -44,13 +44,13 @@ export default function Footer() {
             <p className="text-xs text-neutral-600 leading-relaxed mb-4">
               Direct chat with the developer, live order progress updates, and fast turnaround.
             </p>
-            <div className="text-xs text-neutral-900 font-mono font-medium">
+            <div className="text-xs text-neutral-900 font-mono font-semibold">
               contact@nexorasolutions.com
             </div>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-black/[0.07] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
+        <div className="pt-8 border-t border-black/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-600">
           <p>© {new Date().getFullYear()} Nexora Solutions Ltd. All rights reserved.</p>
           <p className="tracking-widest uppercase text-[10px]">Global • London • New York • Singapore</p>
         </div>

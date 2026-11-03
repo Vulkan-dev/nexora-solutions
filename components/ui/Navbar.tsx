@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, LogOut, LogIn, User } from "lucide-react";
+import { Menu, X, LogOut, User } from "lucide-react";
 import MagneticButton from "./MagneticButton";
 import { cn } from "@/lib/utils";
 
@@ -26,9 +26,9 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-black/[0.08] bg-[#f8f7f4]/85 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+    <header className="sticky top-0 z-40 w-full border-b border-black/[0.08] bg-[#f7f6f2]/80 backdrop-blur-md">
       <div className="mx-auto flex h-20 w-full max-w-[95vw] items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-        {/* Brand Logo */}
+        {/* Brand Logo - Clean, unboxed natural display without borders */}
         <Link href="/" className="group flex items-center gap-3 text-neutral-900 transition-opacity hover:opacity-90">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -40,7 +40,7 @@ export default function Navbar() {
             <span className="text-sm font-semibold tracking-[0.22em] uppercase text-neutral-900">
               NEXORA
             </span>
-            <span className="text-[10px] text-neutral-500 tracking-[0.22em] uppercase">Solutions</span>
+            <span className="text-[10px] text-neutral-500 tracking-[0.22em] uppercase font-medium">Solutions</span>
           </div>
         </Link>
 
@@ -54,7 +54,7 @@ export default function Navbar() {
                 href={link.href}
                 className={cn(
                   "relative py-2 transition-colors duration-200",
-                  isActive ? "text-neutral-950 font-semibold" : "text-neutral-600 hover:text-neutral-950"
+                  isActive ? "text-neutral-950 font-bold" : "text-neutral-700 hover:text-neutral-950"
                 )}
               >
                 <span>{link.label}</span>
@@ -76,7 +76,7 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
               <Link
                 href="/dashboard"
-                className="flex items-center gap-2 rounded-full border border-black/[0.09] bg-white px-3.5 py-1.5 text-xs text-neutral-800 hover:border-black/20 shadow-sm transition-all"
+                className="flex items-center gap-2 rounded-full border border-black/[0.1] bg-white px-3.5 py-1.5 text-xs text-neutral-800 hover:border-black/25 shadow-sm transition-all"
               >
                 {session.user.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -92,7 +92,7 @@ export default function Navbar() {
                   {session.user.name || session.user.email}
                 </span>
                 {session.user.role === "ADMIN" && (
-                  <span className="rounded bg-black/[0.06] px-1.5 py-0.2 text-[9px] font-mono uppercase text-amber-800 font-semibold">
+                  <span className="rounded bg-black/[0.08] px-1.5 py-0.2 text-[9px] font-mono uppercase text-amber-900 font-semibold">
                     ADMIN
                   </span>
                 )}
@@ -101,7 +101,7 @@ export default function Navbar() {
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
                 title="Sign out"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-black/[0.09] text-neutral-500 hover:text-neutral-950 bg-white hover:bg-neutral-50 shadow-sm transition-colors"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-black/[0.1] text-neutral-600 hover:text-neutral-950 bg-white hover:bg-neutral-50 shadow-sm transition-colors"
               >
                 <LogOut className="h-3.5 w-3.5" />
               </button>
@@ -109,7 +109,7 @@ export default function Navbar() {
           ) : (
             <div className="flex items-center gap-3">
               <Link href="/auth/signin">
-                <span className="text-xs uppercase tracking-wider text-neutral-600 hover:text-neutral-950 transition-colors px-2 font-medium">
+                <span className="text-xs uppercase tracking-wider text-neutral-700 hover:text-neutral-950 transition-colors px-2 font-semibold">
                   Sign In
                 </span>
               </Link>
@@ -126,7 +126,7 @@ export default function Navbar() {
         <div className="flex md:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.09] bg-white text-neutral-700 shadow-sm"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.1] bg-white text-neutral-700 shadow-sm"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}

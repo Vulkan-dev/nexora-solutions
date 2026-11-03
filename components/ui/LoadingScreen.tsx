@@ -45,7 +45,7 @@ export default function LoadingScreen() {
           className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#f7f6f2] text-neutral-900 pointer-events-none select-none"
         >
           {/* Subtle radial background warmth */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(181,142,77,0.08)_0%,transparent_65%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(181,142,77,0.06)_0%,transparent_65%)]" />
 
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
@@ -53,7 +53,7 @@ export default function LoadingScreen() {
             transition={{ duration: 0.5 }}
             className="relative z-10 flex flex-col items-center gap-5"
           >
-            {/* Nexora Updated 64x64 Logo (Uncropped, crisp graphic) */}
+            {/* Nexora Updated 64x64 Logo (Uncropped, crisp clean graphic) */}
             <motion.div
               initial={{ scale: 0.85, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -65,7 +65,7 @@ export default function LoadingScreen() {
               <img
                 src="/64x64.png"
                 alt="Nexora Solutions"
-                className="relative h-14 w-14 sm:h-16 sm:w-16 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.1)]"
+                className="relative h-14 w-14 sm:h-16 sm:w-16 object-contain"
               />
             </motion.div>
 
@@ -74,20 +74,20 @@ export default function LoadingScreen() {
               <span className="text-xl sm:text-2xl font-semibold tracking-[0.25em] uppercase text-neutral-900">
                 NEXORA
               </span>
-              <span className="text-xs text-neutral-500 tracking-[0.3em] uppercase">
+              <span className="text-xs text-neutral-600 tracking-[0.3em] uppercase font-medium">
                 Solutions
               </span>
             </div>
 
             {/* Smooth Cinematic Charging Bar */}
-            <div className="w-56 h-[3px] bg-neutral-200/90 rounded-full overflow-hidden relative shadow-inner">
+            <div className="w-56 h-[3px] bg-neutral-200/80 rounded-full overflow-hidden relative shadow-inner">
               <motion.div
                 style={{ width: `${progress}%` }}
                 className="h-full bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700 shadow-[0_0_8px_rgba(181,142,77,0.4)] transition-all duration-150 ease-out"
               />
             </div>
 
-            <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-neutral-500">
+            <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-neutral-600">
               <span>Loading Nexora Solutions</span>
               <span className="text-amber-800 font-semibold">{progress}%</span>
             </div>

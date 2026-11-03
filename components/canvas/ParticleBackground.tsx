@@ -21,11 +21,11 @@ export default function LuxuryAmbientBackground() {
     };
     window.addEventListener("resize", handleResize);
 
-    // Warm, architectural light orbs drifting gently
+    // Architectural grey ambient orbs drifting gently
     const orbs = [
-      { x: width * 0.25, y: height * 0.2, r: 460, vx: 0.16, vy: 0.1, baseColor: "rgba(200, 165, 115, 0.07)" },
-      { x: width * 0.78, y: height * 0.55, r: 540, vx: -0.14, vy: -0.09, baseColor: "rgba(180, 150, 105, 0.06)" },
-      { x: width * 0.45, y: height * 0.88, r: 420, vx: 0.1, vy: -0.12, baseColor: "rgba(215, 210, 200, 0.08)" },
+      { x: width * 0.25, y: height * 0.2, r: 460, vx: 0.16, vy: 0.1, baseColor: "rgba(180, 150, 105, 0.08)" },
+      { x: width * 0.78, y: height * 0.55, r: 540, vx: -0.14, vy: -0.09, baseColor: "rgba(160, 135, 95, 0.06)" },
+      { x: width * 0.45, y: height * 0.88, r: 420, vx: 0.1, vy: -0.12, baseColor: "rgba(205, 207, 214, 0.25)" },
     ];
 
     // Delicate floating ambient dust particles
@@ -45,7 +45,7 @@ export default function LuxuryAmbientBackground() {
       t += 0.002;
       ctx.clearRect(0, 0, width, height);
 
-      // Warm alabaster luxury gallery base
+      // Warm alabaster gallery paper base
       ctx.fillStyle = "#f7f6f2";
       ctx.fillRect(0, 0, width, height);
 
@@ -107,7 +107,7 @@ export default function LuxuryAmbientBackground() {
         Math.max(width, height) * 0.9
       );
       vignette.addColorStop(0, "rgba(247, 246, 242, 0)");
-      vignette.addColorStop(1, "rgba(238, 235, 227, 0.45)");
+      vignette.addColorStop(1, "rgba(235, 232, 224, 0.45)");
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, width, height);
 

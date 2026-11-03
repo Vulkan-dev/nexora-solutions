@@ -14,11 +14,14 @@ export const metadata: Metadata = {
     "Modern full-stack web applications, scalable SaaS platforms, and custom Discord bots built with clean code and high performance.",
   icons: {
     icon: [
+      { url: "/64x64.png", sizes: "64x64", type: "image/png" },
       { url: "/tab-icon.png", type: "image/png" },
       { url: "/favicon.ico" },
     ],
-    shortcut: "/tab-icon.png",
-    apple: "/tab-icon.png",
+    shortcut: "/64x64.png",
+    apple: [
+      { url: "/64x64.png", sizes: "64x64", type: "image/png" },
+    ],
   },
 };
 
@@ -30,9 +33,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/tab-icon.png" type="image/png" sizes="any" />
-        <link rel="shortcut icon" href="/tab-icon.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/tab-icon.png" />
+        <link rel="icon" href="/64x64.png" sizes="64x64" type="image/png" />
+        <link rel="shortcut icon" href="/64x64.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/64x64.png" sizes="any" />
       </head>
       <body className="min-h-screen bg-background text-neutral-900 antialiased flex flex-col selection:bg-amber-700/20 selection:text-neutral-900 w-full overflow-x-hidden">
         <SessionProviderWrapper>

@@ -143,7 +143,7 @@ export default function CustomerDashboardPage() {
   return (
     <div className="w-full max-w-[95vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 sm:py-12 lg:py-16">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-8 border-b border-black/[0.08] gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-8 border-b border-black/[0.1] gap-4">
         <div>
           <div className="text-[10px] uppercase tracking-widest text-amber-800 font-mono font-semibold mb-2">
             Customer Dashboard
@@ -159,7 +159,7 @@ export default function CustomerDashboardPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={loadOrders}
-            className="flex items-center gap-2 rounded-full border border-black/[0.09] bg-white px-4 py-2 text-xs text-neutral-700 hover:text-neutral-950 shadow-sm transition-colors uppercase tracking-wider font-mono text-[11px]"
+            className="flex items-center gap-2 rounded-full border border-black/[0.1] bg-white px-4 py-2 text-xs text-neutral-700 hover:text-neutral-950 shadow-sm transition-colors uppercase tracking-wider font-mono text-[11px]"
           >
             <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh</span>
@@ -221,7 +221,7 @@ export default function CustomerDashboardPage() {
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="rounded-2xl border border-black/[0.07] bg-[#f4f2ec] hover:bg-white hover:border-black/20 p-4 shadow-sm transition-all group flex flex-col justify-between"
+                  className="rounded-2xl border border-black/[0.06] bg-[#f4f2ec] hover:bg-white hover:border-black/20 p-4 shadow-sm transition-all group flex flex-col justify-between"
                 >
                   <div>
                     <div className="text-sm font-medium text-neutral-900 group-hover:text-black transition-colors">
@@ -258,7 +258,7 @@ export default function CustomerDashboardPage() {
                     onClick={() => setSelectedOrder(ord)}
                     className={`cursor-pointer rounded-2xl p-4 sm:p-5 border transition-all ${
                       isSelected
-                        ? "border-amber-700/60 bg-amber-50/50 shadow-md"
+                        ? "border-amber-700/60 bg-amber-50/60 shadow-md"
                         : "border-black/[0.08] bg-white hover:border-black/20 shadow-sm"
                     }`}
                   >
@@ -330,7 +330,7 @@ export default function CustomerDashboardPage() {
                           isCurrent
                             ? "border-amber-700 bg-amber-100/60 text-amber-950 font-bold shadow-sm"
                             : isDone
-                            ? "border-black/[0.08] bg-[#f4f2ec] text-amber-800 font-semibold"
+                            ? "border-black/[0.06] bg-[#f4f2ec] text-amber-800 font-semibold"
                             : "border-black/[0.05] bg-transparent text-neutral-400"
                         }`}
                       >
@@ -434,7 +434,7 @@ export default function CustomerDashboardPage() {
                   selectedOrder.updates.map((upd: any, index: number) => (
                     <div
                       key={index}
-                      className="rounded-xl border border-black/[0.06] bg-[#f7f6f2] p-4 space-y-1.5 shadow-sm"
+                      className="rounded-xl border border-black/[0.06] bg-[#f4f2ec] p-4 space-y-1.5 shadow-sm"
                     >
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-semibold text-neutral-900">
@@ -462,7 +462,7 @@ export default function CustomerDashboardPage() {
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder="Type your message here..."
-                  className="flex-1 rounded-full border border-black/[0.1] bg-[#f7f6f2] px-4 py-2.5 text-xs text-neutral-900 placeholder-neutral-500 focus:border-amber-700 focus:bg-white focus:outline-none"
+                  className="flex-1 rounded-full border border-black/[0.1] bg-[#f4f2ec] px-4 py-2.5 text-xs text-neutral-900 placeholder-neutral-500 focus:border-amber-700 focus:bg-white focus:outline-none"
                 />
                 <button
                   onClick={handleSendMessage}
@@ -495,7 +495,7 @@ export default function CustomerDashboardPage() {
               value={revisionNote}
               onChange={(e) => setRevisionNote(e.target.value)}
               placeholder="Outline requested changes..."
-              className="w-full rounded-xl border border-black/[0.1] bg-[#f7f6f2] p-3 text-xs text-neutral-900 placeholder-neutral-500 focus:border-amber-700 focus:bg-white focus:outline-none"
+              className="w-full rounded-xl border border-black/[0.1] bg-[#f4f2ec] p-3 text-xs text-neutral-900 placeholder-neutral-500 focus:border-amber-700 focus:bg-white focus:outline-none"
             />
             <div className="flex justify-end gap-2 pt-2">
               <button
