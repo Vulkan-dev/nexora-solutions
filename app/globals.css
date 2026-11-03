@@ -9,8 +9,8 @@ html {
 }
 
 :root {
-  --background: #090a0d;
-  --foreground: #f5f2eb;
+  --background: #f7f6f2;
+  --foreground: #14151a;
 }
 
 body {
@@ -22,8 +22,8 @@ body {
 }
 
 ::selection {
-  background-color: rgba(197, 168, 128, 0.3);
-  color: #ffffff;
+  background-color: rgba(161, 126, 77, 0.22);
+  color: #14151a;
 }
 
 /* Custom refined luxury scrollbar */
@@ -32,25 +32,27 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #090a0d;
+  background: #f0eee8;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #23242c;
+  background: #cbc7bb;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #383a46;
+  background: #b5b0a2;
 }
 
 .atelier-card {
-  background: linear-gradient(180deg, rgba(24, 25, 31, 0.75) 0%, rgba(16, 17, 22, 0.88) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .atelier-card:hover {
-  border-color: rgba(197, 168, 128, 0.35);
+  border-color: rgba(161, 126, 77, 0.4);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.09), 0 2px 6px rgba(0, 0, 0, 0.04);
 }

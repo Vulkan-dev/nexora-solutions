@@ -28,13 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <link rel="icon" href="/tab-icon.png" type="image/png" sizes="any" />
         <link rel="shortcut icon" href="/tab-icon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/tab-icon.png" />
       </head>
-      <body className="min-h-screen bg-background text-neutral-100 antialiased flex flex-col selection:bg-cream-400/30 selection:text-white w-full overflow-x-hidden">
+      <body className="min-h-screen bg-background text-neutral-900 antialiased flex flex-col selection:bg-amber-700/20 selection:text-neutral-900 w-full overflow-x-hidden">
         <SessionProviderWrapper>
           <SmoothScroll>
             {/* Custom Cinematic Loading Screen */}

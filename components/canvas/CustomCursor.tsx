@@ -312,9 +312,9 @@ export default function CustomCursor() {
       {/* Precision Primary Cursor Dot */}
       <div
         ref={dotRef}
-        className="pointer-events-none fixed top-0 left-0 z-50 h-2 w-2 rounded-full bg-cream-100 opacity-0 transition-[opacity,box-shadow] duration-200"
+        className="pointer-events-none fixed top-0 left-0 z-50 h-2 w-2 rounded-full bg-neutral-900 opacity-0 transition-[opacity,box-shadow] duration-200"
         style={{
-          boxShadow: "0 0 8px rgba(223, 213, 198, 0.7)",
+          boxShadow: "0 0 6px rgba(0, 0, 0, 0.4), 0 0 10px rgba(181, 144, 82, 0.35)",
           willChange: "transform",
         }}
         aria-hidden="true"
@@ -324,7 +324,7 @@ export default function CustomCursor() {
       <div
         ref={containerRef}
         className={`pointer-events-none fixed inset-0 z-20 h-screen w-screen overflow-hidden transition-opacity duration-500 ${
-          dragonEnabled ? "opacity-85" : "opacity-0"
+          dragonEnabled ? "opacity-90" : "opacity-0"
         }`}
         style={{
           transform: "translate3d(0,0,0)",
@@ -338,22 +338,29 @@ export default function CustomCursor() {
           className="h-full w-full pointer-events-none"
         >
           <defs>
-            {/* Cabeza / Head - Luxury Champagne Gold Titanium */}
+            {/* Cabeza / Head - Luxury Metallic Obsidian & Polished Imperial Gold */}
             <g id="Cabeza">
+              {/* Gold Crest Horns & Accents */}
               <path
-                style={{ fill: "#dfd5c6", fillOpacity: 0.95 }}
+                style={{ fill: "#b58e4d", fillOpacity: 0.98 }}
                 d="M-28.9,-1.1L-28.55 -1.95Q-28.1 -3.1 -27.25 -2.95L-26.7 -2.95Q-27.7 -1.65 -28.9 -1.1M-18.35,-1.8Q-15.1 -10.3 -9.6 -6.05Q-15.1 -6.2 -18.35 -1.8M-18.35,1.1Q-15.1 5.45 -9.6 5.35Q-15.1 9.55 -18.35 1.1M-26.7,2.2L-27.25 2.25Q-28.1 2.4 -28.55 1.2L-28.9 0.35Q-27.7 0.9 -26.7 2.2"
               />
+              {/* Deep Sculpted Obsidian Shell */}
               <path
-                style={{ fill: "#161618", fillOpacity: 0.9 }}
+                style={{ fill: "#16171f", fillOpacity: 0.96 }}
                 d="M-21.05,-8.25Q-13.6 -15.95 -1.3 -12.1Q-7.85 -8.5 -5.85 -4.35Q-2.3 -4.85 10.5 0.15Q0 4.35 -5.85 3.65Q-7.85 7.75 -1.25 12.45Q-13.6 15.2 -21.05 7.5Q-29.55 4.05 -30.2 -0.35Q-29.55 -4.8 -21.05 -8.25M-26.7,-2.95L-27.25 -2.95Q-28.1 -3.1 -28.55 -1.95L-28.9 -1.1Q-27.7 -1.65 -26.7 -2.95M-9.6,-6.05Q-15.1 -10.3 -18.35 -1.8Q-15.1 -6.2 -9.6 -6.05M-9.6,5.35Q-15.1 5.45 -18.35 1.1Q-15.1 9.55 -9.6 5.35M-28.9,0.35L-28.55 1.2Q-28.1 2.4 -27.25 2.25L-26.7 2.2Q-27.7 0.9 -28.9 0.35"
               />
-              {/* Eye glint in burnished gold */}
-              <circle cx="-13" cy="-3.5" r="1.2" fill="#c5a880" />
-              <circle cx="-13" cy="3.5" r="1.2" fill="#c5a880" />
+              {/* Imperial Crown Jewel Specular Highlight */}
+              <circle cx="-17" cy="0" r="1.2" fill="#f5d799" fillOpacity="0.9" />
+              <circle cx="-17.3" cy="-0.3" r="0.4" fill="#ffffff" />
+              {/* Radiant Amber Gold Eyes with Multi-Facet Glint */}
+              <circle cx="-13" cy="-3.5" r="1.4" fill="#e8ba55" />
+              <circle cx="-13.4" cy="-3.7" r="0.5" fill="#ffffff" />
+              <circle cx="-13" cy="3.5" r="1.4" fill="#e8ba55" />
+              <circle cx="-13.4" cy="3.3" r="0.5" fill="#ffffff" />
             </g>
 
-            {/* Aletas / Wings - Burnished Bronze Champagne Gradient */}
+            {/* Aletas / Wings - Rich Metallic Gold to Obsidian Iridescent Gradient */}
             <g id="Aletas">
               <linearGradient
                 id="DragonWingGrad"
@@ -363,10 +370,10 @@ export default function CustomCursor() {
                 x2="819.2"
                 y2="0"
               >
-                <stop offset="0" style={{ stopColor: "#dfd5c6", stopOpacity: 0.9 }} />
-                <stop offset="0.35" style={{ stopColor: "#c5a880", stopOpacity: 0.65 }} />
-                <stop offset="0.75" style={{ stopColor: "#4a3e2e", stopOpacity: 0.3 }} />
-                <stop offset="1" style={{ stopColor: "#141416", stopOpacity: 0.1 }} />
+                <stop offset="0" style={{ stopColor: "#cba564", stopOpacity: 0.95 }} />
+                <stop offset="0.3" style={{ stopColor: "#9e7d44", stopOpacity: 0.85 }} />
+                <stop offset="0.7" style={{ stopColor: "#323440", stopOpacity: 0.75 }} />
+                <stop offset="1" style={{ stopColor: "#15161d", stopOpacity: 0.4 }} />
               </linearGradient>
               <path
                 style={{ fill: "url(#DragonWingGrad)" }}
@@ -374,7 +381,7 @@ export default function CustomCursor() {
               />
             </g>
 
-            {/* Espina / Spine - Interlocking Burnished Titanium & Champagne Ribs */}
+            {/* Espina / Spine - Interlocking Burnished Obsidian Ribs with Gold Highlights */}
             <g id="Espina">
               <linearGradient
                 id="DragonSpineGrad1"
@@ -385,8 +392,8 @@ export default function CustomCursor() {
                 y1="0"
                 y2="0"
               >
-                <stop offset="0" style={{ stopColor: "#dfd5c6", stopOpacity: 0.95 }} />
-                <stop offset="1" style={{ stopColor: "#2c2822", stopOpacity: 0.6 }} />
+                <stop offset="0" style={{ stopColor: "#b58e4d", stopOpacity: 0.98 }} />
+                <stop offset="1" style={{ stopColor: "#1d1e27", stopOpacity: 0.92 }} />
               </linearGradient>
               <path
                 style={{ fill: "url(#DragonSpineGrad1)" }}
@@ -401,8 +408,8 @@ export default function CustomCursor() {
                 y1="0"
                 y2="0"
               >
-                <stop offset="0" style={{ stopColor: "#dfd5c6", stopOpacity: 0.95 }} />
-                <stop offset="1" style={{ stopColor: "#2c2822", stopOpacity: 0.6 }} />
+                <stop offset="0" style={{ stopColor: "#b58e4d", stopOpacity: 0.98 }} />
+                <stop offset="1" style={{ stopColor: "#1d1e27", stopOpacity: 0.92 }} />
               </linearGradient>
               <path
                 style={{ fill: "url(#DragonSpineGrad2)" }}
@@ -410,11 +417,18 @@ export default function CustomCursor() {
               />
             </g>
           </defs>
-          <g id="screen" />
+          {/* Enhanced atmospheric 3D drop-shadow with subtle golden specular halo for rich tangible presence on light backgrounds */}
+          <g
+            id="screen"
+            style={{
+              filter:
+                "drop-shadow(0 8px 18px rgba(0, 0, 0, 0.2)) drop-shadow(0 2px 6px rgba(181, 142, 77, 0.22))",
+            }}
+          />
         </svg>
       </div>
 
-      {/* Custom Right-Click Context Menu */}
+      {/* Custom Right-Click Context Menu - Crisp Ultra-Refined White Card */}
       <AnimatePresence>
         {contextMenu && (
           <motion.div
@@ -423,15 +437,15 @@ export default function CustomCursor() {
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.12, ease: "easeOut" }}
             style={{ left: contextMenu.x, top: contextMenu.y }}
-            className="fixed z-50 w-60 rounded-2xl border border-white/15 bg-[#0e0f14]/95 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-xl select-none"
+            className="fixed z-50 w-60 rounded-2xl border border-black/[0.09] bg-white/95 p-2 shadow-[0_16px_50px_rgba(0,0,0,0.12)] backdrop-blur-xl select-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Menu Header */}
-            <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.08] mb-1.5">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400">
+            <div className="flex items-center justify-between px-3 py-1.5 border-b border-black/[0.06] mb-1.5">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-500 font-medium">
                 Quick Menu
               </span>
-              <span className="text-[9px] uppercase font-mono text-cream-300">
+              <span className="text-[9px] uppercase font-mono text-amber-800 font-semibold">
                 Nexora
               </span>
             </div>
@@ -444,37 +458,37 @@ export default function CustomCursor() {
                 e.stopPropagation();
                 toggleDragon();
               }}
-              className="w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs text-neutral-200 hover:bg-white/[0.08] hover:text-white transition-all group"
+              className="w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs text-neutral-800 hover:bg-neutral-100 hover:text-black transition-all group font-medium"
             >
               <div className="flex items-center gap-2.5">
                 {dragonEnabled ? (
-                  <Eye className="h-4 w-4 text-cream-300" />
+                  <Eye className="h-4 w-4 text-amber-700" />
                 ) : (
-                  <EyeOff className="h-4 w-4 text-neutral-500" />
+                  <EyeOff className="h-4 w-4 text-neutral-400" />
                 )}
                 <span>Dragon Follower</span>
               </div>
               <span
                 className={`rounded-full px-2 py-0.5 text-[9px] font-mono uppercase tracking-wider transition-all ${
                   dragonEnabled
-                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold"
-                    : "bg-neutral-800 text-neutral-500 border border-neutral-700"
+                    ? "bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold"
+                    : "bg-neutral-100 text-neutral-500 border border-neutral-200"
                 }`}
               >
                 {dragonEnabled ? "ON" : "OFF"}
               </span>
             </button>
 
-            <div className="my-1.5 h-[1px] bg-white/[0.06]" />
+            <div className="my-1.5 h-[1px] bg-black/[0.06]" />
 
             {/* Quick Navigation Items */}
             <button
               type="button"
               data-clickable="true"
               onClick={() => handleNavigate("/order")}
-              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-100 hover:text-black transition-all text-left font-medium"
             >
-              <Layers className="h-4 w-4 text-cream-400" />
+              <Layers className="h-4 w-4 text-amber-700" />
               <span>Start New Order</span>
             </button>
 
@@ -482,9 +496,9 @@ export default function CustomCursor() {
               type="button"
               data-clickable="true"
               onClick={() => handleNavigate("/dashboard")}
-              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-100 hover:text-black transition-all text-left font-medium"
             >
-              <MessageSquare className="h-4 w-4 text-cream-400" />
+              <MessageSquare className="h-4 w-4 text-amber-700" />
               <span>My Orders & Chat</span>
             </button>
 
@@ -492,24 +506,24 @@ export default function CustomCursor() {
               type="button"
               data-clickable="true"
               onClick={() => handleNavigate("/services")}
-              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-100 hover:text-black transition-all text-left font-medium"
             >
-              <Compass className="h-4 w-4 text-cream-400" />
+              <Compass className="h-4 w-4 text-amber-700" />
               <span>View Services</span>
             </button>
 
-            <div className="my-1.5 h-[1px] bg-white/[0.06]" />
+            <div className="my-1.5 h-[1px] bg-black/[0.06]" />
 
             {/* Utility Options */}
             <button
               type="button"
               data-clickable="true"
               onClick={handleCopyLink}
-              className="w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+              className="w-full flex items-center justify-between rounded-xl px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-100 hover:text-black transition-all text-left font-medium"
             >
               <div className="flex items-center gap-2.5">
                 {copiedLink ? (
-                  <Check className="h-4 w-4 text-emerald-400" />
+                  <Check className="h-4 w-4 text-emerald-600" />
                 ) : (
                   <Copy className="h-4 w-4 text-neutral-400" />
                 )}
@@ -522,7 +536,7 @@ export default function CustomCursor() {
               type="button"
               data-clickable="true"
               onClick={handleScrollTop}
-              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-300 hover:bg-white/[0.08] hover:text-white transition-all text-left"
+              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-100 hover:text-black transition-all text-left font-medium"
             >
               <ArrowUp className="h-4 w-4 text-neutral-400" />
               <span>Scroll to Top</span>

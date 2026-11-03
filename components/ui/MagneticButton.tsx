@@ -57,13 +57,13 @@ export default function MagneticButton({
 
   const variantStyles = {
     primary:
-      "bg-cream-100 text-neutral-900 hover:bg-cream-50 border border-white/30 font-medium",
+      "bg-neutral-900 text-white hover:bg-neutral-800 border border-neutral-900 shadow-md font-medium",
     secondary:
-      "bg-surfaceElevated text-neutral-300 hover:text-white border border-borderDark hover:border-neutral-600",
+      "bg-white text-neutral-800 hover:text-black hover:bg-neutral-50 border border-neutral-300 shadow-sm",
     glow:
-      "bg-neutral-100 text-neutral-900 hover:bg-white border border-white/40 shadow-sm",
+      "bg-amber-700 text-white hover:bg-amber-800 border border-amber-700 shadow-md",
     outline:
-      "bg-transparent text-neutral-300 hover:text-white border border-white/10 hover:border-white/25",
+      "bg-white/90 text-neutral-800 hover:text-black hover:bg-white border border-neutral-300 shadow-sm",
   };
 
   return (

@@ -65,7 +65,7 @@ export default function TiltCard({
           transformStyle: "preserve-3d",
         }}
         className={cn(
-          "relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-surface p-6 sm:p-8 transition-colors duration-300 hover:border-white/[0.18]",
+          "relative h-full overflow-hidden rounded-2xl border border-black/[0.08] bg-white p-6 sm:p-8 transition-all duration-300 hover:border-amber-700/40 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05),0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_-4px_rgba(0,0,0,0.09)]",
           className
         )}
       >
@@ -74,7 +74,7 @@ export default function TiltCard({
           className="pointer-events-none absolute inset-0 transition-opacity duration-300"
           style={{
             opacity: isHovered ? glareOpacity : 0,
-            background: `radial-gradient(circle 320px at ${glarePos.x}% ${glarePos.y}%, rgba(255,250,240,0.3), transparent 75%)`,
+            background: `radial-gradient(circle 320px at ${glarePos.x}% ${glarePos.y}%, rgba(200,165,115,0.12), transparent 75%)`,
           }}
         />
 

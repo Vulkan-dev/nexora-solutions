@@ -27,7 +27,7 @@ export default function ServiceDetailPage({
       {/* Back button */}
       <Link
         href="/services"
-        className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-400 hover:text-white mb-12 transition-colors font-mono"
+        className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-600 hover:text-black mb-12 transition-colors font-mono font-medium"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         <span>Back to All Services</span>
@@ -35,23 +35,23 @@ export default function ServiceDetailPage({
 
       {/* Header */}
       <div className="max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl mb-16 sm:mb-20">
-        <div className="text-[11px] uppercase tracking-widest text-cream-400 font-mono mb-3">
+        <div className="text-[11px] uppercase tracking-widest text-amber-800 font-mono font-semibold mb-3">
           Service Details // {service.category}
         </div>
-        <h1 className="text-4xl sm:text-6xl font-light text-white tracking-tight leading-tight">
+        <h1 className="text-4xl sm:text-6xl font-light text-neutral-900 tracking-tight leading-tight">
           {service.title}
         </h1>
-        <p className="mt-6 text-base sm:text-lg text-neutral-300 leading-relaxed max-w-3xl 2xl:max-w-4xl">
+        <p className="mt-6 text-base sm:text-lg text-neutral-700 leading-relaxed max-w-3xl 2xl:max-w-4xl">
           {service.description}
         </p>
       </div>
 
       {/* Packages Grid */}
       <div className="mb-24">
-        <div className="mb-10 flex items-center justify-between border-b border-white/[0.08] pb-4">
+        <div className="mb-10 flex items-center justify-between border-b border-black/[0.08] pb-4">
           <div>
-            <h2 className="text-2xl font-light text-white">Available Packages</h2>
-            <p className="text-xs text-neutral-400 mt-1">Choose the package that fits what you want to build.</p>
+            <h2 className="text-2xl font-light text-neutral-900">Available Packages</h2>
+            <p className="text-xs text-neutral-600 mt-1">Choose the package that fits what you want to build.</p>
           </div>
         </div>
 
@@ -63,31 +63,31 @@ export default function ServiceDetailPage({
                 key={pkg.id}
                 className={`relative rounded-2xl p-8 flex flex-col justify-between transition-all ${
                   isFeatured
-                    ? "border border-white/30 bg-surfaceElevated shadow-glow"
-                    : "border border-white/[0.08] bg-surface"
+                    ? "border-2 border-amber-700 bg-white shadow-xl"
+                    : "border border-black/[0.08] bg-white shadow-md"
                 }`}
               >
                 {isFeatured && (
-                  <div className="absolute -top-3 left-8 rounded-full bg-cream-100 text-neutral-900 px-3 py-0.5 text-[9px] font-bold uppercase tracking-widest">
+                  <div className="absolute -top-3 left-8 rounded-full bg-neutral-900 text-white px-3 py-0.5 text-[9px] font-bold uppercase tracking-widest shadow-md">
                     Most Popular
                   </div>
                 )}
 
                 <div>
-                  <h3 className="text-xl font-normal text-white mb-2">{pkg.name}</h3>
-                  <p className="text-xs text-neutral-400 mb-6 leading-relaxed">
+                  <h3 className="text-xl font-normal text-neutral-900 mb-2">{pkg.name}</h3>
+                  <p className="text-xs text-neutral-600 mb-6 leading-relaxed">
                     {pkg.description}
                   </p>
 
                   <div className="mb-6 flex items-baseline gap-2">
-                    <span className="text-xl font-light text-cream-200 font-mono">
+                    <span className="text-xl font-light text-amber-800 font-mono font-semibold">
                       Custom Quote
                     </span>
                     <span className="text-[11px] text-neutral-500 uppercase tracking-wider font-mono">// Tailored Delivery</span>
                   </div>
 
-                  <div className="mb-8 flex items-center gap-2 rounded-xl bg-white/[0.03] px-3.5 py-2 text-xs text-neutral-300 border border-white/[0.05]">
-                    <Clock className="h-3.5 w-3.5 text-cream-400" />
+                  <div className="mb-8 flex items-center gap-2 rounded-xl bg-[#f4f2ec] px-3.5 py-2 text-xs text-neutral-800 border border-black/[0.06] shadow-inner">
+                    <Clock className="h-3.5 w-3.5 text-amber-700" />
                     <span>Estimated Delivery: {pkg.deliveryDays} business days</span>
                   </div>
 
@@ -96,8 +96,8 @@ export default function ServiceDetailPage({
                       What&apos;s Included:
                     </div>
                     {pkg.features.map((feature, fIdx) => (
-                      <div key={fIdx} className="flex items-start gap-2.5 text-xs text-neutral-300">
-                        <span className="h-1 w-1 rounded-full bg-cream-400 flex-shrink-0 mt-1.5" />
+                      <div key={fIdx} className="flex items-start gap-2.5 text-xs text-neutral-700">
+                        <span className="h-1.5 w-1.5 rounded-full bg-amber-700 flex-shrink-0 mt-1.5" />
                         <span>{feature}</span>
                       </div>
                     ))}
@@ -121,9 +121,9 @@ export default function ServiceDetailPage({
 
       {/* Addons Section */}
       {service.addons && service.addons.length > 0 && (
-        <div className="rounded-2xl border border-white/[0.08] bg-surface p-8 sm:p-10">
-          <h3 className="text-xl font-normal text-white mb-2">Available Add-Ons</h3>
-          <p className="text-xs text-neutral-400 mb-8 max-w-lg">
+        <div className="rounded-2xl border border-black/[0.08] bg-white p-8 sm:p-10 shadow-md">
+          <h3 className="text-xl font-normal text-neutral-900 mb-2">Available Add-Ons</h3>
+          <p className="text-xs text-neutral-600 mb-8 max-w-lg">
             Optional extra features you can choose during your order.
           </p>
 
@@ -131,13 +131,13 @@ export default function ServiceDetailPage({
             {service.addons.map((addon) => (
               <div
                 key={addon.id}
-                className="flex items-center justify-between rounded-xl border border-white/[0.05] bg-surfaceElevated p-4"
+                className="flex items-center justify-between rounded-xl border border-black/[0.06] bg-[#f4f2ec] p-4 shadow-inner"
               >
                 <div>
-                  <div className="text-sm font-medium text-white">{addon.name}</div>
+                  <div className="text-sm font-medium text-neutral-900">{addon.name}</div>
                   <div className="text-[11px] text-neutral-500 mt-0.5">Extra Feature</div>
                 </div>
-                <div className="text-xs font-mono text-cream-200">
+                <div className="text-xs font-mono text-amber-800 font-semibold">
                   Included on Request
                 </div>
               </div>

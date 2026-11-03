@@ -26,10 +26,10 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-white/[0.07] bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-black/[0.08] bg-[#f8f7f4]/85 backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
       <div className="mx-auto flex h-20 w-full max-w-[95vw] items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Brand Logo */}
-        <Link href="/" className="group flex items-center gap-3 text-white transition-opacity hover:opacity-90">
+        <Link href="/" className="group flex items-center gap-3 text-neutral-900 transition-opacity hover:opacity-90">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/64x64.png"
@@ -37,7 +37,7 @@ export default function Navbar() {
             className="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-105"
           />
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
-            <span className="text-sm font-semibold tracking-[0.22em] uppercase text-cream-100">
+            <span className="text-sm font-semibold tracking-[0.22em] uppercase text-neutral-900">
               NEXORA
             </span>
             <span className="text-[10px] text-neutral-500 tracking-[0.22em] uppercase">Solutions</span>
@@ -45,7 +45,7 @@ export default function Navbar() {
         </Link>
 
         {/* Center Minimal Navigation */}
-        <nav className="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest">
+        <nav className="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-medium">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -54,14 +54,14 @@ export default function Navbar() {
                 href={link.href}
                 className={cn(
                   "relative py-2 transition-colors duration-200",
-                  isActive ? "text-cream-100" : "text-neutral-400 hover:text-white"
+                  isActive ? "text-neutral-950 font-semibold" : "text-neutral-600 hover:text-neutral-950"
                 )}
               >
                 <span>{link.label}</span>
                 {isActive && (
                   <motion.div
                     layoutId="navbar-underline"
-                    className="absolute bottom-0 left-0 right-0 h-[1px] bg-cream-300"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-700"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -76,7 +76,7 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
               <Link
                 href="/dashboard"
-                className="flex items-center gap-2 rounded-full border border-white/10 bg-surfaceElevated px-3.5 py-1.5 text-xs text-neutral-300 hover:border-white/25 transition-colors"
+                className="flex items-center gap-2 rounded-full border border-black/[0.09] bg-white px-3.5 py-1.5 text-xs text-neutral-800 hover:border-black/20 shadow-sm transition-all"
               >
                 {session.user.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -86,13 +86,13 @@ export default function Navbar() {
                     className="h-4 w-4 rounded-full object-cover"
                   />
                 ) : (
-                  <User className="h-3.5 w-3.5 text-cream-300" />
+                  <User className="h-3.5 w-3.5 text-amber-700" />
                 )}
                 <span className="max-w-[110px] truncate text-[11px] font-medium">
                   {session.user.name || session.user.email}
                 </span>
                 {session.user.role === "ADMIN" && (
-                  <span className="rounded bg-white/10 px-1.5 py-0.2 text-[9px] font-mono uppercase text-cream-300">
+                  <span className="rounded bg-black/[0.06] px-1.5 py-0.2 text-[9px] font-mono uppercase text-amber-800 font-semibold">
                     ADMIN
                   </span>
                 )}
@@ -101,7 +101,7 @@ export default function Navbar() {
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
                 title="Sign out"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-neutral-400 hover:text-white transition-colors"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-black/[0.09] text-neutral-500 hover:text-neutral-950 bg-white hover:bg-neutral-50 shadow-sm transition-colors"
               >
                 <LogOut className="h-3.5 w-3.5" />
               </button>
@@ -109,7 +109,7 @@ export default function Navbar() {
           ) : (
             <div className="flex items-center gap-3">
               <Link href="/auth/signin">
-                <span className="text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition-colors px-2">
+                <span className="text-xs uppercase tracking-wider text-neutral-600 hover:text-neutral-950 transition-colors px-2 font-medium">
                   Sign In
                 </span>
               </Link>
@@ -126,7 +126,7 @@ export default function Navbar() {
         <div className="flex md:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-neutral-300"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.09] bg-white text-neutral-700 shadow-sm"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -141,7 +141,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-b border-white/10 bg-background/95 px-6 py-6 md:hidden backdrop-blur-2xl"
+            className="border-b border-black/[0.08] bg-[#f8f7f4]/98 px-6 py-6 md:hidden shadow-lg backdrop-blur-2xl"
           >
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
@@ -149,20 +149,20 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-xs uppercase tracking-widest text-neutral-300 hover:text-white py-1"
+                  className="text-xs uppercase tracking-widest text-neutral-700 hover:text-neutral-950 py-1 font-medium"
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="my-2 h-[1px] bg-white/[0.08]" />
+              <div className="my-2 h-[1px] bg-black/[0.08]" />
               {session?.user ? (
                 <div className="flex flex-col gap-2">
-                  <div className="text-xs text-neutral-400">
+                  <div className="text-xs text-neutral-600">
                     Logged in as {session.user.name || session.user.email}
                   </div>
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
-                    className="flex items-center gap-2 text-xs text-neutral-300 hover:text-white py-1"
+                    className="flex items-center gap-2 text-xs text-neutral-700 hover:text-neutral-950 py-1"
                   >
                     <LogOut className="h-3.5 w-3.5" />
                     <span>Sign Out</span>
@@ -173,14 +173,14 @@ export default function Navbar() {
                   <Link
                     href="/auth/signin"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-full border border-white/15 px-4 py-2.5 text-center text-xs uppercase tracking-wider text-white"
+                    className="rounded-full border border-black/[0.12] bg-white px-4 py-2.5 text-center text-xs uppercase tracking-wider text-neutral-800 shadow-sm"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/order"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-full bg-cream-100 text-neutral-900 px-4 py-2.5 text-center text-xs uppercase tracking-wider font-semibold"
+                    className="rounded-full bg-neutral-900 text-white px-4 py-2.5 text-center text-xs uppercase tracking-wider font-semibold shadow-md"
                   >
                     Order Now
                   </Link>

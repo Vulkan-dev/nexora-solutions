@@ -23,9 +23,9 @@ export default function LuxuryAmbientBackground() {
 
     // Warm, architectural light orbs drifting gently
     const orbs = [
-      { x: width * 0.25, y: height * 0.2, r: 460, vx: 0.16, vy: 0.1, baseColor: "rgba(223, 213, 198, 0.04)" },
-      { x: width * 0.78, y: height * 0.55, r: 540, vx: -0.14, vy: -0.09, baseColor: "rgba(197, 168, 128, 0.032)" },
-      { x: width * 0.45, y: height * 0.88, r: 420, vx: 0.1, vy: -0.12, baseColor: "rgba(180, 150, 115, 0.025)" },
+      { x: width * 0.25, y: height * 0.2, r: 460, vx: 0.16, vy: 0.1, baseColor: "rgba(200, 165, 115, 0.07)" },
+      { x: width * 0.78, y: height * 0.55, r: 540, vx: -0.14, vy: -0.09, baseColor: "rgba(180, 150, 105, 0.06)" },
+      { x: width * 0.45, y: height * 0.88, r: 420, vx: 0.1, vy: -0.12, baseColor: "rgba(215, 210, 200, 0.08)" },
     ];
 
     // Delicate floating ambient dust particles
@@ -45,8 +45,8 @@ export default function LuxuryAmbientBackground() {
       t += 0.002;
       ctx.clearRect(0, 0, width, height);
 
-      // Deep rich obsidian base
-      ctx.fillStyle = "#090a0d";
+      // Warm alabaster luxury gallery base
+      ctx.fillStyle = "#f7f6f2";
       ctx.fillRect(0, 0, width, height);
 
       // Render subtle drifting caustic aura pools
@@ -69,7 +69,7 @@ export default function LuxuryAmbientBackground() {
           currentRadius
         );
         grad.addColorStop(0, orb.baseColor);
-        grad.addColorStop(1, "rgba(9, 10, 13, 0)");
+        grad.addColorStop(1, "rgba(247, 246, 242, 0)");
 
         ctx.fillStyle = grad;
         ctx.beginPath();
@@ -77,7 +77,7 @@ export default function LuxuryAmbientBackground() {
         ctx.fill();
       }
 
-      // Render gentle floating atmospheric motes
+      // Render gentle floating atmospheric motes in warm amber bronze
       for (const mote of motes) {
         mote.x += mote.vx;
         mote.y += mote.vy;
@@ -91,23 +91,23 @@ export default function LuxuryAmbientBackground() {
         if (mote.x > width + 10) mote.x = -10;
 
         const currentAlpha = mote.alpha * (0.6 + 0.4 * Math.sin(mote.phase));
-        ctx.fillStyle = `rgba(223, 213, 198, ${currentAlpha.toFixed(3)})`;
+        ctx.fillStyle = `rgba(165, 130, 80, ${(currentAlpha * 0.7).toFixed(3)})`;
         ctx.beginPath();
         ctx.arc(mote.x, mote.y, mote.size, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // Elegant architectural vignette
+      // Elegant architectural vignette for perimeter framing
       const vignette = ctx.createRadialGradient(
         width / 2,
         height / 2,
-        Math.min(width, height) * 0.35,
+        Math.min(width, height) * 0.4,
         width / 2,
         height / 2,
-        Math.max(width, height) * 0.85
+        Math.max(width, height) * 0.9
       );
-      vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
-      vignette.addColorStop(1, "rgba(4, 5, 7, 0.8)");
+      vignette.addColorStop(0, "rgba(247, 246, 242, 0)");
+      vignette.addColorStop(1, "rgba(238, 235, 227, 0.45)");
       ctx.fillStyle = vignette;
       ctx.fillRect(0, 0, width, height);
 

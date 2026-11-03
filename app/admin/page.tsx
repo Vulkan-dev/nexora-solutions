@@ -95,13 +95,13 @@ export default function AdminPanelPage() {
   return (
     <div className="w-full max-w-[95vw] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-10 sm:py-16">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/[0.08] gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-black/[0.08] gap-4">
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
+          <div className="text-[10px] uppercase tracking-widest text-amber-800 font-mono font-semibold mb-2">
             Admin Panel // Nexora Solutions Management
           </div>
-          <h1 className="text-3xl font-light text-white">Admin Dashboard</h1>
-          <p className="text-xs text-neutral-400 mt-1">
+          <h1 className="text-3xl font-light text-neutral-900">Admin Dashboard</h1>
+          <p className="text-xs text-neutral-600 mt-1">
             Manage incoming orders, update project statuses, and chat with customers.
           </p>
         </div>
@@ -109,7 +109,7 @@ export default function AdminPanelPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchOrders}
-            className="flex items-center gap-2 rounded-full border border-white/10 bg-surface px-4 py-2 text-xs text-neutral-300 hover:text-white transition-colors uppercase tracking-wider font-mono text-[11px]"
+            className="flex items-center gap-2 rounded-full border border-black/[0.09] bg-white px-4 py-2 text-xs text-neutral-700 hover:text-neutral-950 transition-colors uppercase tracking-wider font-mono text-[11px] shadow-sm"
           >
             <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh</span>
@@ -119,33 +119,33 @@ export default function AdminPanelPage() {
 
       {/* KPI Row */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="rounded-xl border border-white/[0.08] bg-surface p-6">
+        <div className="rounded-xl border border-black/[0.08] bg-white p-6 shadow-sm">
           <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-1">Total Revenue</div>
-          <div className="text-2xl font-light text-white font-serif">{formatCurrency(totalRevenue)}</div>
-          <div className="text-[11px] text-cream-300 mt-2 font-mono">All-time volume</div>
+          <div className="text-2xl font-light text-neutral-900 font-serif">{formatCurrency(totalRevenue)}</div>
+          <div className="text-[11px] text-amber-800 mt-2 font-mono font-semibold">All-time volume</div>
         </div>
 
-        <div className="rounded-xl border border-white/[0.08] bg-surface p-6">
+        <div className="rounded-xl border border-black/[0.08] bg-white p-6 shadow-sm">
           <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-1">Active Orders</div>
-          <div className="text-2xl font-light text-white font-serif">{activeOrders}</div>
-          <div className="text-[11px] text-neutral-400 mt-2 font-mono">In production cycle</div>
+          <div className="text-2xl font-light text-neutral-900 font-serif">{activeOrders}</div>
+          <div className="text-[11px] text-neutral-600 mt-2 font-mono">In production cycle</div>
         </div>
 
-        <div className="rounded-xl border border-white/[0.08] bg-surface p-6">
+        <div className="rounded-xl border border-black/[0.08] bg-white p-6 shadow-sm">
           <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-1">Review Queue</div>
-          <div className="text-2xl font-light text-white font-serif">{pendingReview}</div>
-          <div className="text-[11px] text-cream-400 mt-2 font-mono">Pending director triage</div>
+          <div className="text-2xl font-light text-neutral-900 font-serif">{pendingReview}</div>
+          <div className="text-[11px] text-amber-800 mt-2 font-mono font-semibold">Pending director triage</div>
         </div>
 
-        <div className="rounded-xl border border-white/[0.08] bg-surface p-6">
+        <div className="rounded-xl border border-black/[0.08] bg-white p-6 shadow-sm">
           <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-mono mb-1">Completed Editions</div>
-          <div className="text-2xl font-light text-white font-serif">{completedOrders}</div>
-          <div className="text-[11px] text-neutral-400 mt-2 font-mono">Delivered to clients</div>
+          <div className="text-2xl font-light text-neutral-900 font-serif">{completedOrders}</div>
+          <div className="text-[11px] text-neutral-600 mt-2 font-mono">Delivered to clients</div>
         </div>
       </div>
 
       {/* Filter and Search */}
-      <div className="mt-12 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
+      <div className="mt-12 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border-b border-black/[0.08] pb-6">
         <div className="flex flex-wrap gap-2">
           {["ALL", "PENDING", "UNDER_REVIEW", "IN_PROGRESS", "AWAITING_RESPONSE", "COMPLETED"].map(
             (status) => (
@@ -154,8 +154,8 @@ export default function AdminPanelPage() {
                 onClick={() => setStatusFilter(status)}
                 className={`rounded-full px-3.5 py-1 text-xs uppercase tracking-wider font-mono transition-all ${
                   statusFilter === status
-                    ? "bg-cream-100 text-neutral-900 font-bold"
-                    : "bg-surface text-neutral-400 hover:text-white border border-white/[0.08]"
+                    ? "bg-neutral-900 text-white font-bold shadow-md"
+                    : "bg-white text-neutral-700 hover:text-black border border-black/[0.08] shadow-sm"
                 }`}
               >
                 {status.replace("_", " ")}
@@ -171,15 +171,15 @@ export default function AdminPanelPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by ID or discipline..."
-            className="w-full rounded-full border border-white/[0.08] bg-surface py-2 pl-9 pr-4 text-xs text-white placeholder-neutral-500 focus:border-white/30 focus:outline-none"
+            className="w-full rounded-full border border-black/[0.09] bg-white py-2 pl-9 pr-4 text-xs text-neutral-900 placeholder-neutral-500 focus:border-amber-700 focus:outline-none shadow-sm"
           />
         </div>
       </div>
 
       {/* Orders Table */}
-      <div className="mt-8 overflow-x-auto rounded-2xl border border-white/[0.08] bg-surface">
+      <div className="mt-8 overflow-x-auto rounded-2xl border border-black/[0.08] bg-white shadow-sm">
         <table className="w-full text-left text-xs">
-          <thead className="border-b border-white/[0.06] bg-surfaceElevated text-neutral-500 uppercase tracking-widest text-[9px] font-mono">
+          <thead className="border-b border-black/[0.06] bg-[#f4f2ec] text-neutral-600 uppercase tracking-widest text-[9px] font-mono font-semibold">
             <tr>
               <th className="px-6 py-4">Order ID</th>
               <th className="px-6 py-4">Service & Package</th>
@@ -189,7 +189,7 @@ export default function AdminPanelPage() {
               <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.04] text-neutral-300">
+          <tbody className="divide-y divide-black/[0.06] text-neutral-700">
             {filteredOrders.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-12 text-center text-neutral-500 font-mono">
@@ -198,34 +198,34 @@ export default function AdminPanelPage() {
               </tr>
             ) : (
               filteredOrders.map((ord) => (
-                <tr key={ord.id} className="hover:bg-white/[0.02] transition-colors">
+                <tr key={ord.id} className="hover:bg-neutral-50/80 transition-colors">
                   <td className="px-6 py-4">
-                    <div className="font-mono text-white text-[11px]">{ord.id}</div>
+                    <div className="font-mono text-neutral-900 font-semibold text-[11px]">{ord.id}</div>
                     <div className="text-[10px] text-neutral-500 font-mono">{formatDate(ord.createdAt)}</div>
                   </td>
 
                   <td className="px-6 py-4">
-                    <div className="font-medium text-white">
+                    <div className="font-medium text-neutral-900">
                       {ord.package?.service?.title || ord.serviceTitle || "Custom Architecture"}
                     </div>
-                    <div className="text-[10px] text-cream-300 font-mono">
+                    <div className="text-[10px] text-amber-800 font-mono font-semibold">
                       {ord.package?.name || ord.packageName || "Standard"}
                     </div>
                   </td>
 
                   <td className="px-6 py-4">
-                    <span className="inline-flex rounded-full bg-white/5 border border-white/10 px-2.5 py-0.5 text-[9px] font-mono uppercase tracking-wider text-cream-200">
+                    <span className="inline-flex rounded-full bg-black/[0.05] border border-black/[0.08] px-2.5 py-0.5 text-[9px] font-mono uppercase tracking-wider text-amber-900 font-semibold">
                       {ord.status.replace("_", " ")}
                     </span>
                   </td>
 
                   <td className="px-6 py-4">
-                    <span className="text-[11px] font-mono text-neutral-300">
+                    <span className="text-[11px] font-mono text-neutral-800">
                       {ord.paymentStatus || "UNPAID"}
                     </span>
                   </td>
 
-                  <td className="px-6 py-4 font-serif text-white text-sm">
+                  <td className="px-6 py-4 font-serif text-neutral-900 font-medium text-sm">
                     {formatCurrency(ord.totalPrice)}
                   </td>
 
@@ -234,13 +234,13 @@ export default function AdminPanelPage() {
                       <>
                         <button
                           onClick={() => handleUpdateStatus(ord.id, "ACCEPTED", "Order accepted into development queue.")}
-                          className="rounded-full border border-white/20 bg-surfaceElevated px-2.5 py-1 text-[10px] text-cream-200 hover:border-white/40 font-mono"
+                          className="rounded-full border border-amber-700/30 bg-amber-50 px-2.5 py-1 text-[10px] text-amber-900 hover:bg-amber-100 font-mono font-semibold shadow-sm"
                         >
                           Accept
                         </button>
                         <button
                           onClick={() => handleUpdateStatus(ord.id, "CANCELLED", "Order declined.")}
-                          className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] text-neutral-400 hover:text-white font-mono"
+                          className="rounded-full border border-black/[0.1] bg-white px-2.5 py-1 text-[10px] text-neutral-600 hover:text-black font-mono shadow-sm"
                         >
                           Decline
                         </button>
@@ -252,7 +252,7 @@ export default function AdminPanelPage() {
                         setSelectedOrder(ord);
                         setTargetStatus(ord.status);
                       }}
-                      className="rounded-full border border-white/10 bg-surfaceElevated px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-neutral-300 hover:text-white"
+                      className="rounded-full border border-black/[0.1] bg-[#f7f6f2] px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-neutral-800 hover:text-black hover:bg-white shadow-sm"
                     >
                       Update
                     </button>
@@ -266,26 +266,26 @@ export default function AdminPanelPage() {
 
       {/* Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-surfaceElevated p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-              <h3 className="text-sm font-medium text-white">Transition Production State</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-black/[0.09] bg-white p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-black/[0.06] pb-3">
+              <h3 className="text-sm font-semibold text-neutral-900">Transition Production State</h3>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="text-neutral-400 hover:text-white"
+                className="text-neutral-500 hover:text-neutral-900"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="text-xs font-mono text-neutral-400">Ref: {selectedOrder.id}</div>
+            <div className="text-xs font-mono text-neutral-500">Ref: {selectedOrder.id}</div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-neutral-400 font-mono mb-2">Target State</label>
+              <label className="block text-xs uppercase tracking-wider text-neutral-700 font-mono font-medium mb-2">Target State</label>
               <select
                 value={targetStatus}
                 onChange={(e) => setTargetStatus(e.target.value)}
-                className="w-full rounded-xl border border-white/[0.08] bg-surface p-2.5 text-xs text-white focus:border-white/30 focus:outline-none"
+                className="w-full rounded-xl border border-black/[0.1] bg-[#f7f6f2] p-2.5 text-xs text-neutral-900 focus:border-amber-700 focus:bg-white focus:outline-none"
               >
                 {ALL_STATUSES.map((st) => (
                   <option key={st} value={st}>
@@ -296,7 +296,7 @@ export default function AdminPanelPage() {
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-neutral-400 font-mono mb-2">
+              <label className="block text-xs uppercase tracking-wider text-neutral-700 font-mono font-medium mb-2">
                 Production Milestone Note (Client Visible)
               </label>
               <textarea
@@ -304,21 +304,21 @@ export default function AdminPanelPage() {
                 value={adminNote}
                 onChange={(e) => setAdminNote(e.target.value)}
                 placeholder="State changes or milestone instructions..."
-                className="w-full rounded-xl border border-white/[0.08] bg-surface p-3 text-xs text-white placeholder-neutral-500 focus:border-white/30 focus:outline-none"
+                className="w-full rounded-xl border border-black/[0.1] bg-[#f7f6f2] p-3 text-xs text-neutral-900 placeholder-neutral-500 focus:border-amber-700 focus:bg-white focus:outline-none"
               />
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="rounded-full px-4 py-2 text-xs text-neutral-400 hover:text-white"
+                className="rounded-full px-4 py-2 text-xs text-neutral-600 hover:text-black font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleUpdateStatus(selectedOrder.id, targetStatus, adminNote)}
                 disabled={updating}
-                className="rounded-full bg-cream-100 px-5 py-2 text-xs font-semibold text-neutral-900 hover:bg-white disabled:opacity-30"
+                className="rounded-full bg-neutral-900 px-5 py-2 text-xs font-semibold text-white hover:bg-neutral-800 shadow-md disabled:opacity-30"
               >
                 {updating ? "Updating..." : "Execute Transition"}
               </button>

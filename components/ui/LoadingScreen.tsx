@@ -42,10 +42,10 @@ export default function LoadingScreen() {
           key="loading-screen"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }}
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#090a0d] text-white pointer-events-none select-none"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#f7f6f2] text-neutral-900 pointer-events-none select-none"
         >
-          {/* Subtle radial background glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.1)_0%,transparent_65%)]" />
+          {/* Subtle radial background warmth */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(181,142,77,0.08)_0%,transparent_65%)]" />
 
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
@@ -60,18 +60,18 @@ export default function LoadingScreen() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="relative flex items-center justify-center"
             >
-              <div className="absolute inset-0 rounded-full bg-cream-400/20 blur-xl" />
+              <div className="absolute inset-0 rounded-full bg-amber-500/10 blur-xl" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/64x64.png"
                 alt="Nexora Solutions"
-                className="relative h-14 w-14 sm:h-16 sm:w-16 object-contain drop-shadow-[0_0_24px_rgba(197,168,128,0.4)]"
+                className="relative h-14 w-14 sm:h-16 sm:w-16 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.1)]"
               />
             </motion.div>
 
             {/* Nexora Brand Monogram */}
             <div className="flex items-center gap-2.5 text-center">
-              <span className="text-xl sm:text-2xl font-semibold tracking-[0.25em] uppercase text-cream-100">
+              <span className="text-xl sm:text-2xl font-semibold tracking-[0.25em] uppercase text-neutral-900">
                 NEXORA
               </span>
               <span className="text-xs text-neutral-500 tracking-[0.3em] uppercase">
@@ -80,16 +80,16 @@ export default function LoadingScreen() {
             </div>
 
             {/* Smooth Cinematic Charging Bar */}
-            <div className="w-56 h-[2px] bg-white/[0.08] rounded-full overflow-hidden relative">
+            <div className="w-56 h-[3px] bg-neutral-200/90 rounded-full overflow-hidden relative shadow-inner">
               <motion.div
                 style={{ width: `${progress}%` }}
-                className="h-full bg-gradient-to-r from-cream-400 via-cream-200 to-cream-400 shadow-[0_0_12px_rgba(203,180,147,0.9)] transition-all duration-150 ease-out"
+                className="h-full bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700 shadow-[0_0_8px_rgba(181,142,77,0.4)] transition-all duration-150 ease-out"
               />
             </div>
 
-            <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-neutral-400">
+            <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-neutral-500">
               <span>Loading Nexora Solutions</span>
-              <span className="text-cream-300 font-semibold">{progress}%</span>
+              <span className="text-amber-800 font-semibold">{progress}%</span>
             </div>
           </motion.div>
         </motion.div>

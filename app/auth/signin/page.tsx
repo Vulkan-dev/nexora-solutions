@@ -43,13 +43,13 @@ function SignInContent() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-6 py-20">
-      <div className="relative w-full max-w-md rounded-2xl border border-white/[0.08] bg-surface p-8 sm:p-10 space-y-8">
+      <div className="relative w-full max-w-md rounded-2xl border border-black/[0.08] bg-white p-8 sm:p-10 space-y-8 shadow-xl">
         <div className="text-center">
-          <div className="text-[10px] uppercase tracking-widest text-cream-400 font-mono mb-2">
+          <div className="text-[10px] uppercase tracking-widest text-amber-800 font-mono font-semibold mb-2">
             Sign In // Nexora Solutions
           </div>
-          <h1 className="text-2xl font-light text-white tracking-tight">Sign In to Your Account</h1>
-          <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
+          <h1 className="text-2xl font-light text-neutral-900 tracking-tight">Sign In to Your Account</h1>
+          <p className="text-xs text-neutral-600 mt-2 leading-relaxed">
             Sign in with Google to place orders, check project status, and chat with me directly.
           </p>
         </div>
@@ -59,7 +59,7 @@ function SignInContent() {
           <button
             onClick={handleGoogleLogin}
             disabled={loading || !!simulatingRole}
-            className="w-full flex items-center justify-center gap-3 rounded-full border border-white/10 bg-surfaceElevated px-6 py-3.5 text-xs font-medium text-white hover:border-white/25 hover:bg-white/[0.04] transition-all focus:outline-none disabled:opacity-40"
+            className="w-full flex items-center justify-center gap-3 rounded-full border border-black/[0.12] bg-[#f7f6f2] px-6 py-3.5 text-xs font-semibold text-neutral-900 hover:border-black/30 hover:bg-white shadow-sm transition-all focus:outline-none disabled:opacity-40"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
               <path
@@ -84,9 +84,9 @@ function SignInContent() {
         </div>
 
         {/* Temporary Quick Test Simulated Logins */}
-        <div className="rounded-xl border border-cream-400/20 bg-cream-400/[0.04] p-4 space-y-3">
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-cream-300 font-mono">
-            <Zap className="h-3.5 w-3.5 text-cream-400" />
+        <div className="rounded-xl border border-amber-700/20 bg-[#f4f2ec] p-4 space-y-3 shadow-inner">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-amber-800 font-mono font-semibold">
+            <Zap className="h-3.5 w-3.5 text-amber-700" />
             <span>Developer Testing Simulations</span>
           </div>
 
@@ -94,7 +94,7 @@ function SignInContent() {
             <button
               onClick={() => handleSimulateLogin("CUSTOMER")}
               disabled={!!simulatingRole}
-              className="w-full flex items-center justify-between rounded-lg border border-white/10 bg-surface px-3.5 py-2 text-xs text-neutral-200 hover:border-white/25 hover:text-white transition-all font-mono"
+              className="w-full flex items-center justify-between rounded-lg border border-black/[0.08] bg-white px-3.5 py-2 text-xs text-neutral-800 hover:border-black/25 hover:text-black transition-all font-mono shadow-sm"
             >
               <span>⚡ Simulate Client Login</span>
               <span className="text-[10px] text-neutral-500">Alexandra Vance</span>
@@ -103,10 +103,10 @@ function SignInContent() {
             <button
               onClick={() => handleSimulateLogin("ADMIN")}
               disabled={!!simulatingRole}
-              className="w-full flex items-center justify-between rounded-lg border border-white/10 bg-surface px-3.5 py-2 text-xs text-neutral-200 hover:border-white/25 hover:text-white transition-all font-mono"
+              className="w-full flex items-center justify-between rounded-lg border border-black/[0.08] bg-white px-3.5 py-2 text-xs text-neutral-800 hover:border-black/25 hover:text-black transition-all font-mono shadow-sm"
             >
               <span>⚡ Simulate Admin Hub Access</span>
-              <span className="text-[10px] text-cream-300">Studio Director</span>
+              <span className="text-[10px] text-amber-800 font-semibold">Studio Director</span>
             </button>
           </div>
         </div>
@@ -115,7 +115,7 @@ function SignInContent() {
         <div className="pt-2 text-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-neutral-400 hover:text-white transition-colors font-mono"
+            className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-neutral-600 hover:text-neutral-950 transition-colors font-mono font-medium"
           >
             <ArrowLeft className="h-3 w-3" />
             <span>Return to Index</span>
