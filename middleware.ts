@@ -4,12 +4,13 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const secret = process.env.NEXTAUTH_SECRET || "dev-super-secret-key-for-local-testing-min-32-chars-long";
 
   // Protect /admin routes
   if (pathname.startsWith("/admin")) {
     const token = await getToken({
       req,
-      secret: process.env.NEXTAUTH_SECRET || "super-secret-key-change-in-production-min32chars",
+      secret,
     });
 
     if (!token) {
@@ -28,7 +29,7 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith("/dashboard")) {
     const token = await getToken({
       req,
-      secret: process.env.NEXTAUTH_SECRET || "super-secret-key-change-in-production-min32chars",
+      secret,
     });
 
     if (!token) {

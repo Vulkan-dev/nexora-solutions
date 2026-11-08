@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ProjectMessageSchema } from "@/lib/validations";
+import { fallbackOrders } from "@/lib/fallback-store";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(
   req: NextRequest,
@@ -26,12 +29,14 @@ export async function POST(
 
     const { message } = result.data;
     const orderId = params.id;
+    const authorName = session.user.name || (session.user.role === "ADMIN" ? "Studio Director" : "Client");
 
     try {
       const update = await prisma.projectUpdate.create({
         data: {
           orderId,
           authorId: session.user.id,
+          authorName,
           message,
         },
         include: {
@@ -43,15 +48,23 @@ export async function POST(
 
       return NextResponse.json({ success: true, message: update });
     } catch (e) {
+      const fallbackMsg = {
+        id: `msg_${Date.now()}`,
+        orderId,
+        message,
+        createdAt: new Date().toISOString(),
+        author: { name: authorName, role: session.user.role },
+      };
+
+      const memoryOrder = fallbackOrders.find((o) => o.id === orderId);
+      if (memoryOrder) {
+        if (!memoryOrder.updates) memoryOrder.updates = [];
+        memoryOrder.updates.unshift(fallbackMsg);
+      }
+
       return NextResponse.json({
         success: true,
-        message: {
-          id: `msg_${Date.now()}`,
-          orderId,
-          message,
-          createdAt: new Date().toISOString(),
-          author: { name: session.user.name || "User", role: session.user.role },
-        },
+        message: fallbackMsg,
       });
     }
   } catch (err) {

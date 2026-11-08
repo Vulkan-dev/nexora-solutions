@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node --max-old-space-size=4096 node_modules/next/dist/bin/next build",
+    "build": "prisma generate && node --max-old-space-size=4096 node_modules/next/dist/bin/next build",
     "prestart": "node -e \"if (!require('fs').existsSync('.next/BUILD_ID')) { require('child_process').execSync('npm run build', {stdio: 'inherit'}); }\"",
     "start": "next start",
     "lint": "next lint",

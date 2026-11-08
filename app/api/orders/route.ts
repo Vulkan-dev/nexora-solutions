@@ -6,9 +6,10 @@ import { rateLimiter } from "@/lib/rate-limit";
 import { CreateOrderSchema } from "@/lib/validations";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { getAllServices } from "@/lib/catalog";
+import { fallbackOrders } from "@/lib/fallback-store";
+import { ensureDatabaseSeeded } from "@/lib/db-seed";
 
-// In-memory fallback for local demo when DB URL isn't configured
-const fallbackOrders: any[] = [];
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
@@ -45,11 +46,20 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 4. Session Check
+    // 4. Session & Identity Check
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id || (data.clientEmail ? `usr_${data.clientEmail.replace(/[^a-zA-Z0-9]/g, "_")}` : "usr_customer_sim_01");
-    const userEmail = session?.user?.email || data.clientEmail || "alexandra.vance@nexorasolutions.com";
-    const userName = session?.user?.name || data.clientName || "Alexandra Vance";
+    const user = session?.user;
+
+    if (!user && !data.clientEmail) {
+      return NextResponse.json(
+        { error: "Authentication or client email is required to submit an order." },
+        { status: 401 }
+      );
+    }
+
+    const userEmail = user?.email || data.clientEmail!;
+    const userName = user?.name || data.clientName || "Client";
+    const userId = user?.id || `guest_${userEmail.replace(/[^a-zA-Z0-9]/g, "_")}`;
 
     // 5. Calculate Server-Side Pricing (Prevent tampering)
     const allServices = getAllServices();
@@ -73,10 +83,41 @@ export async function POST(req: NextRequest) {
     let createdOrder: any = null;
 
     try {
+      // Ensure database services are seeded
+      await ensureDatabaseSeeded();
+
+      // Ensure user exists in database to guarantee valid foreign key
+      let dbUserId = userId;
+      try {
+        const dbUser = await prisma.user.upsert({
+          where: { email: userEmail },
+          update: { name: userName },
+          create: {
+            id: userId,
+            email: userEmail,
+            name: userName,
+            role: user?.role === "ADMIN" ? "ADMIN" : "CUSTOMER",
+          },
+        });
+        dbUserId = dbUser.id;
+      } catch (userErr) {
+        console.warn("User upsert notice:", (userErr as any)?.message || userErr);
+      }
+
       createdOrder = await prisma.order.create({
         data: {
-          userId,
-          packageId: data.packageId,
+          userId: dbUserId,
+          packageId: selectedPkg ? selectedPkg.id : undefined,
+          serviceId: service ? service.id : undefined,
+          serviceTitle: service?.title || "Custom Service",
+          packageName: selectedPkg?.name || "Standard Package",
+          appType: data.appType || service?.title,
+          customAppType: data.customAppType || "",
+          colorThemeMode: data.colorThemeMode || "DEV_CHOOSES",
+          customColors: data.customColors || [],
+          referenceLinks: data.referenceLinks || "",
+          clientName: userName,
+          clientEmail: userEmail,
           totalPrice: calculatedTotal,
           status: "PENDING",
           paymentStatus: "UNPAID",
@@ -84,7 +125,7 @@ export async function POST(req: NextRequest) {
           selectedAddons: resolvedAddons,
           files: {
             create: data.uploadedFiles.map((f) => ({
-              uploaderId: userId,
+              uploaderId: dbUserId,
               fileName: f.name,
               fileUrl: f.url,
               fileType: f.type,
@@ -93,7 +134,8 @@ export async function POST(req: NextRequest) {
           },
           updates: {
             create: {
-              authorId: userId,
+              authorId: dbUserId,
+              authorName: userName,
               message: `Order submitted successfully. Selected package: ${selectedPkg.name} (${service.title}).`,
             },
           },
@@ -101,17 +143,24 @@ export async function POST(req: NextRequest) {
         include: {
           files: true,
           updates: true,
+          package: {
+            include: {
+              service: true,
+            },
+          },
         },
       });
     } catch (dbError) {
-      console.warn("Prisma order insert fell back to local memory store:", dbError);
+      console.warn("Prisma order insert fell back to local memory store:", (dbError as any)?.message || dbError);
       createdOrder = {
         id: `ord_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         userId,
-        userEmail,
+        clientEmail: userEmail,
+        clientName: userName,
         serviceTitle: service.title,
         packageName: selectedPkg.name,
         packageId: data.packageId,
+        serviceId: service.id,
         package: {
           id: selectedPkg.id,
           name: selectedPkg.name,
@@ -150,7 +199,7 @@ export async function POST(req: NextRequest) {
             id: `upd_${Date.now()}`,
             message: `Order submitted successfully. Selected package: ${selectedPkg.name} (${service.title}).`,
             createdAt: new Date().toISOString(),
-            author: "System",
+            author: { name: userName, role: user?.role || "CUSTOMER" },
           },
         ],
       };
@@ -179,15 +228,27 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
+    const userEmail = session?.user?.email;
     const isAdmin = session?.user?.role === "ADMIN";
 
     // Rate limit checks
     const ip = req.headers.get("x-forwarded-for") || req.ip || "127.0.0.1";
     await rateLimiter.limit(`orders:get:${ip}`);
 
+    if (!session?.user) {
+      return NextResponse.json({ orders: [] });
+    }
+
     try {
       const orders = await prisma.order.findMany({
-        where: isAdmin ? {} : { userId: userId || "undefined" },
+        where: isAdmin
+          ? {}
+          : {
+              OR: [
+                { userId: userId },
+                ...(userEmail ? [{ clientEmail: userEmail }] : []),
+              ],
+            },
         include: {
           package: {
             include: {
@@ -197,6 +258,11 @@ export async function GET(req: NextRequest) {
           files: true,
           updates: {
             orderBy: { createdAt: "desc" },
+            include: {
+              author: {
+                select: { id: true, name: true, role: true },
+              },
+            },
           },
           user: {
             select: { id: true, name: true, email: true, image: true },
@@ -211,9 +277,11 @@ export async function GET(req: NextRequest) {
       const filtered = isAdmin
         ? fallbackOrders
         : fallbackOrders.filter(
-            (o) => !userId || o.userId === userId || o.userEmail === session?.user?.email
+            (o) =>
+              (userId && o.userId === userId) ||
+              (userEmail && o.clientEmail === userEmail)
           );
-      return NextResponse.json({ orders: filtered.length > 0 ? filtered : fallbackOrders });
+      return NextResponse.json({ orders: filtered });
     }
   } catch (error) {
     return NextResponse.json({ error: "Failed to retrieve orders" }, { status: 500 });

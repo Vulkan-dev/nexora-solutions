@@ -38,8 +38,8 @@ A modern, production-ready web platform for **Nexora Solutions** built with **Ne
 - **Dragon Follower**: Smooth physics-based dragon follower that can be toggled on/off anytime via right-click (automatically hidden on mobile devices).
 
 ### 5. Authentication & Security
-- **Google OAuth 2.0 & Simulated Testing Mode**: Sign in with real Google accounts, plus one-click simulated login for instant testing.
-- **Role-Based Access Control**: Secure separation between customer and administrative dashboards.
+- **Google OAuth 2.0**: Sign in securely with Google accounts.
+- **Role-Based Access Control**: Secure separation between customer and administrative dashboards via `ADMIN_EMAILS` environment variable.
 - **Prisma & Supabase**: Safe connection pooling via Supavisor pooler URLs.
 
 ---
@@ -53,7 +53,7 @@ A modern, production-ready web platform for **Nexora Solutions** built with **Ne
 | **Styling** | Tailwind CSS (Midnight Obsidian & Gold theme) |
 | **Animations** | Framer Motion + Canvas Physics + Lenis Smooth Scroll |
 | **Database & ORM** | PostgreSQL (Supabase / Supavisor pooler) via Prisma ORM |
-| **Authentication** | NextAuth.js (Google Provider + Simulated Testing Mode) |
+| **Authentication** | NextAuth.js (Google Provider + Prisma Adapter) |
 | **Asset Storage** | Uploadthing |
 
 ---

@@ -15,7 +15,6 @@ import {
   FileText,
   Trash2,
   AlertCircle,
-  Zap,
   UserCheck,
   Layers,
   Globe,
@@ -92,8 +91,14 @@ function OrderWizardContent() {
   const { data: session, status: authStatus, update } = useSession();
   const allServices = getAllServices();
 
-  const queryType = searchParams.get("type") || "saas";
-  const matchedAppType = APP_TYPES.find((t) => t.id === queryType) || APP_TYPES[0];
+  const queryType = searchParams.get("type");
+  const queryServiceId = searchParams.get("serviceId");
+  const queryPackageId = searchParams.get("packageId");
+
+  const matchedAppType =
+    (queryServiceId && APP_TYPES.find((t) => t.serviceId === queryServiceId)) ||
+    (queryType && APP_TYPES.find((t) => t.id === queryType)) ||
+    APP_TYPES[0];
 
   // Steps: 1: App Type, 2: Color Theme, 3: Details & References, 4: Review & Auth, 5: Success
   const [step, setStep] = useState<number>(1);
@@ -117,18 +122,17 @@ function OrderWizardContent() {
 
   // Auth & Submission State
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [simulatingAuth, setSimulatingAuth] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [orderSuccessId, setOrderSuccessId] = useState<string | null>(null);
 
   const activeAppType = APP_TYPES.find((a) => a.id === selectedAppTypeId) || APP_TYPES[0];
   const matchedService = allServices.find((s) => s.id === activeAppType.serviceId) || allServices[0];
-  const selectedPackage = matchedService?.packages?.[0];
+  const selectedPackage =
+    (queryPackageId && matchedService?.packages?.find((p) => p.id === queryPackageId)) ||
+    matchedService?.packages?.[0];
 
-  // Simulated session for non-blocking testing
-  const [simulatedSession, setSimulatedSession] = useState<{ user: { name: string; email: string; role: string } } | null>(null);
-  const isUserAuthenticated = !!(session?.user || simulatedSession?.user);
-  const activeUser = session?.user || simulatedSession?.user;
+  const isUserAuthenticated = !!session?.user;
+  const activeUser = session?.user;
 
   // Sync color picker with selected chip
   const handleSelectColorChip = (idx: number) => {
@@ -166,7 +170,7 @@ function OrderWizardContent() {
     setActivePickerColor(presetColors[1] || "#c5a880");
   };
 
-  const handleSimulatedFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -189,37 +193,9 @@ function OrderWizardContent() {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSimulatedClientLogin = async () => {
-    setSimulatingAuth(true);
-    try {
-      await signIn("simulated-auth", {
-        role: "CUSTOMER",
-        name: "Alexandra Vance",
-        email: "alexandra.vance@nexorasolutions.com",
-        redirect: false,
-      });
-
-      setSimulatedSession({
-        user: {
-          name: "Alexandra Vance",
-          email: "alexandra.vance@nexorasolutions.com",
-          role: "CUSTOMER",
-        },
-      });
-
-      if (typeof update === "function") {
-        await update();
-      }
-    } catch (err) {
-      console.error("Simulation error:", err);
-    } finally {
-      setSimulatingAuth(false);
-    }
-  };
-
   const handleSubmitOrder = async () => {
     if (!isUserAuthenticated) {
-      setSubmitError("Please sign in with Google or use test simulation before submitting your order.");
+      setSubmitError("Please sign in with Google before submitting your order.");
       return;
     }
 
@@ -729,7 +705,7 @@ function OrderWizardContent() {
                 <input
                   type="file"
                   multiple
-                  onChange={handleSimulatedFileUpload}
+                  onChange={handleFileUpload}
                   className="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
                 />
                 <div className="flex flex-col items-center justify-center gap-2">
@@ -968,16 +944,6 @@ function OrderWizardContent() {
                         />
                       </svg>
                       <span>Sign in with Google</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleSimulatedClientLogin}
-                      disabled={simulatingAuth}
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full border border-amber-700/30 bg-amber-50 px-5 py-2.5 text-xs text-amber-900 hover:bg-amber-100/70 transition-all font-mono font-semibold shadow-sm"
-                    >
-                      <Zap className="h-3.5 w-3.5 text-amber-700" />
-                      <span>{simulatingAuth ? "Simulating..." : "Test Simulation Login"}</span>
                     </button>
                   </div>
                 </div>

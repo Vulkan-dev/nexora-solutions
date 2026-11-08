@@ -3,6 +3,11 @@ import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
+  // If Stripe integration is disabled / skipped
+  if (!stripe) {
+    return NextResponse.json({ message: "Stripe payment gateway disabled" }, { status: 200 });
+  }
+
   const body = await req.text();
   const signature = req.headers.get("stripe-signature") || "";
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -10,7 +15,7 @@ export async function POST(req: NextRequest) {
   let event: any;
 
   try {
-    if (webhookSecret) {
+    if (webhookSecret && signature) {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } else {
       event = JSON.parse(body);
@@ -26,23 +31,32 @@ export async function POST(req: NextRequest) {
     const orderId = session.metadata?.orderId;
 
     if (orderId) {
+      const amountPaid = (session.amount_total || 0) / 100;
       try {
+        // Record payment idempotently
+        await prisma.payment.upsert({
+          where: { stripePaymentId: session.id },
+          update: {
+            status: "PAID",
+            amount: amountPaid,
+          },
+          create: {
+            orderId,
+            stripePaymentId: session.id,
+            amount: amountPaid,
+            status: "PAID",
+          },
+        });
+
         await prisma.order.update({
           where: { id: orderId },
           data: {
             paymentStatus: "PAID",
             status: "ACCEPTED",
-            payments: {
-              create: {
-                stripePaymentId: session.id,
-                amount: (session.amount_total || 0) / 100,
-                status: "PAID",
-              },
-            },
             updates: {
               create: {
-                authorId: session.metadata?.userId || "system",
-                message: `Payment confirmed via Stripe ($${((session.amount_total || 0) / 100).toFixed(2)}). Project status transitioned to ACCEPTED.`,
+                authorName: "System",
+                message: `Payment confirmed via Stripe ($${amountPaid.toFixed(2)}). Project status transitioned to ACCEPTED.`,
               },
             },
           },

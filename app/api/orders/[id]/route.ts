@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { rateLimiter } from "@/lib/rate-limit";
 import { UpdateOrderStatusSchema } from "@/lib/validations";
+import { fallbackOrders } from "@/lib/fallback-store";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
   req: NextRequest,
@@ -12,6 +14,7 @@ export async function GET(
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
+    const userEmail = session?.user?.email;
     const isAdmin = session?.user?.role === "ADMIN";
 
     const orderId = params.id;
@@ -40,40 +43,32 @@ export async function GET(
       });
 
       if (!order) {
+        // Check fallback memory store
+        const memoryOrder = fallbackOrders.find((o) => o.id === orderId);
+        if (memoryOrder) {
+          if (!isAdmin && memoryOrder.userId !== userId && memoryOrder.clientEmail !== userEmail) {
+            return NextResponse.json({ error: "Access denied" }, { status: 403 });
+          }
+          return NextResponse.json({ order: memoryOrder });
+        }
         return NextResponse.json({ error: "Order not found" }, { status: 404 });
       }
 
       // Check permission
-      if (!isAdmin && order.userId !== userId) {
+      if (!isAdmin && order.userId !== userId && order.clientEmail !== userEmail) {
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
       }
 
       return NextResponse.json({ order });
     } catch (e) {
-      return NextResponse.json({
-        order: {
-          id: orderId,
-          status: "IN_PROGRESS",
-          totalPrice: 8500,
-          paymentStatus: "PAID",
-          requirements: "Custom cinematic platform with WebGL hero and Stripe checkout.",
-          createdAt: new Date().toISOString(),
-          updates: [
-            {
-              id: "upd-1",
-              message: "Order placed and assigned to Lead Architect.",
-              createdAt: new Date(Date.now() - 86400000).toISOString(),
-              author: { name: "System", role: "ADMIN" },
-            },
-            {
-              id: "upd-2",
-              message: "Initial design wireframes and kinetic cursor approved.",
-              createdAt: new Date().toISOString(),
-              author: { name: "Lead Architect", role: "ADMIN" },
-            },
-          ],
-        },
-      });
+      const memoryOrder = fallbackOrders.find((o) => o.id === orderId);
+      if (memoryOrder) {
+        if (!isAdmin && memoryOrder.userId !== userId && memoryOrder.clientEmail !== userEmail) {
+          return NextResponse.json({ error: "Access denied" }, { status: 403 });
+        }
+        return NextResponse.json({ order: memoryOrder });
+      }
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch order details" }, { status: 500 });
@@ -103,6 +98,7 @@ export async function PATCH(
 
     const { status, updateNote } = parseResult.data;
     const orderId = params.id;
+    const authorName = session.user.name || (isAdmin ? "Admin" : "Client");
 
     // Only Admin can freely transition to accepted/completed/in_progress.
     // Client can request REVISION.
@@ -122,6 +118,7 @@ export async function PATCH(
             updates: {
               create: {
                 authorId: session.user.id,
+                authorName,
                 message: updateNote,
               },
             },
@@ -131,6 +128,18 @@ export async function PATCH(
 
       return NextResponse.json({ success: true, order: updatedOrder });
     } catch (e) {
+      const memoryOrder = fallbackOrders.find((o) => o.id === orderId);
+      if (memoryOrder) {
+        memoryOrder.status = status;
+        if (updateNote) {
+          memoryOrder.updates.unshift({
+            id: `upd_${Date.now()}`,
+            message: updateNote,
+            createdAt: new Date().toISOString(),
+            author: { name: authorName, role: session.user.role },
+          });
+        }
+      }
       return NextResponse.json({
         success: true,
         order: { id: orderId, status, note: updateNote },

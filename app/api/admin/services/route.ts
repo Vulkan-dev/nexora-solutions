@@ -4,10 +4,14 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CreateServiceSchema } from "@/lib/validations";
 import { getAllServices } from "@/lib/catalog";
+import { ensureDatabaseSeeded } from "@/lib/db-seed";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
     try {
+      await ensureDatabaseSeeded();
       const services = await prisma.service.findMany({
         include: {
           packages: true,
@@ -18,7 +22,7 @@ export async function GET() {
         return NextResponse.json({ services });
       }
     } catch (e) {
-      // Fallback to static catalog
+      // Fallback to static catalog if DB is not reachable
     }
     return NextResponse.json({ services: getAllServices() });
   } catch (err) {

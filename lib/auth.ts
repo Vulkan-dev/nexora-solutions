@@ -1,10 +1,17 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
+function getAdminEmails(): string[] {
+  return (process.env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET || "dev-super-secret-key-for-local-testing-min-32-chars-long",
   session: {
     strategy: "jwt",
@@ -12,59 +19,29 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "placeholder_client_id",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "placeholder_client_secret",
+      clientId: process.env.GOOGLE_CLIENT_ID || "missing-google-client-id",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "missing-google-client-secret",
       allowDangerousEmailAccountLinking: true,
-    }),
-    CredentialsProvider({
-      id: "simulated-auth",
-      name: "Simulated Testing Login",
-      credentials: {
-        role: { label: "Role", type: "text" },
-        email: { label: "Email", type: "email" },
-        name: { label: "Name", type: "text" },
-      },
-      async authorize(credentials) {
-        if (!credentials) return null;
-
-        const role: "CUSTOMER" | "ADMIN" = credentials.role === "ADMIN" ? "ADMIN" : "CUSTOMER";
-        const email =
-          credentials.email ||
-          (role === "ADMIN" ? "director@nexorasolutions.com" : "alexandra.vance@nexorasolutions.com");
-        const name =
-          credentials.name || (role === "ADMIN" ? "Lead Studio Director" : "Alexandra Vance");
-
-        const simulatedUser = {
-          id: role === "ADMIN" ? "usr_admin_sim_01" : "usr_customer_sim_01",
-          name,
-          email,
-          role,
-        };
-
-        // In production, sync simulated user to PostgreSQL; in local dev, return immediately
-        if (process.env.NODE_ENV === "production") {
-          prisma.user
-            .upsert({
-              where: { email },
-              update: { name, role },
-              create: { id: simulatedUser.id, email, name, role },
-            })
-            .catch(() => {
-              // DB connection offline/pooling error - safely ignored
-            });
-        }
-
-        return simulatedUser as any;
-      },
     }),
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role || "CUSTOMER";
         token.name = user.name;
         token.email = user.email;
+
+        const adminEmails = getAdminEmails();
+        const isAdmin = user.email && adminEmails.includes(user.email.toLowerCase());
+        token.role = isAdmin ? "ADMIN" : ((user as any).role || "CUSTOMER");
+      }
+
+      // Check admin list whenever token email is verified
+      if (token.email) {
+        const adminEmails = getAdminEmails();
+        if (adminEmails.includes(token.email.toLowerCase())) {
+          token.role = "ADMIN";
+        }
       }
 
       if (trigger === "update" && session?.name) {
@@ -75,7 +52,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = (token.id as string) || "user-id";
+        session.user.id = (token.id as string) || (token.sub as string) || "user-id";
         session.user.role = (token.role as "CUSTOMER" | "ADMIN") || "CUSTOMER";
         if (token.name) session.user.name = token.name;
         if (token.email) session.user.email = token.email;

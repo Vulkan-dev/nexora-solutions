@@ -2,43 +2,18 @@
 
 import React, { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Zap, ShieldAlert, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 function SignInContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [loading, setLoading] = useState<boolean>(false);
-  const [simulatingRole, setSimulatingRole] = useState<string | null>(null);
 
   const handleGoogleLogin = () => {
     setLoading(true);
     signIn("google", { callbackUrl });
-  };
-
-  const handleSimulateLogin = async (role: "CUSTOMER" | "ADMIN") => {
-    setSimulatingRole(role);
-    try {
-      const targetUrl = role === "ADMIN" ? "/admin" : callbackUrl;
-      const res = await signIn("simulated-auth", {
-        role,
-        name: role === "ADMIN" ? "Studio Lead Director" : "Alexandra Vance",
-        email: role === "ADMIN" ? "director@nexorasolutions.com" : "alexandra.vance@nexorasolutions.com",
-        redirect: false,
-        callbackUrl: targetUrl,
-      });
-
-      if (res?.ok) {
-        window.location.href = targetUrl;
-      } else {
-        router.push(targetUrl);
-      }
-    } catch (e) {
-      console.error("Simulation error:", e);
-      setSimulatingRole(null);
-    }
   };
 
   return (
@@ -58,7 +33,7 @@ function SignInContent() {
         <div>
           <button
             onClick={handleGoogleLogin}
-            disabled={loading || !!simulatingRole}
+            disabled={loading}
             className="w-full flex items-center justify-center gap-3 rounded-full border border-black/[0.12] bg-[#f7f6f2] px-6 py-3.5 text-xs font-semibold text-neutral-900 hover:border-black/30 hover:bg-white shadow-sm transition-all focus:outline-none disabled:opacity-40"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -79,36 +54,10 @@ function SignInContent() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span className="uppercase tracking-wider text-[11px]">Continue with Google</span>
+            <span className="uppercase tracking-wider text-[11px]">
+              {loading ? "Connecting..." : "Continue with Google"}
+            </span>
           </button>
-        </div>
-
-        {/* Temporary Quick Test Simulated Logins */}
-        <div className="rounded-xl border border-amber-700/20 bg-[#f4f2ec] p-4 space-y-3 shadow-inner">
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-amber-800 font-mono font-semibold">
-            <Zap className="h-3.5 w-3.5 text-amber-700" />
-            <span>Developer Testing Simulations</span>
-          </div>
-
-          <div className="flex flex-col gap-2 pt-1">
-            <button
-              onClick={() => handleSimulateLogin("CUSTOMER")}
-              disabled={!!simulatingRole}
-              className="w-full flex items-center justify-between rounded-lg border border-black/[0.08] bg-white px-3.5 py-2 text-xs text-neutral-800 hover:border-black/25 hover:text-black transition-all font-mono shadow-sm"
-            >
-              <span>⚡ Simulate Client Login</span>
-              <span className="text-[10px] text-neutral-500">Alexandra Vance</span>
-            </button>
-
-            <button
-              onClick={() => handleSimulateLogin("ADMIN")}
-              disabled={!!simulatingRole}
-              className="w-full flex items-center justify-between rounded-lg border border-black/[0.08] bg-white px-3.5 py-2 text-xs text-neutral-800 hover:border-black/25 hover:text-black transition-all font-mono shadow-sm"
-            >
-              <span>⚡ Simulate Admin Hub Access</span>
-              <span className="text-[10px] text-amber-800 font-semibold">Studio Director</span>
-            </button>
-          </div>
         </div>
 
         {/* Return to Home */}

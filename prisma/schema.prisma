@@ -103,6 +103,7 @@ model Service {
 
   packages    Package[]
   addons      Addon[]
+  orders      Order[]
 
   @@index([slug])
   @@index([category])
@@ -138,57 +139,71 @@ model Addon {
 }
 
 model Order {
-  id            String        @id @default(cuid())
-  userId        String
-  packageId     String
-  status        OrderStatus   @default(PENDING)
-  totalPrice    Decimal       @db.Decimal(10, 2)
-  paymentStatus PaymentStatus @default(UNPAID)
-  requirements  String?       @db.Text
-  selectedAddons Json?        // Stored list of addons at order time
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id             String        @id @default(cuid())
+  userId         String
+  packageId      String?
+  serviceId      String?
+  serviceTitle   String?
+  packageName    String?
+  appType        String?
+  customAppType  String?
+  colorThemeMode String?       @default("DEV_CHOOSES")
+  customColors   Json?
+  referenceLinks String?       @db.Text
+  clientName     String?
+  clientEmail    String?
+  status         OrderStatus   @default(PENDING)
+  totalPrice     Decimal       @db.Decimal(10, 2)
+  paymentStatus  PaymentStatus @default(UNPAID)
+  requirements   String?       @db.Text
+  selectedAddons Json?         // Stored list of addons at order time
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
-  user          User          @relation(fields: [userId], references: [id], onDelete: Restrict)
-  package       Package       @relation(fields: [packageId], references: [id], onDelete: Restrict)
-  files         OrderFile[]
-  updates       ProjectUpdate[]
-  payments      Payment[]
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package        Package?      @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  service        Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  files          OrderFile[]
+  updates        ProjectUpdate[]
+  payments       Payment[]
 
   @@index([userId])
   @@index([packageId])
+  @@index([serviceId])
   @@index([status])
 }
 
 model OrderFile {
-  id         String   @id @default(cuid())
-  orderId    String
-  uploaderId String
-  fileUrl    String   @db.Text
-  fileName   String
-  fileType   String
-  fileSize   Int?
-  isDeliverable Boolean @default(false)
-  createdAt  DateTime @default(now())
+  id            String   @id @default(cuid())
+  orderId       String
+  uploaderId    String?
+  fileUrl       String   @db.Text
+  fileName      String
+  fileType      String
+  fileSize      Int?
+  isDeliverable Boolean  @default(false)
+  createdAt     DateTime @default(now())
 
-  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  uploader   User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  uploader      User?    @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
   @@index([uploaderId])
 }
 
 model ProjectUpdate {
-  id        String   @id @default(cuid())
-  orderId   String
-  authorId  String
-  message   String   @db.Text
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  orderId    String
+  authorId   String?
+  authorName String?
+  message    String   @db.Text
+  createdAt  DateTime @default(now())
 
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  author     User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
+  @@index([authorId])
 }
 
 model Payment {
