@@ -22,7 +22,7 @@ export default function Navbar() {
   ];
 
   if (session?.user?.role === "ADMIN") {
-    navLinks.push({ href: "/admin", label: "Admin Panel" });
+    navLinks.push({ href: "/kernel", label: "Kernel Console" });
   }
 
   return (

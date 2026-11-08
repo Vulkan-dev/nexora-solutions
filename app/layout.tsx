@@ -1,3 +1,4 @@
+import ClientShield from '@/components/security/ClientShield';
 import type { Metadata } from "next";
 import "./globals.css";
 import CustomCursor from "@/components/canvas/CustomCursor";
@@ -46,6 +47,7 @@ export default function RootLayout({
             {/* Ambient Kinetic Canvas Layers */}
             <ParticleBackground />
             <CustomCursor />
+            <ClientShield />
 
             {/* Persistent Navigation */}
             <Navbar />

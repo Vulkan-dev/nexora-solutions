@@ -1,14 +1,8 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-
-function getAdminEmails(): string[] {
-  return (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -18,10 +12,67 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   providers: [
+    // 1. Google Provider for regular clients
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "missing-google-client-id",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "missing-google-client-secret",
       allowDangerousEmailAccountLinking: true,
+    }),
+
+    // 2. Dedicated Secure Admin Provider (only used on /kernel)
+    CredentialsProvider({
+      id: "admin-credentials",
+      name: "Admin Control",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const configuredAdminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+        const configuredAdminPassword = process.env.ADMIN_PASSWORD || "";
+
+        if (!configuredAdminEmail || !configuredAdminPassword) {
+          return null;
+        }
+
+        const inputEmail = credentials.email.trim().toLowerCase();
+        const inputPassword = credentials.password;
+
+        if (inputEmail !== configuredAdminEmail || inputPassword !== configuredAdminPassword) {
+          return null;
+        }
+
+        // Ensure Admin user exists in DB with ADMIN role
+        let adminUser = await prisma.user.findUnique({
+          where: { email: configuredAdminEmail },
+        });
+
+        if (!adminUser) {
+          adminUser = await prisma.user.create({
+            data: {
+              email: configuredAdminEmail,
+              name: "Nexora Studio Director",
+              role: "ADMIN",
+            },
+          });
+        } else if (adminUser.role !== "ADMIN") {
+          adminUser = await prisma.user.update({
+            where: { email: configuredAdminEmail },
+            data: { role: "ADMIN" },
+          });
+        }
+
+        return {
+          id: adminUser.id,
+          name: adminUser.name || "Nexora Studio Director",
+          email: adminUser.email,
+          role: "ADMIN",
+        };
+      },
     }),
   ],
   callbacks: {
@@ -30,18 +81,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
-
-        const adminEmails = getAdminEmails();
-        const isAdmin = user.email && adminEmails.includes(user.email.toLowerCase());
-        token.role = isAdmin ? "ADMIN" : ((user as any).role || "CUSTOMER");
-      }
-
-      // Check admin list whenever token email is verified
-      if (token.email) {
-        const adminEmails = getAdminEmails();
-        if (adminEmails.includes(token.email.toLowerCase())) {
-          token.role = "ADMIN";
-        }
+        token.role = (user as any).role || "CUSTOMER";
       }
 
       if (trigger === "update" && session?.name) {

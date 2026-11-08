@@ -22,7 +22,7 @@ const ALL_STATUSES = [
   "CANCELLED",
 ];
 
-export default function AdminPanelPage() {
+export default function KernelConsolePage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -42,7 +42,7 @@ export default function AdminPanelPage() {
         setOrders(data.orders);
       }
     } catch (e) {
-      console.error("Admin order fetch failed:", e);
+      console.error("Kernel order fetch failed:", e);
     } finally {
       setLoading(false);
     }
@@ -98,9 +98,9 @@ export default function AdminPanelPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-black/[0.08] gap-4">
         <div>
           <div className="text-[10px] uppercase tracking-widest text-amber-800 font-mono font-semibold mb-2">
-            Admin Panel // Nexora Solutions Management
+            Kernel Panel // Nexora Solutions Management
           </div>
-          <h1 className="text-3xl font-light text-neutral-900">Admin Dashboard</h1>
+          <h1 className="text-3xl font-light text-neutral-900">Kernel Dashboard</h1>
           <p className="text-xs text-neutral-600 mt-1">
             Manage incoming orders, update project statuses, and chat with customers.
           </p>
