@@ -21,9 +21,7 @@ export default function Navbar() {
     { href: "/dashboard", label: "My Orders & Chat" },
   ];
 
-  if (session?.user?.role === "ADMIN") {
-    navLinks.push({ href: "/kernel", label: "Kernel Console" });
-  }
+  // Separate admin console from public navbar links
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-black/[0.08] bg-[#f7f6f2]/80 backdrop-blur-md">

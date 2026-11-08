@@ -1,5 +1,7 @@
 "use client";
 
+import { WhatsAppChatBox } from '@/components/chat/WhatsAppChatBox';
+
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -410,69 +412,20 @@ export default function CustomerDashboardPage() {
               )}
             </div>
 
-            {/* Direct Studio Messaging Thread */}
-            <div className="rounded-2xl border border-black/[0.08] bg-white shadow-md p-6 sm:p-8 space-y-6">
-              <div className="flex items-center justify-between border-b border-black/[0.06] pb-4">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-amber-700" />
-                  <h3 className="text-sm font-medium text-neutral-900">Direct Chat with Developer</h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleRequestStaffChat}
-                  disabled={submittingAction}
-                  className="rounded-full border border-amber-700/30 bg-amber-50 px-3 py-1 text-[11px] font-mono text-amber-900 hover:bg-amber-100/60 transition-all flex items-center gap-1.5 font-semibold shadow-sm"
-                >
-                  <Sparkles className="h-3 w-3 text-amber-700" />
-                  <span>Request Chat</span>
-                </button>
-              </div>
-
-              {/* Messages List */}
-              <div className="space-y-3 max-h-[340px] overflow-y-auto pr-2">
-                {selectedOrder.updates && selectedOrder.updates.length > 0 ? (
-                  selectedOrder.updates.map((upd: any, index: number) => (
-                    <div
-                      key={index}
-                      className="rounded-xl border border-black/[0.06] bg-[#f4f2ec] p-4 space-y-1.5 shadow-sm"
-                    >
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-neutral-900">
-                          {upd.author?.name || upd.author || "Developer"}
-                        </span>
-                        <span className="text-[10px] font-mono text-neutral-500">
-                          {formatDate(upd.createdAt)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-neutral-700 leading-relaxed">{upd.message}</p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="py-8 text-center text-xs text-neutral-500 font-mono">
-                    No messages yet. Send a message below to start chatting!
-                  </div>
-                )}
-              </div>
-
-              {/* New Message Input */}
-              <div className="flex gap-2 pt-2 border-t border-black/[0.06]">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                  placeholder="Type your message here..."
-                  className="flex-1 rounded-full border border-black/[0.1] bg-[#f4f2ec] px-4 py-2.5 text-xs text-neutral-900 placeholder-neutral-500 focus:border-amber-700 focus:bg-white focus:outline-none"
-                />
-                <button
-                  onClick={handleSendMessage}
-                  disabled={submittingAction || !newMessage.trim()}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-900 text-white hover:bg-neutral-800 transition-colors shadow-sm disabled:opacity-30"
-                >
-                  <Send className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
+            {/* Direct Studio Messaging Thread - WhatsApp Style */}
+            <WhatsAppChatBox
+              title="Chat with Lead Developer"
+              subtitle="Project discussion & instant updates"
+              messages={selectedOrder.updates || []}
+              currentUserEmail={session?.user?.email}
+              currentUserId={session?.user?.id}
+              currentRole={session?.user?.role || "CUSTOMER"}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              onSendMessage={handleSendMessage}
+              onRequestStaffChat={handleRequestStaffChat}
+              submitting={submittingAction}
+            />
           </div>
         ) : (
           <div className="lg:col-span-7 xl:col-span-8 flex items-center justify-center rounded-2xl border border-black/[0.08] bg-white shadow-sm p-16 text-center text-xs text-neutral-500 font-mono">

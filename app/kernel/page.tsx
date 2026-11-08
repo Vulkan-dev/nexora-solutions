@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { WhatsAppChatBox } from '@/components/chat/WhatsAppChatBox';
+import { useSession, signOut } from 'next-auth/react';
 import { formatCurrency, formatDate } from "@/lib/utils";
 import MagneticButton from "@/components/ui/MagneticButton";
 import {
@@ -32,6 +34,10 @@ export default function KernelConsolePage() {
   const [targetStatus, setTargetStatus] = useState<string>("IN_PROGRESS");
   const [adminNote, setAdminNote] = useState<string>("");
   const [updating, setUpdating] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const [chatModalOrder, setChatModalOrder] = useState<any | null>(null);
+  const [adminMessage, setAdminMessage] = useState<string>("");
+  const [sendingChat, setSendingChat] = useState<boolean>(false);
 
   const fetchOrders = async () => {
     try {
@@ -51,6 +57,38 @@ export default function KernelConsolePage() {
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  const handleSendAdminMessage = async () => {
+    if (!adminMessage.trim() || !chatModalOrder) return;
+    setSendingChat(true);
+    try {
+      const res = await fetch(`/api/orders/${chatModalOrder.id}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: adminMessage }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const updatedMsg = data.message;
+        setChatModalOrder((prev: any) => ({
+          ...prev,
+          updates: [...(prev.updates || []), updatedMsg],
+        }));
+        setOrders((prev) =>
+          prev.map((o) =>
+            o.id === chatModalOrder.id
+              ? { ...o, updates: [...(o.updates || []), updatedMsg] }
+              : o
+          )
+        );
+        setAdminMessage("");
+      }
+    } catch (e) {
+      console.error("Failed to send admin message:", e);
+    } finally {
+      setSendingChat(false);
+    }
+  };
 
   const handleUpdateStatus = async (orderId: string, status: string, note?: string) => {
     setUpdating(true);
