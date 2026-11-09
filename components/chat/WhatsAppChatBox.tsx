@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
-import { Send, Sparkles, Check, CheckCheck } from "lucide-react";
+import { Send, CheckCheck, MessageSquare, Download, Trash2 } from "lucide-react";
 
 interface ChatBubbleProps {
   message: string;
@@ -28,43 +28,43 @@ export function WhatsAppChatBubble({
   })();
 
   return (
-    <div className={`w-full flex ${isMe ? "justify-end" : "justify-start"} my-1.5`}>
+    <div className={`w-full flex ${isMe ? "justify-end" : "justify-start"} my-2`}>
       <div
-        className={`relative max-w-[82%] sm:max-w-[72%] md:max-w-[65%] rounded-2xl px-3.5 py-2 text-xs shadow-sm transition-all ${
+        className={`relative max-w-[85%] sm:max-w-[75%] md:max-w-[68%] rounded-2xl px-4 py-2.5 text-xs shadow-sm transition-all border ${
           isMe
-            ? "bg-[#005c4b] text-white rounded-tr-none"
-            : "bg-white text-neutral-900 border border-black/[0.08] rounded-tl-none shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+            ? "bg-[#27272a] text-neutral-100 border-neutral-700/80 rounded-tr-none shadow-[0_2px_4px_rgba(0,0,0,0.12)]"
+            : "bg-white text-neutral-900 border-neutral-200/90 rounded-tl-none shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
         }`}
       >
         {/* Author header */}
         <div className="flex items-center gap-1.5 mb-1 font-sans">
           <span
-            className={`text-[11px] font-semibold tracking-wide ${
-              isMe ? "text-emerald-200" : role === "ADMIN" ? "text-amber-800" : "text-sky-700"
+            className={`text-[11px] font-medium tracking-wide ${
+              isMe ? "text-neutral-300" : role === "ADMIN" ? "text-amber-800 font-semibold" : "text-neutral-700 font-semibold"
             }`}
           >
             {isMe ? "You" : authorName}
           </span>
           {role === "ADMIN" && !isMe && (
-            <span className="rounded bg-amber-100 text-amber-900 border border-amber-300/60 px-1 py-[1px] text-[9px] font-mono font-bold uppercase">
+            <span className="rounded bg-amber-50 text-amber-900 border border-amber-300/60 px-1.5 py-[1px] text-[9px] font-mono font-bold uppercase">
               Staff / Admin
             </span>
           )}
         </div>
 
         {/* Message body */}
-        <p className="whitespace-pre-wrap break-words leading-relaxed text-[12.5px] pr-8 select-text">
+        <p className="whitespace-pre-wrap break-words leading-relaxed text-[13px] pr-6 select-text">
           {message}
         </p>
 
-        {/* Timestamp & read receipts */}
+        {/* Timestamp & status */}
         <div
-          className={`flex items-center justify-end gap-1 mt-1 text-[10px] font-mono ${
-            isMe ? "text-emerald-200/80" : "text-neutral-400"
+          className={`flex items-center justify-end gap-1.5 mt-1 text-[10px] font-mono ${
+            isMe ? "text-neutral-400" : "text-neutral-400"
           }`}
         >
           <span>{formattedTime}</span>
-          {isMe && <CheckCheck className="h-3.5 w-3.5 text-emerald-300 inline" />}
+          {isMe && <CheckCheck className="h-3.5 w-3.5 text-neutral-400 inline" />}
         </div>
       </div>
     </div>
@@ -81,13 +81,13 @@ interface WhatsAppChatBoxProps {
   newMessage: string;
   setNewMessage: (val: string) => void;
   onSendMessage: () => void;
-  onRequestStaffChat?: () => void;
+  onDeleteChat?: () => void;
   submitting?: boolean;
 }
 
 export function WhatsAppChatBox({
-  title = "Direct WhatsApp-Style Project Chat",
-  subtitle = "End-to-end encrypted direct developer communications",
+  title = "Chat with Lead Developer",
+  subtitle = "Online • Developer & Direct Studio",
   messages = [],
   currentUserEmail,
   currentUserId,
@@ -95,7 +95,7 @@ export function WhatsAppChatBox({
   newMessage,
   setNewMessage,
   onSendMessage,
-  onRequestStaffChat,
+  onDeleteChat,
   submitting = false,
 }: WhatsAppChatBoxProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -111,39 +111,76 @@ export function WhatsAppChatBox({
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
+  // Export / Download transcript handler
+  const handleDownloadTranscript = () => {
+    if (chronologicalMessages.length === 0) return;
+    const transcriptText = chronologicalMessages
+      .map((m) => {
+        const time = new Date(m.createdAt || 0).toLocaleString();
+        const author = m.author?.name || m.authorName || "User";
+        return `[${time}] ${author}: ${m.message}`;
+      })
+      .join("\r\n\r\n");
+
+    const blob = new Blob([transcriptText], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `chat-transcript-${Date.now()}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <div className="rounded-2xl border border-black/[0.08] bg-white shadow-lg overflow-hidden flex flex-col h-[520px]">
-      {/* Top Header bar styled like WhatsApp */}
-      <div className="flex items-center justify-between border-b border-black/[0.08] bg-[#075e54] px-5 py-3.5 text-white">
+    <div className="rounded-2xl border border-neutral-300/80 bg-white shadow-xl overflow-hidden flex flex-col h-[530px]">
+      {/* Sleek, professional modern grey header */}
+      <div className="flex items-center justify-between border-b border-neutral-700 bg-[#18181b] px-5 py-3.5 text-white">
         <div className="flex items-center gap-3">
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-emerald-700/80 text-white font-bold text-sm shadow-inner border border-emerald-400/30">
-            💬
-            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#075e54]" />
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-800 text-neutral-200 border border-neutral-700 shadow-sm">
+            <MessageSquare className="h-5 w-5 text-neutral-300" />
+            <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#18181b]" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold tracking-wide text-white">{title}</h3>
-            <p className="text-[11px] text-emerald-100/90 font-mono flex items-center gap-1.5">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
-              <span>Online • Developer & Direct Studio</span>
+            <h3 className="text-sm font-semibold tracking-wide text-neutral-100">{title}</h3>
+            <p className="text-[11px] text-neutral-400 font-mono flex items-center gap-1.5">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>{subtitle}</span>
             </p>
           </div>
         </div>
 
-        {onRequestStaffChat && (
-          <button
-            type="button"
-            onClick={onRequestStaffChat}
-            disabled={submitting}
-            className="rounded-full border border-emerald-300/40 bg-emerald-800/60 px-3 py-1.5 text-[11px] font-mono text-emerald-100 hover:bg-emerald-700 transition-all flex items-center gap-1.5 font-semibold shadow-sm"
-          >
-            <Sparkles className="h-3 w-3 text-emerald-300" />
-            <span>Request Chat</span>
-          </button>
-        )}
+        {/* Action Buttons: Transcript download & Admin Delete */}
+        <div className="flex items-center gap-2">
+          {chronologicalMessages.length > 0 && (
+            <button
+              type="button"
+              onClick={handleDownloadTranscript}
+              title="Download Chat Transcript"
+              aria-label="Download Chat Transcript"
+              className="flex items-center gap-1.5 rounded-full border border-neutral-700 bg-neutral-800/80 px-3 py-1.5 text-[11px] font-mono text-neutral-200 hover:bg-neutral-700 hover:text-white transition-all shadow-sm"
+            >
+              <Download className="h-3.5 w-3.5 text-neutral-300" />
+              <span className="hidden sm:inline">Export</span>
+            </button>
+          )}
+
+          {currentRole === "ADMIN" && onDeleteChat && (
+            <button
+              type="button"
+              onClick={onDeleteChat}
+              title="Completely delete all chat history"
+              aria-label="Delete entire chat thread"
+              className="flex items-center gap-1.5 rounded-full border border-red-500/40 bg-red-950/40 px-3 py-1.5 text-[11px] font-mono text-red-300 hover:bg-red-900/60 transition-all shadow-sm"
+            >
+              <Trash2 className="h-3.5 w-3.5 text-red-400" />
+              <span className="hidden sm:inline">Clear Chat</span>
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Messages Canvas - WhatsApp subtle background texture */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-[#efeae2] bg-opacity-90 space-y-1">
+      {/* Clean, soothing greyish chat canvas */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-[#f4f4f5] space-y-1">
         {chronologicalMessages.length > 0 ? (
           chronologicalMessages.map((msg, idx) => {
             const authorRole = msg.author?.role || msg.role || "";
@@ -151,7 +188,6 @@ export function WhatsAppChatBox({
             const authorEmail = msg.author?.email || msg.clientEmail;
             const authorName = msg.author?.name || msg.authorName || "Studio Developer";
 
-            // If user is Admin, their own messages are ADMIN messages or match id/email
             const isMe =
               (currentUserId && authorId && authorId === currentUserId) ||
               (currentUserEmail && authorEmail && authorEmail.toLowerCase() === currentUserEmail.toLowerCase()) ||
@@ -170,23 +206,25 @@ export function WhatsAppChatBox({
             );
           })
         ) : (
-          <div className="h-full flex flex-col items-center justify-center text-center p-8 text-neutral-500 space-y-2">
-            <div className="rounded-full bg-white/80 p-3 shadow-sm border border-black/[0.05]">
-              🔒
+          <div className="h-full flex flex-col items-center justify-center text-center p-8 text-neutral-500 space-y-3">
+            <div className="rounded-2xl bg-white p-3.5 shadow-sm border border-neutral-200">
+              <MessageSquare className="h-6 w-6 text-neutral-400" />
             </div>
-            <p className="text-xs font-mono font-medium text-neutral-600">
-              Messages are secure and linked to this project order.
-            </p>
-            <p className="text-[11px] text-neutral-500">
-              Type a message below to chat directly with our engineering team!
-            </p>
+            <div>
+              <p className="text-xs font-mono font-medium text-neutral-700">
+                End-to-End Encrypted Project Discussion
+              </p>
+              <p className="text-[11px] text-neutral-500 mt-0.5">
+                Type your specifications or questions below to chat directly with our team.
+              </p>
+            </div>
           </div>
         )}
         <div ref={bottomRef} />
       </div>
 
-      {/* WhatsApp Input Bar */}
-      <div className="p-3 bg-[#f0f2f5] border-t border-black/[0.06] flex items-center gap-2">
+      {/* Greyish Clean Input Bar */}
+      <div className="p-3 bg-[#e4e4e7]/70 border-t border-neutral-200 flex items-center gap-2">
         <input
           type="text"
           value={newMessage}
@@ -197,16 +235,18 @@ export function WhatsAppChatBox({
               onSendMessage();
             }
           }}
-          placeholder="Type a message..."
-          className="flex-1 rounded-full border border-black/[0.1] bg-white px-4 py-2.5 text-xs text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-[#005c4b] shadow-inner"
+          placeholder="Type your message..."
+          aria-label="Type your message"
+          className="flex-1 rounded-full border border-neutral-300 bg-white px-4 py-2.5 text-xs text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-800 shadow-inner"
         />
         <button
           onClick={onSendMessage}
           disabled={submitting || !newMessage.trim()}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#00a884] text-white hover:bg-[#008f6f] transition-all shadow-md disabled:opacity-40"
+          aria-label="Send message"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 text-white hover:bg-neutral-800 transition-all shadow-md disabled:opacity-40"
           title="Send message"
         >
-          <Send className="h-4 w-4 ml-0.5" />
+          <Send className="h-4 w-4 ml-0.5 text-white" />
         </button>
       </div>
     </div>

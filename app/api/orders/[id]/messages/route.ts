@@ -71,3 +71,35 @@ export async function POST(
     return NextResponse.json({ error: "Failed to dispatch message" }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (session?.user?.role !== "ADMIN") {
+      return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
+    }
+
+    const orderId = params.id;
+
+    try {
+      await prisma.projectUpdate.deleteMany({
+        where: { orderId },
+      });
+    } catch (dbErr) {
+      console.warn("DB delete updates error:", dbErr);
+    }
+
+    // Also clear from fallback memory
+    const memoryOrder = fallbackOrders.find((o) => o.id === orderId);
+    if (memoryOrder) {
+      memoryOrder.updates = [];
+    }
+
+    return NextResponse.json({ success: true, message: "Chat history completely deleted." });
+  } catch (err) {
+    return NextResponse.json({ error: "Failed to delete chat history" }, { status: 500 });
+  }
+}

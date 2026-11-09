@@ -27,7 +27,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b border-black/[0.08] bg-[#f7f6f2]/80 backdrop-blur-md">
       <div className="mx-auto flex h-20 w-full max-w-[95vw] items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Brand Logo - Clean, unboxed natural display without borders */}
-        <Link href="/" className="group flex items-center gap-3 text-neutral-900 transition-opacity hover:opacity-90">
+        <Link href="/" aria-label="Nexora Solutions Home" className="group flex items-center gap-3 text-neutral-900 transition-opacity hover:opacity-90">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/64x64.png"
@@ -106,7 +106,7 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link href="/auth/signin">
+              <Link href="/auth/signin" aria-label="Sign In">
                 <span className="text-xs uppercase tracking-wider text-neutral-700 hover:text-neutral-950 transition-colors px-2 font-semibold">
                   Sign In
                 </span>

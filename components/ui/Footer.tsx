@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           {/* Nexora Solutions Brand Identity */}
           <div className="md:col-span-5 space-y-4">
-            <Link href="/" className="inline-flex items-center gap-3 group">
+            <Link href="/" aria-label="Nexora Solutions Home" className="inline-flex items-center gap-3 group">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/64x64.png"
@@ -31,10 +31,10 @@ export default function Footer() {
           <div className="md:col-span-3">
             <h4 className="text-[11px] uppercase tracking-widest text-neutral-900 mb-4 font-mono font-semibold">Navigation</h4>
             <ul className="space-y-2.5 text-xs font-medium">
-              <li><Link href="/services" className="text-neutral-700 hover:text-neutral-950 transition-colors">Services</Link></li>
-              <li><Link href="/order" className="text-neutral-700 hover:text-neutral-950 transition-colors">Order Now</Link></li>
-              <li><Link href="/dashboard" className="text-neutral-700 hover:text-neutral-950 transition-colors">My Orders & Chat</Link></li>
-              <li><Link href="/auth/signin" className="text-neutral-700 hover:text-neutral-950 transition-colors">Sign In</Link></li>
+              <li><Link href="/services" aria-label="Explore Services" className="text-neutral-700 hover:text-neutral-950 transition-colors">Services</Link></li>
+              <li><Link href="/order" aria-label="Order a Project" className="text-neutral-700 hover:text-neutral-950 transition-colors">Order Now</Link></li>
+              <li><Link href="/dashboard" aria-label="Go to My Orders and Chat" className="text-neutral-700 hover:text-neutral-950 transition-colors">My Orders & Chat</Link></li>
+              <li><Link href="/auth/signin" aria-label="Sign In to Account" className="text-neutral-700 hover:text-neutral-950 transition-colors">Sign In</Link></li>
             </ul>
           </div>
 

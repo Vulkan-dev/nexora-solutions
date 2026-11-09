@@ -415,7 +415,7 @@ export default function CustomerDashboardPage() {
             {/* Direct Studio Messaging Thread - WhatsApp Style */}
             <WhatsAppChatBox
               title="Chat with Lead Developer"
-              subtitle="Project discussion & instant updates"
+              subtitle="Online • Developer & Direct Studio"
               messages={selectedOrder.updates || []}
               currentUserEmail={session?.user?.email}
               currentUserId={session?.user?.id}
@@ -423,7 +423,6 @@ export default function CustomerDashboardPage() {
               newMessage={newMessage}
               setNewMessage={setNewMessage}
               onSendMessage={handleSendMessage}
-              onRequestStaffChat={handleRequestStaffChat}
               submitting={submittingAction}
             />
           </div>
