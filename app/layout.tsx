@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     "Modern full-stack web applications, scalable SaaS platforms, and custom Discord bots built with clean code and high performance.",
   icons: {
     icon: [
-      { url: "/64x64.png", sizes: "64x64", type: "image/png" },
-      { url: "/tab-icon.png", type: "image/png" },
-      { url: "/favicon.ico" },
+      { url: "/tab-icon.png?v=3", type: "image/png" },
+      { url: "/64x64.png?v=3", sizes: "64x64", type: "image/png" },
+      { url: "/favicon.ico?v=3" },
     ],
-    shortcut: "/64x64.png",
+    shortcut: "/tab-icon.png?v=3",
     apple: [
-      { url: "/64x64.png", sizes: "64x64", type: "image/png" },
+      { url: "/tab-icon.png?v=3", sizes: "180x180", type: "image/png" },
     ],
   },
 };
@@ -34,9 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/64x64.png" sizes="64x64" type="image/png" />
-        <link rel="shortcut icon" href="/64x64.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/64x64.png" sizes="any" />
+        <link rel="icon" href="/tab-icon.png?v=3" sizes="any" type="image/png" />
+        <link rel="shortcut icon" href="/tab-icon.png?v=3" type="image/png" />
+        <link rel="apple-touch-icon" href="/tab-icon.png?v=3" />
       </head>
       <body className="min-h-screen bg-background text-neutral-900 antialiased flex flex-col selection:bg-amber-700/20 selection:text-neutral-900 w-full overflow-x-hidden">
         <SessionProviderWrapper>
